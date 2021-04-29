@@ -17,6 +17,7 @@ import android.hardware.usb.UsbRequest;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.GridView;
 import android.widget.TextView;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
@@ -81,11 +82,16 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        temperature = findViewById(R.id.temperature);
-        humidity = findViewById(R.id.humidity);
+        setContentView(R.layout.homescreeen);
+        List<Room> lstRoom = getListData();
 
-        mqttService = new MQTTService( this);
+        GridView gridView  = findViewById(R.id.gridView);
+        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
+        gridView.setAdapter(roomGridAdapter);
+//        temperature = findViewById(R.id.temperature);
+//        humidity = findViewById(R.id.humidity);
+
+/*        mqttService = new MQTTService( this);
         //mqttService = new MQTTService( getApplicationContext());
         mqttService.setCallback(new MqttCallbackExtended() {
             @Override
@@ -103,18 +109,18 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                 String data_to_microbit = message.toString();
                 //port.write(data_to_microbit.getBytes(),1000);
 
-                if(topic.indexOf("temperature/json") != -1){
-                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-                    Log.d(topic, data_to_microbit);
-                    temperature.setText(dataObject.getLast_value());
-                    temperature.append("*C");
-                }
-                if(topic.indexOf("humidity/json") != -1){
-                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-                    Log.d(topic, data_to_microbit);
-                    humidity.setText(dataObject.getLast_value());
-                    humidity.append("%");
-                }
+//                if(topic.indexOf("temperature/json") != -1){
+//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
+//                    Log.d(topic, data_to_microbit);
+//                    temperature.setText(dataObject.getLast_value());
+//                    temperature.append("*C");
+//                }
+//                if(topic.indexOf("humidity/json") != -1){
+//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
+//                    Log.d(topic, data_to_microbit);
+//                    humidity.setText(dataObject.getLast_value());
+//                    humidity.append("%");
+//                }
 
 
             }
@@ -126,7 +132,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         });
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
+        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);*/
 
 /*
         if (availableDrivers.isEmpty()) {
@@ -204,4 +210,28 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             Log.d("MQTT", "sendDataMQTT: cannot send message");
         }
     }
+
+    private List<Room> getListData(){
+        List<Room> lst = new ArrayList<Room>();
+        Room bedRoom = new Room("Bed Room",false,"Heat to 30.0","30");
+        Room livingRoom = new Room("Living Room",true,"Heat to 25.0","25");
+        Room room1= new Room("Room 1",false,"Heat to 30.0","30");
+        Room room2= new Room("Room 2",false,"Heat to 30.0","30");
+        Room room3= new Room("Room 3",false,"Heat to 30.0","30");
+        Room room4= new Room("Room 4",false,"Heat to 30.0","30");
+        Room room5= new Room("Room 5",false,"Heat to 30.0","30");
+        Room room6= new Room("Room 6",false,"Heat to 30.0","30");
+        Room room7= new Room("Room 7",false,"Heat to 30.0","30");
+        lst.add(bedRoom);
+        lst.add(livingRoom);
+        lst.add(room1);
+        lst.add(room2);
+        lst.add(room3);
+        lst.add(room4);
+        lst.add(room5);
+        lst.add(room6);
+        lst.add(room7);
+        return lst;
+    }
 }
+

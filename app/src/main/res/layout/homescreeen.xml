@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F7F8FA">
+    <RelativeLayout
+        android:id="@+id/room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Demo Room"
+            android:textColor="#686D73"
+            android:textSize="32dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/power"
+        android:layout_width="140dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/room"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/turn_on"
+        android:elevation="2dp">
+        <ImageButton
+            android:id="@+id/power_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_power_button"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="20dp"
+            />
+
+        <TextView
+            android:id="@+id/power_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="10dp"
+            android:text="Turn On"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/power_room_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="30dp"
+            android:text="All Rooms"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+    </RelativeLayout>
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/power"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="80dp"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:background="@color/white">
+        <ImageButton
+            android:id="@+id/home_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_home"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="48dp"
+            android:tint="#324B61"
+            />
+        <ImageButton
+            android:id="@+id/setting_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_settings"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:tint="#324B61"
+            />
+
+        <ImageButton
+            android:id="@+id/list_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="48dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_list"
+            android:tint="#324B61" />
+
+        <TextView
+            android:id="@+id/home_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="34dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="40dp"
+            android:text="Turn On"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/setting_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/setting_btn"
+            android:layout_marginStart="-14dp"
+            android:layout_marginTop="40dp"
+            android:text="Settings"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/list_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="44dp"
+            android:layout_marginTop="40dp"
+            android:text="More"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            />
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
