@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         RecyclerView recyclerView = findViewById(R.id.gridView);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
+        recyclerView.addItemDecoration(itemDecorator);
         RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
         recyclerView.setAdapter(roomViewAdapter);
 //        GridView gridView  = findViewById(R.id.gridView);
