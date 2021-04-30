@@ -1,0 +1,5 @@
+https://io.adafruit.com/lesonlhld/dashboards/temperature-and-humidity
+
+https://io.adafruit.com/lesonlhld/feeds/humidity
+
+https://io.adafruit.com/lesonlhld/feeds/temperature
