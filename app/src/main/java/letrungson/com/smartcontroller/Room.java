@@ -1,16 +1,34 @@
 package letrungson.com.smartcontroller;
 
 public class Room {
+    private String roomId;
     private String roomName;
     private Boolean roomState;
     private String roomDescription;
     private String roomTemp;
+
+    public Room(){
+
+    }
+
+    public Room(String roomId, String roomName){
+        this.roomId = roomId;
+        this.roomName = roomName;
+    }
 
     public Room(String roomName, Boolean roomState, String roomDescription, String roomTemp) {
         this.roomName = roomName;
         this.roomState = roomState;
         this.roomDescription = roomDescription;
         this.roomTemp = roomTemp;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
     public String getRoomName() {
