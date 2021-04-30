@@ -1,6 +1,9 @@
 package letrungson.com.smartcontroller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -17,8 +20,11 @@ import android.hardware.usb.UsbRequest;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
 //import com.benlypan.usbhid.UsbHidDevice;
@@ -84,10 +90,22 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreeen);
         List<Room> lstRoom = getListData();
+        RecyclerView recyclerView = findViewById(R.id.gridView);
 
-        GridView gridView  = findViewById(R.id.gridView);
-        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
-        gridView.setAdapter(roomGridAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
+        recyclerView.setAdapter(roomViewAdapter);
+//        GridView gridView  = findViewById(R.id.gridView);
+//        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
+//        gridView.setAdapter(roomGridAdapter);
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(getApplicationContext(),RoomDetail.class);
+//                intent.putExtra("roomName", gridView.getItemAtPosition(position).toString());
+//                startActivity(intent);
+//            }
+//        });
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 

@@ -44,13 +44,13 @@ public class RoomGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null){
             final LayoutInflater layoutInflater = LayoutInflater.from(context);
-            convertView = layoutInflater.inflate(R.layout.room_item, null);
+            convertView = layoutInflater.inflate(R.layout.roomitem_cardview, null);
         }
 
         TextView roomName = (TextView) convertView.findViewById(R.id.room_item_name);
         TextView roomDescription = (TextView) convertView.findViewById(R.id.room_item_description);
         TextView roomTemp = (TextView) convertView.findViewById(R.id.room_item_temp);
-        ImageButton roomPowerBtn = (ImageButton) convertView.findViewById(R.id.room_item_powerbtn);
+        //ImageButton roomPowerBtn = (ImageButton) convertView.findViewById(R.id.room_item_powerbtn);
 
         roomName.setText(listRoom.get(position).getRoomName());
         roomDescription.setText(listRoom.get(position).getRoomDescription());
@@ -58,7 +58,6 @@ public class RoomGridAdapter extends BaseAdapter {
 
 //        if(listRoom.get(position).getRoomState()) roomPowerBtn.setColorFilter(0);
 //        else roomPowerBtn.setColorFilter(15861768);
-        Log.d("List Room", listRoom.get(position).getRoomName());
         return convertView;
     }
 }
