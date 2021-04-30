@@ -44,6 +44,10 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
 //                intent.putExtra("Room",roomList.get(position).toString());
 //                context.startActivity(intent);
                 Toast.makeText(context, "Clicked" + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
+//                Room room = roomList.get(position);
+//                roomList.set(position, room);
+//                notifyItemChanged(position);
+                notifyDataSetChanged();
             }
         });
         Log.d("List Room", this.roomList.get(position).getRoomName());
