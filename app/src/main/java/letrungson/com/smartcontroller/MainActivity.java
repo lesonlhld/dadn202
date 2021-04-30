@@ -1,6 +1,5 @@
 package letrungson.com.smartcontroller;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
@@ -23,11 +22,6 @@ import android.widget.TextView;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
 //import com.benlypan.usbhid.UsbHidDevice;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -87,14 +81,9 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Database user = new Database("users");
-        Database sensor = new Database("sensors");
-        Database room = new Database("rooms");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreeen);
-        //List<Room> lstRoom = getListData();
-        List<Room> lstRoom = room.getAllRoom();
+        List<Room> lstRoom = getListData();
 
         GridView gridView  = findViewById(R.id.gridView);
         RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
@@ -102,7 +91,8 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
-        mqttService = new MQTTService( this);
+/*        mqttService = new MQTTService( this);
+        //mqttService = new MQTTService( getApplicationContext());
         mqttService.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
@@ -119,18 +109,20 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                 String data_to_microbit = message.toString();
                 //port.write(data_to_microbit.getBytes(),1000);
 
-                if(topic.indexOf("temperature/json") != -1 || topic.indexOf("humidity/json") != -1){
-                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-
-                    Log.d(topic, data_to_microbit);
-                    sensor.addSensorLog(dataObject, "1");
+//                if(topic.indexOf("temperature/json") != -1){
+//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
+//                    Log.d(topic, data_to_microbit);
 //                    temperature.setText(dataObject.getLast_value());
-                    if (topic.indexOf("temperature/json") != -1) {
-                        temperature.append("*C");
-                    } else {
-                        temperature.append("%");
-                    }
-                }
+//                    temperature.append("*C");
+//                }
+//                if(topic.indexOf("humidity/json") != -1){
+//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
+//                    Log.d(topic, data_to_microbit);
+//                    humidity.setText(dataObject.getLast_value());
+//                    humidity.append("%");
+//                }
+
+
             }
 
             @Override
@@ -140,7 +132,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         });
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
+        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);*/
 
 /*
         if (availableDrivers.isEmpty()) {
@@ -218,7 +210,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             Log.d("MQTT", "sendDataMQTT: cannot send message");
         }
     }
-/*
+
     private List<Room> getListData(){
         List<Room> lst = new ArrayList<Room>();
         Room bedRoom = new Room("Bed Room",false,"Heat to 30.0","30");
@@ -240,6 +232,6 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         lst.add(room6);
         lst.add(room7);
         return lst;
-    }*/
+    }
 }
 
