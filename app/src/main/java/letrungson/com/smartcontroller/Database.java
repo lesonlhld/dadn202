@@ -43,6 +43,7 @@ public class Database {
 /*
     public List<User> getAllUser(){
         List<User> allUsers = new ArrayList<User>();
+        allUsers.clear();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -69,6 +70,7 @@ public class Database {
 
     public List<Room> getAllRoom(){
         List<Room> allRooms = new ArrayList<>();
+        allRooms.clear();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -77,6 +79,7 @@ public class Database {
                     String roomName = data.getValue(String.class);
                     String roomId = data.getKey();
                     Room room = new Room(roomId, roomName);
+                    Log.d("Room ", room.getRoomName());
                     allRooms.add(room);
                 }
             }

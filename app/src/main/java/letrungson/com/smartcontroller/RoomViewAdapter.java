@@ -46,6 +46,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                 Toast.makeText(context, "Clicked" + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
             }
         });
+        Log.d("List Room", this.roomList.get(position).getRoomName());
     }
 
     @Override

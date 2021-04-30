@@ -1,6 +1,10 @@
 package letrungson.com.smartcontroller;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -17,11 +21,19 @@ import android.hardware.usb.UsbRequest;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
 //import com.benlypan.usbhid.UsbHidDevice;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -81,18 +93,38 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Database user = new Database("users");
+        Database sensor = new Database("sensors");
+        Database room = new Database("rooms");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreeen);
-        List<Room> lstRoom = getListData();
+//        List<Room> lstRoom = getListData();
+        List<Room> lstRoom = room.getAllRoom();
+        RecyclerView recyclerView = findViewById(R.id.gridView);
 
-        GridView gridView  = findViewById(R.id.gridView);
-        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
-        gridView.setAdapter(roomGridAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
+        recyclerView.addItemDecoration(itemDecorator);
+        RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
+        recyclerView.setAdapter(roomViewAdapter);
+//        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
+//        recyclerView.invalidate();
+//        GridView gridView  = findViewById(R.id.gridView);
+//        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
+//        gridView.setAdapter(roomGridAdapter);
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(getApplicationContext(),RoomDetail.class);
+//                intent.putExtra("roomName", gridView.getItemAtPosition(position).toString());
+//                startActivity(intent);
+//            }
+//        });
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
-/*        mqttService = new MQTTService( this);
-        //mqttService = new MQTTService( getApplicationContext());
+        mqttService = new MQTTService( this);
         mqttService.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
@@ -109,20 +141,24 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                 String data_to_microbit = message.toString();
                 //port.write(data_to_microbit.getBytes(),1000);
 
-//                if(topic.indexOf("temperature/json") != -1){
-//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-//                    Log.d(topic, data_to_microbit);
+                if(topic.indexOf("temperature/json") != -1){
+                    Data dataObject = null;
+                    dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
+
+                    Log.d(topic, data_to_microbit);
+                    sensor.addSensorLog(dataObject, "1");
 //                    temperature.setText(dataObject.getLast_value());
 //                    temperature.append("*C");
-//                }
-//                if(topic.indexOf("humidity/json") != -1){
-//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-//                    Log.d(topic, data_to_microbit);
+                }
+                if(topic.indexOf("humidity/json") != -1){
+                    Data dataObject = null;
+                    dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
+
+                    Log.d(topic, data_to_microbit);
+                    sensor.addSensorLog(dataObject, "1");
 //                    humidity.setText(dataObject.getLast_value());
 //                    humidity.append("%");
-//                }
-
-
+                }
             }
 
             @Override
@@ -132,7 +168,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         });
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);*/
+        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
 
 /*
         if (availableDrivers.isEmpty()) {
