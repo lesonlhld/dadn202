@@ -4,24 +4,30 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.model.Data;
+import letrungson.com.smartcontroller.model.Device;
+import letrungson.com.smartcontroller.model.LogState;
 import letrungson.com.smartcontroller.model.Room;
-import letrungson.com.smartcontroller.model.User;
 
 public class Database {
 
     private static final String TAG = "Database";
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference mDatabase;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference mDatabase;
     public Database(String path){
         mDatabase = database.getReference(path);
     }
@@ -32,17 +38,34 @@ public class Database {
         mDatabase.child(id).child("roomid").setValue(roomid);
     }
 
-    public boolean checkValidUser(String username, String password){
-
-        return false;
+    public void addLog(String deviceid, String newState) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        DateTimeFormatter formatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String datetime =  formatter.format(LocalDateTime.now());
+        String userid = user.getUid();
+        LogState log = new LogState(datetime, deviceid, newState, userid);
+        String id = "Log" + mDatabase.push().getKey();
+        mDatabase.child(id).setValue(log);
     }
+/*
+    public String getStateDevice(String deviceId){
+        final String[] currentState = new String[1];
+        mDatabase.child(deviceId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Device device = dataSnapshot.getValue(Device.class);
+                If(device == null){
+                    updateDevice(deviceId, );
+                }
+                currentState[0] = device.getCurrentState();
+            }
 
-    public void addUser(String username, String password) {
-        String id = "User" + mDatabase.push().getKey();
-        User user = new User(username, password);
-        mDatabase.child(id).setValue(user);
-    }
-
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+        return currentState[0];
+    }*/
 /*
     public List<User> getAllUser(){
         List<User> allUsers = new ArrayList<User>();
@@ -71,6 +94,15 @@ public class Database {
     }*/
 
 
+    public void addRoom(String roomid, String roomName) {
+        mDatabase.child(roomid).setValue(roomName);
+    }
+
+    public void updateDevice(String deviceId, String deviceName, String currentState) {
+        mDatabase.child(deviceId).child("deviceName").setValue(deviceName);
+        mDatabase.child(deviceId).child("State").setValue(currentState);
+    }
+
     public List<Room> getAllRoom(){
         List<Room> allRooms = new ArrayList<>();
         allRooms.clear();
@@ -82,7 +114,6 @@ public class Database {
                     String roomName = data.getValue(String.class);
                     String roomId = data.getKey();
                     Room room = new Room(roomId, roomName);
-                    Log.d("Room ", room.getRoomName());
                     allRooms.add(room);
                 }
             }

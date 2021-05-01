@@ -30,7 +30,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,6 +38,7 @@ import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.RoomViewAdapter;
 import letrungson.com.smartcontroller.SpacingItemDecorator;
 import letrungson.com.smartcontroller.model.Data;
+import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     TextView temperature;
     TextView humidity;
     UsbSerialPort port;
-
     private FirebaseAuth mAuth;
     MQTTService mqttService;
 
@@ -85,14 +84,14 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth);
 
-        Database user = new Database("users");
         Database sensor = new Database("sensors");
+        Database logs = new Database("logs");
+        Database devices = new Database("devices");
         Database room = new Database("rooms");
+        List<Room> lstRoom = room.getAllRoom();
 
         setContentView(R.layout.homescreeen);
 
-//        List<Room> lstRoom = getListData();
-        List<Room> lstRoom = room.getAllRoom();
         RecyclerView recyclerView = findViewById(R.id.gridView);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
@@ -140,23 +139,30 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                 String data_to_microbit = message.toString();
                 //port.write(data_to_microbit.getBytes(),1000);
 
-                if(topic.indexOf("temperature/json") != -1){
-                    Data dataObject = null;
-                    dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-
-                    Log.d(topic, data_to_microbit);
-                    sensor.addSensorLog(dataObject, "1");
-//                    temperature.setText(dataObject.getLast_value());
-//                    temperature.append("*C");
-                }
-                if(topic.indexOf("humidity/json") != -1){
-                    Data dataObject = null;
-                    dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-
-                    Log.d(topic, data_to_microbit);
-                    sensor.addSensorLog(dataObject, "1");
-//                    humidity.setText(dataObject.getLast_value());
-//                    humidity.append("%");
+                if (topic.indexOf("/json") != -1) {
+                    String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/')-1) + 1, topic.lastIndexOf('/'));
+                    Data dataMqtt = null;
+                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
+                    }.getType());
+                    if(!context.equals(dataMqtt.getId())){
+                        String roomid = "test";
+                        int inGroup = topic.indexOf('.');
+                        if (inGroup != -1) {
+                            roomid = topic.substring(topic.lastIndexOf('/', inGroup) + 1, inGroup);
+                            checkExistRoom(roomid, room);
+                            Log.w("Room", roomid);
+                        }
+                        if (topic.indexOf("temperature") != -1 || topic.indexOf("humidity") != -1) {
+                            Log.d(topic, data_to_microbit);
+                            sensor.addSensorLog(dataMqtt, roomid);
+                            //                    temperature.setText(dataObject.getLast_value());
+                            //                    humidity.setText(dataObject.getLast_value());
+                        } else {//Devices
+                            Log.d(topic, data_to_microbit);
+                            logs.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
+                            devices.updateDevice(dataMqtt.getId(), dataMqtt.getKey(), dataMqtt.getLast_value());
+                        }
+                    }
                 }
             }
 
@@ -221,6 +227,15 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         }
     }
 
+    private void checkExistRoom(String roomid, Database rooms){
+        List<Room> lstRoom = rooms.getAllRoom();
+        for (Room room: lstRoom){
+            if(roomid.equals(room.getRoomId())){
+                return;
+            }
+        }
+        rooms.addRoom(roomid, "Test");
+    }
 
     @Override
     public void onNewData(final byte[] data) {
@@ -253,29 +268,6 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         } catch ( MqttException e){
             Log.d("MQTT", "sendDataMQTT: cannot send message");
         }
-    }
-
-    private List<Room> getListData(){
-        List<Room> lst = new ArrayList<Room>();
-        Room bedRoom = new Room("Bed Room",false,"Heat to 30.0","30");
-        Room livingRoom = new Room("Living Room",true,"Heat to 25.0","25");
-        Room room1= new Room("Room 1",false,"Heat to 30.0","30");
-        Room room2= new Room("Room 2",false,"Heat to 30.0","30");
-        Room room3= new Room("Room 3",false,"Heat to 30.0","30");
-        Room room4= new Room("Room 4",false,"Heat to 30.0","30");
-        Room room5= new Room("Room 5",false,"Heat to 30.0","30");
-        Room room6= new Room("Room 6",false,"Heat to 30.0","30");
-        Room room7= new Room("Room 7",false,"Heat to 30.0","30");
-        lst.add(bedRoom);
-        lst.add(livingRoom);
-        lst.add(room1);
-        lst.add(room2);
-        lst.add(room3);
-        lst.add(room4);
-        lst.add(room5);
-        lst.add(room6);
-        lst.add(room7);
-        return lst;
     }
 }
 

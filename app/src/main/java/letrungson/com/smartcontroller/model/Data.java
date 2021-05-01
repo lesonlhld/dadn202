@@ -2,12 +2,12 @@ package letrungson.com.smartcontroller.model;
 
 public class Data {
     private String id;
-    private int last_value;
+    private String last_value;
     private String updated_at;
     private String key;
 //    DetailData data;
 
-    public Data(String id, int last_value, String updated_at, String key){
+    public Data(String id, String last_value, String updated_at, String key){
         this.id = id;
         this.last_value = last_value;
         this.updated_at = updated_at;
@@ -31,11 +31,11 @@ public class Data {
         return updated_at;
     }
 
-    public void setLast_value(int last_value) {
+    public void setLast_value(String last_value) {
         this.last_value = last_value;
     }
 
-    public int getLast_value() {
+    public String getLast_value() {
         return last_value;
     }
 
