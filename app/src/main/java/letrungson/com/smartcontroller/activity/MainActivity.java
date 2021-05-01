@@ -1,27 +1,22 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.usb.UsbConstants;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbDeviceConnection;
-import android.hardware.usb.UsbEndpoint;
-import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-import android.hardware.usb.UsbRequest;
-//import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.GridView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
 //import com.benlypan.usbhid.UsbHidDevice;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -34,16 +29,19 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Executors;
+
+import letrungson.com.smartcontroller.BuildConfig;
+import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.RoomViewAdapter;
+import letrungson.com.smartcontroller.SpacingItemDecorator;
+import letrungson.com.smartcontroller.model.Data;
+import letrungson.com.smartcontroller.model.Device;
+import letrungson.com.smartcontroller.model.Room;
+import letrungson.com.smartcontroller.service.Database;
+import letrungson.com.smartcontroller.service.MQTTService;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     TextView temperature;
     TextView humidity;
     UsbSerialPort port;
-
+    private FirebaseAuth mAuth;
     MQTTService mqttService;
 
     private Thread readThread;
@@ -82,17 +80,49 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.homescreeen);
-        List<Room> lstRoom = getListData();
 
-        GridView gridView  = findViewById(R.id.gridView);
-        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
-        gridView.setAdapter(roomGridAdapter);
+        mAuth = FirebaseAuth.getInstance();
+        checkCurrentUser(mAuth);
+
+        Database sensor = new Database("sensors");
+        Database logs = new Database("logs");
+        Database devices = new Database("devices");
+        Database room = new Database("rooms");
+        List<Room> lstRoom = room.getAllRoom();
+
+        setContentView(R.layout.homescreeen);
+
+        RecyclerView recyclerView = findViewById(R.id.gridView);
+
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
+        recyclerView.addItemDecoration(itemDecorator);
+        RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
+        recyclerView.setAdapter(roomViewAdapter);
+        Button reload = findViewById(R.id.reload);
+        reload.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
+            }
+        });
+//        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
+//        recyclerView.invalidate();
+//        GridView gridView  = findViewById(R.id.gridView);
+//        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
+//        gridView.setAdapter(roomGridAdapter);
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(getApplicationContext(),RoomDetail.class);
+//                intent.putExtra("roomName", gridView.getItemAtPosition(position).toString());
+//                startActivity(intent);
+//            }
+//        });
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
-/*        mqttService = new MQTTService( this);
-        //mqttService = new MQTTService( getApplicationContext());
+        mqttService = new MQTTService( this);
         mqttService.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
@@ -109,20 +139,41 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                 String data_to_microbit = message.toString();
                 //port.write(data_to_microbit.getBytes(),1000);
 
-//                if(topic.indexOf("temperature/json") != -1){
-//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-//                    Log.d(topic, data_to_microbit);
-//                    temperature.setText(dataObject.getLast_value());
-//                    temperature.append("*C");
-//                }
-//                if(topic.indexOf("humidity/json") != -1){
-//                    Data dataObject = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-//                    Log.d(topic, data_to_microbit);
-//                    humidity.setText(dataObject.getLast_value());
-//                    humidity.append("%");
-//                }
-
-
+                if (topic.indexOf("/json") != -1) {
+                    String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/')-1) + 1, topic.lastIndexOf('/'));
+                    Data dataMqtt = null;
+                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
+                    }.getType());
+                    if(!context.equals(dataMqtt.getId())){
+                        String roomid = "test";
+                        int inGroup = topic.indexOf('.');
+                        if (inGroup != -1) {
+                            roomid = topic.substring(topic.lastIndexOf('/', inGroup) + 1, inGroup);
+                            if(topic.indexOf("temperature") != -1 ){
+                                checkExistRoom(roomid, lstRoom, room, dataMqtt.getLast_value());
+                            }else{
+                                checkExistRoom(roomid, lstRoom, room, null);
+                            }
+                            Log.w("Room", roomid);
+                        }
+                        if (topic.indexOf("temperature") != -1 || topic.indexOf("humidity") != -1) {
+                            Log.d(topic, data_to_microbit);
+                            if(topic.indexOf("temperature") != -1 ){
+                                int index = checkExistRoom(roomid, lstRoom, room, dataMqtt.getLast_value());
+                                Room r = lstRoom.get(index);
+                                r.setRoomTemp(dataMqtt.getLast_value());
+                                lstRoom.set(index, r);
+                                room.updateRoom(roomid, dataMqtt.getLast_value());
+                            }
+                            sensor.addSensorLog(dataMqtt, roomid);
+                            //                    humidity.setText(dataObject.getLast_value());
+                        } else {//Devices
+                            Log.d(topic, data_to_microbit);
+                            logs.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
+                            devices.updateDevice(dataMqtt.getId(), dataMqtt.getKey(), dataMqtt.getLast_value());
+                        }
+                    }
+                }
             }
 
             @Override
@@ -132,7 +183,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         });
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);*/
+        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
 
 /*
         if (availableDrivers.isEmpty()) {
@@ -167,6 +218,15 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         }*/
     }
 
+
+    private void checkCurrentUser(FirebaseAuth mAuth) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(this, AccountActivity.class));
+            finish();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -177,6 +237,18 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         }
     }
 
+    private int checkExistRoom(String roomid, List<Room> lstRoom, Database rooms, String temp){
+        int index = 0;
+        for (Room room: lstRoom){
+            if(roomid.equals(room.getRoomId())){
+                return index;
+            }
+            index++;
+        }
+        rooms.addRoom(roomid, "Test");
+        rooms.updateRoom(roomid, temp);
+        return -1;
+    }
 
     @Override
     public void onNewData(final byte[] data) {
@@ -209,29 +281,6 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         } catch ( MqttException e){
             Log.d("MQTT", "sendDataMQTT: cannot send message");
         }
-    }
-
-    private List<Room> getListData(){
-        List<Room> lst = new ArrayList<Room>();
-        Room bedRoom = new Room("Bed Room",false,"Heat to 30.0","30");
-        Room livingRoom = new Room("Living Room",true,"Heat to 25.0","25");
-        Room room1= new Room("Room 1",false,"Heat to 30.0","30");
-        Room room2= new Room("Room 2",false,"Heat to 30.0","30");
-        Room room3= new Room("Room 3",false,"Heat to 30.0","30");
-        Room room4= new Room("Room 4",false,"Heat to 30.0","30");
-        Room room5= new Room("Room 5",false,"Heat to 30.0","30");
-        Room room6= new Room("Room 6",false,"Heat to 30.0","30");
-        Room room7= new Room("Room 7",false,"Heat to 30.0","30");
-        lst.add(bedRoom);
-        lst.add(livingRoom);
-        lst.add(room1);
-        lst.add(room2);
-        lst.add(room3);
-        lst.add(room4);
-        lst.add(room5);
-        lst.add(room6);
-        lst.add(room7);
-        return lst;
     }
 }
 

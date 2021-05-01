@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.model;
 
 public class Room {
     private String roomId;
@@ -11,9 +11,9 @@ public class Room {
 
     }
 
-    public Room(String roomId, String roomName){
-        this.roomId = roomId;
-        this.roomName = roomName;
+    public Room(String roomName, String roomTemp){
+        this.roomId = roomName;
+        this.roomName = roomTemp;
     }
 
     public Room(String roomName, Boolean roomState, String roomDescription, String roomTemp) {
