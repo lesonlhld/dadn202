@@ -95,7 +95,11 @@ public class Database {
 
 
     public void addRoom(String roomid, String roomName) {
-        mDatabase.child(roomid).setValue(roomName);
+        mDatabase.child(roomid).child("roomName").setValue(roomName);
+    }
+
+    public void updateRoom(String roomid, String temp) {
+        mDatabase.child(roomid).child("roomTemp").setValue(temp);
     }
 
     public void updateDevice(String deviceId, String deviceName, String currentState) {
@@ -111,9 +115,9 @@ public class Database {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 allRooms.clear();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    String roomName = data.getValue(String.class);
+                    Room room = data.getValue(Room.class);
                     String roomId = data.getKey();
-                    Room room = new Room(roomId, roomName);
+                    room.setRoomId(roomId);
                     allRooms.add(room);
                 }
             }

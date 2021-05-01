@@ -50,7 +50,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                 notifyDataSetChanged();
             }
         });
-        Log.d("List Room", this.roomList.get(position).getRoomName());
+//        Log.d("List Room", this.roomList.get(position).getRoomName());
     }
 
     @Override

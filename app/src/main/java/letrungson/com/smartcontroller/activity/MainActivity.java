@@ -149,13 +149,23 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                         int inGroup = topic.indexOf('.');
                         if (inGroup != -1) {
                             roomid = topic.substring(topic.lastIndexOf('/', inGroup) + 1, inGroup);
-                            checkExistRoom(roomid, room);
+                            if(topic.indexOf("temperature") != -1 ){
+                                checkExistRoom(roomid, lstRoom, room, dataMqtt.getLast_value());
+                            }else{
+                                checkExistRoom(roomid, lstRoom, room, null);
+                            }
                             Log.w("Room", roomid);
                         }
                         if (topic.indexOf("temperature") != -1 || topic.indexOf("humidity") != -1) {
                             Log.d(topic, data_to_microbit);
+                            if(topic.indexOf("temperature") != -1 ){
+                                int index = checkExistRoom(roomid, lstRoom, room, dataMqtt.getLast_value());
+                                Room r = lstRoom.get(index);
+                                r.setRoomTemp(dataMqtt.getLast_value());
+                                lstRoom.set(index, r);
+                                room.updateRoom(roomid, dataMqtt.getLast_value());
+                            }
                             sensor.addSensorLog(dataMqtt, roomid);
-                            //                    temperature.setText(dataObject.getLast_value());
                             //                    humidity.setText(dataObject.getLast_value());
                         } else {//Devices
                             Log.d(topic, data_to_microbit);
@@ -227,14 +237,17 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         }
     }
 
-    private void checkExistRoom(String roomid, Database rooms){
-        List<Room> lstRoom = rooms.getAllRoom();
+    private int checkExistRoom(String roomid, List<Room> lstRoom, Database rooms, String temp){
+        int index = 0;
         for (Room room: lstRoom){
             if(roomid.equals(room.getRoomId())){
-                return;
+                return index;
             }
+            index++;
         }
         rooms.addRoom(roomid, "Test");
+        rooms.updateRoom(roomid, temp);
+        return -1;
     }
 
     @Override
