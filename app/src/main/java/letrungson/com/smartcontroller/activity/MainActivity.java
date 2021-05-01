@@ -42,6 +42,7 @@ import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
+import android.widget.ImageButton;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -52,9 +53,9 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
 
-    TextView temperature;
-    TextView humidity;
+    TextView temperature, humidity;
     UsbSerialPort port;
+    ImageButton moreButton;
     private FirebaseAuth mAuth;
     MQTTService mqttService;
 
@@ -91,6 +92,14 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         List<Room> lstRoom = room.getAllRoom();
 
         setContentView(R.layout.homescreeen);
+        moreButton = findViewById(R.id.list_btn);
+        moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MoreActivity.class));
+                finish();
+            }
+        });
 
         RecyclerView recyclerView = findViewById(R.id.gridView);
 
