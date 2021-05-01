@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                     dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
                     }.getType());
                     if(!context.equals(dataMqtt.getId())){
-                        String roomid = "test";
+                        /*String roomid = "test";
                         int inGroup = topic.indexOf('.');
                         if (inGroup != -1) {
                             roomid = topic.substring(topic.lastIndexOf('/', inGroup) + 1, inGroup);
@@ -164,23 +164,25 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                                 checkExistRoom(roomid, lstRoom, room, null);
                             }
                             Log.w("Room", roomid);
-                        }
+                        }*/
+
+                        Log.d(topic, data_to_microbit);
                         if (topic.indexOf("temperature") != -1 || topic.indexOf("humidity") != -1) {
-                            Log.d(topic, data_to_microbit);
-                            if(topic.indexOf("temperature") != -1 ){
+                            /*if(topic.indexOf("temperature") != -1 ){
                                 int index = checkExistRoom(roomid, lstRoom, room, dataMqtt.getLast_value());
                                 Room r = lstRoom.get(index);
                                 r.setRoomTemp(dataMqtt.getLast_value());
                                 lstRoom.set(index, r);
                                 room.updateRoom(roomid, dataMqtt.getLast_value());
                             }
-                            sensor.addSensorLog(dataMqtt, roomid);
+                            sensor.addSensorLog(dataMqtt, roomid);*/
+
+                            sensor.addSensorLog(dataMqtt);
                             //                    humidity.setText(dataObject.getLast_value());
                         } else {//Devices
-                            Log.d(topic, data_to_microbit);
                             logs.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
-                            devices.updateDevice(dataMqtt.getId(), dataMqtt.getKey(), dataMqtt.getLast_value());
                         }
+                        devices.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
                     }
                 }
             }

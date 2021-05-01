@@ -4,6 +4,7 @@ public class Device {
     private String deviceId;
     private String deviceName;
     private String currentState;
+    private String roomId;
 
     public Device(){
 
@@ -14,10 +15,11 @@ public class Device {
         this.currentState = currentState;
     }
 
-    public Device(String deviceId, String deviceName, String currentState){
+    public Device(String deviceId, String deviceName, String currentState, String roomId){
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.currentState = currentState;
+        this.roomId = roomId;
     }
 
     public String getCurrentState() {
@@ -42,5 +44,13 @@ public class Device {
 
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 }

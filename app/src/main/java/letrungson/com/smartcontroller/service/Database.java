@@ -32,10 +32,15 @@ public class Database {
         mDatabase = database.getReference(path);
     }
 
-    public void addSensorLog(Data o, String roomid) {
+/*    public void addSensorLog(Data o, String roomid) {
         String id = "Sensor" + mDatabase.push().getKey();
         mDatabase.child(id).setValue(o);
         mDatabase.child(id).child("roomid").setValue(roomid);
+    }*/
+
+    public void addSensorLog(Data o) {
+        String id = "Sensor" + mDatabase.push().getKey();
+        mDatabase.child(id).setValue(o);
     }
 
     public void addLog(String deviceid, String newState) {
@@ -104,6 +109,10 @@ public class Database {
 
     public void updateDevice(String deviceId, String deviceName, String currentState) {
         mDatabase.child(deviceId).child("deviceName").setValue(deviceName);
+        mDatabase.child(deviceId).child("State").setValue(currentState);
+    }
+
+    public void updateDevice(String deviceId, String currentState) {
         mDatabase.child(deviceId).child("State").setValue(currentState);
     }
 

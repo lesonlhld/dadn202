@@ -33,7 +33,13 @@ public class AccountActivity extends Activity {
         // [START initialize_auth]
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        login();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null){
+            login();
+        }
+        else{
+            updatePassword();
+        }
         // [END initialize_auth]
     }
 
@@ -170,6 +176,54 @@ public class AccountActivity extends Activity {
         // [END send_email_verification]
     }
 
+
+    private void updatePassword(){
+        setContentView(R.layout.activity_changepass);
+
+        TextView inputEmail, inputPassword, inputPasswordConfirm;
+        Button btnConfirm, btnCancel;
+        // No user is signed in
+
+        inputEmail = findViewById(R.id.email_edt_text);
+        inputPassword = findViewById(R.id.pass_edt_text);
+        inputPasswordConfirm = findViewById(R.id.pass_edt_text_confirm);
+        btnConfirm = findViewById(R.id.confirm_btn);
+        btnCancel = findViewById(R.id.cancel_btn);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AccountActivity.this, MoreActivity.class));
+                finish();
+            }
+        });
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String email = inputEmail.getText().toString();
+                final String password = inputPassword.getText().toString();
+                final String passwordConfirm = inputPasswordConfirm.getText().toString();
+
+                final FirebaseUser user = mAuth.getCurrentUser();
+                user.updatePassword(password)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User password updated.");
+                                    Toast.makeText(AccountActivity.this, "Changed successfully!", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(AccountActivity.this, MoreActivity.class));
+                                    finish();
+                                } else {
+                                    Log.d(TAG, "Error password not updated");
+                                }
+                            }
+                        });
+            }
+        });
+
+    }
     private void reload() { }
 
     private void updateUI(FirebaseUser user) {
