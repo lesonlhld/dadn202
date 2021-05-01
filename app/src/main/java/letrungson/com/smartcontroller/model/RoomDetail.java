@@ -1,10 +1,12 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.model;
 
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import letrungson.com.smartcontroller.R;
 
 public class RoomDetail extends AppCompatActivity {
     @Override

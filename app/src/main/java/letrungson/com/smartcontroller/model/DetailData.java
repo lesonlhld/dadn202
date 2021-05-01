@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.model;
 
 public class DetailData {
     String created_at;

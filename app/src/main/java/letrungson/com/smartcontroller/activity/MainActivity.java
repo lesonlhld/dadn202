@@ -1,39 +1,22 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.usb.UsbConstants;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbDeviceConnection;
-import android.hardware.usb.UsbEndpoint;
-import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-import android.hardware.usb.UsbRequest;
-//import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
 //import com.benlypan.usbhid.UsbHidDevice;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -46,16 +29,19 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Executors;
+
+import letrungson.com.smartcontroller.BuildConfig;
+import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.RoomViewAdapter;
+import letrungson.com.smartcontroller.SpacingItemDecorator;
+import letrungson.com.smartcontroller.model.Data;
+import letrungson.com.smartcontroller.model.Room;
+import letrungson.com.smartcontroller.service.Database;
+import letrungson.com.smartcontroller.service.MQTTService;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -70,6 +56,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     TextView humidity;
     UsbSerialPort port;
 
+    private FirebaseAuth mAuth;
     MQTTService mqttService;
 
     private Thread readThread;
@@ -93,12 +80,17 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
+        checkCurrentUser(mAuth);
+
         Database user = new Database("users");
         Database sensor = new Database("sensors");
         Database room = new Database("rooms");
 
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreeen);
+
 //        List<Room> lstRoom = getListData();
         List<Room> lstRoom = room.getAllRoom();
         RecyclerView recyclerView = findViewById(R.id.gridView);
@@ -108,6 +100,13 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         recyclerView.addItemDecoration(itemDecorator);
         RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
         recyclerView.setAdapter(roomViewAdapter);
+        Button reload = findViewById(R.id.reload);
+        reload.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
+            }
+        });
 //        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
 //        recyclerView.invalidate();
 //        GridView gridView  = findViewById(R.id.gridView);
@@ -201,6 +200,15 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
             }
         }*/
+    }
+
+
+    private void checkCurrentUser(FirebaseAuth mAuth) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(this, AccountActivity.class));
+            finish();
+        }
     }
 
     @Override

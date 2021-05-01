@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.service;
 
 import android.content.Context;
 import android.util.Log;

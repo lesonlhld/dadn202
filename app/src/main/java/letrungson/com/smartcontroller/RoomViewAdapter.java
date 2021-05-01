@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import letrungson.com.smartcontroller.model.Room;
+import letrungson.com.smartcontroller.model.RoomDetail;
+
 public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
 
     private List<Room> roomList;
@@ -44,9 +47,6 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
 //                intent.putExtra("Room",roomList.get(position).toString());
 //                context.startActivity(intent);
                 Toast.makeText(context, "Clicked" + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
-//                Room room = roomList.get(position);
-//                roomList.set(position, room);
-//                notifyItemChanged(position);
                 notifyDataSetChanged();
             }
         });
