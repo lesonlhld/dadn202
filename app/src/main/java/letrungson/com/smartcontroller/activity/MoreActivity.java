@@ -31,7 +31,6 @@ public class MoreActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MoreActivity.this, MainActivity.class));
-                finish();
             }
         });
 
@@ -58,15 +57,9 @@ public class MoreActivity extends Activity {
         });
     }
 
-    // [START on_start_check_user]
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-        }
     }
-    // [END on_start_check_user]
 
 }

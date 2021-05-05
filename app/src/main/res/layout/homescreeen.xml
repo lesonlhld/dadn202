@@ -9,9 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:layout_marginLeft="20dp"
-
-        >
+        android:layout_marginLeft="20dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -159,24 +157,40 @@
             />
     </RelativeLayout>
 
+<!--
     <Button
         android:id="@+id/reload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="280dp"
         android:layout_marginTop="120dp"
-        android:text="Reload" />
-<!--
+        android:text="Reload"
+        android:textColor="#FFF"/>
+-->
+
+
     <ImageButton
-        android:id="@+id/reload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="350dp"
-        android:layout_marginTop="130dp"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:id="@+id/reloadroom"
+        android:layout_height="45dp"
+        android:layout_width="45dp"
+        android:layout_marginLeft="300dp"
+        android:layout_marginTop="120dp"
+        android:background="@null"
         android:tint="#324B61"
         app:srcCompat="@android:drawable/stat_notify_sync_noanim"
-        android:onClick="imageButtonOnClick"/> />-->
+        android:onClick="imageButtonOnClick"/> />
+
+
+    <ImageButton
+        android:id="@+id/room_manage_btn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="350dp"
+        android:layout_marginTop="120dp"
+        android:background="@null"
+        android:tint="#324B61"
+        app:srcCompat="@drawable/ic_settings"
+        android:onClick="imageButtonOnClick"/> />
 
 
 </RelativeLayout>

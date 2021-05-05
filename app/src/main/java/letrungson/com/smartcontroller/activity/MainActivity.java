@@ -30,6 +30,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
     TextView temperature, humidity;
     UsbSerialPort port;
-    ImageButton moreButton;
+    ImageButton moreButton, room_btn, reload;
     private FirebaseAuth mAuth;
     MQTTService mqttService;
 
@@ -85,11 +86,9 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth);
 
-        Database sensor = new Database("sensors");
-        Database logs = new Database("logs");
-        Database devices = new Database("devices");
-        Database room = new Database("rooms");
-        List<Room> lstRoom = room.getAllRoom();
+        Database db = new Database();
+        List<Room> lstRoom;
+        lstRoom = db.getAllRoom();
 
         setContentView(R.layout.homescreeen);
         moreButton = findViewById(R.id.list_btn);
@@ -97,7 +96,6 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, MoreActivity.class));
-                finish();
             }
         });
 
@@ -108,13 +106,29 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         recyclerView.addItemDecoration(itemDecorator);
         RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
         recyclerView.setAdapter(roomViewAdapter);
-        Button reload = findViewById(R.id.reload);
+        /*
+        recyclerView.animate().setDuration(200).alpha(0).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                roomViewAdapter.notifyDataSetChanged();
+                recyclerView.setAlpha(1);
+            }
+        });*/
+        reload = findViewById(R.id.reloadroom);
         reload.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
             }
         });
+/*
+        room_btn = findViewById(R.id.room_manage_btn);
+        room_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RoomActivity.class));
+            }
+        });*/
 //        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
 //        recyclerView.invalidate();
 //        GridView gridView  = findViewById(R.id.gridView);
@@ -177,12 +191,12 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                             }
                             sensor.addSensorLog(dataMqtt, roomid);*/
 
-                            sensor.addSensorLog(dataMqtt);
+                            db.addSensorLog(dataMqtt);
                             //                    humidity.setText(dataObject.getLast_value());
                         } else {//Devices
-                            logs.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
+                            db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
                         }
-                        devices.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
+                        db.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
                     }
                 }
             }

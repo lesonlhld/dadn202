@@ -18,29 +18,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.model.Data;
-import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.LogState;
 import letrungson.com.smartcontroller.model.Room;
 
 public class Database {
 
     private static final String TAG = "Database";
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference mDatabase;
-    public Database(String path){
-        mDatabase = database.getReference(path);
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final DatabaseReference sensors, logs, devices, rooms;
+
+    public Database(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        sensors = database.getReference("sensore");
+        logs = database.getReference("logs");
+        devices = database.getReference("devices");
+        rooms = database.getReference("rooms");
     }
 
-/*    public void addSensorLog(Data o, String roomid) {
-        String id = "Sensor" + mDatabase.push().getKey();
-        mDatabase.child(id).setValue(o);
-        mDatabase.child(id).child("roomid").setValue(roomid);
-    }*/
-
     public void addSensorLog(Data o) {
-        String id = "Sensor" + mDatabase.push().getKey();
-        mDatabase.child(id).setValue(o);
+        String id = "Sensor" + sensors.push().getKey();
+        sensors.child(id).setValue(o);
     }
 
     public void addLog(String deviceid, String newState) {
@@ -49,8 +46,8 @@ public class Database {
         String datetime =  formatter.format(LocalDateTime.now());
         String userid = user.getUid();
         LogState log = new LogState(datetime, deviceid, newState, userid);
-        String id = "Log" + mDatabase.push().getKey();
-        mDatabase.child(id).setValue(log);
+        String id = "Log" + logs.push().getKey();
+        logs.child(id).setValue(log);
     }
 /*
     public String getStateDevice(String deviceId){
@@ -100,26 +97,25 @@ public class Database {
 
 
     public void addRoom(String roomid, String roomName) {
-        mDatabase.child(roomid).child("roomName").setValue(roomName);
+        devices.child(roomid).child("roomName").setValue(roomName);
     }
 
     public void updateRoom(String roomid, String temp) {
-        mDatabase.child(roomid).child("roomTemp").setValue(temp);
+        devices.child(roomid).child("roomTemp").setValue(temp);
     }
 
     public void updateDevice(String deviceId, String deviceName, String currentState) {
-        mDatabase.child(deviceId).child("deviceName").setValue(deviceName);
-        mDatabase.child(deviceId).child("State").setValue(currentState);
+        devices.child(deviceId).child("deviceName").setValue(deviceName);
+        devices.child(deviceId).child("State").setValue(currentState);
     }
 
     public void updateDevice(String deviceId, String currentState) {
-        mDatabase.child(deviceId).child("State").setValue(currentState);
+        devices.child(deviceId).child("State").setValue(currentState);
     }
 
     public List<Room> getAllRoom(){
         List<Room> allRooms = new ArrayList<>();
-        allRooms.clear();
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        rooms.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 allRooms.clear();

@@ -14,7 +14,9 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -57,8 +59,8 @@ public class AccountActivity extends Activity {
 
     private void createAccount() {
         setContentView(R.layout.activity_register);
-        TextView inputEmail, inputPassword, inputPasswordConfirm;
-        Button btnLogin, btnSignup;
+        TextView inputEmail, inputPassword, inputPasswordConfirm, btnLogin;
+        Button btnSignup;
         // No user is signed in
 
         inputEmail = findViewById(R.id.email_edt_text);
@@ -80,30 +82,49 @@ public class AccountActivity extends Activity {
                 final String email = inputEmail.getText().toString();
                 final String password = inputPassword.getText().toString();
                 final String passwordConfirm = inputPasswordConfirm.getText().toString();
-
-                // [START create_user_with_email]
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(AccountActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            // there was an error
-                            if (email.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
-                                Toast.makeText(AccountActivity.this, getString(R.string.error_field_required), Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(AccountActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                                updateUI(null);
-                            }
-                            Log.w(TAG, "signUpWithEmail:failure", task.getException());
-                        } else {
-                            startActivity(new Intent(AccountActivity.this, MainActivity.class));
-                            Log.d(TAG, "signUpWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                            finish();
-                        }
-                    }
-                });
+                if (email.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
+                }
+                else if (password.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu!", Toast.LENGTH_LONG).show();
+                }
+                else if (passwordConfirm.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu xác nhận!", Toast.LENGTH_LONG).show();
+                }
+                else if(!password.equals(passwordConfirm)){
+                    Toast.makeText(AccountActivity.this, "Mật khẩu xác nhận không khớp!", Toast.LENGTH_LONG).show();
+                }
+                else if(password.length()<6){
+                    Toast.makeText(AccountActivity.this, "Mật khẩu quá ngắn, hãy nhập tối thiểu 6 ký tự!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    // [START create_user_with_email]
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(AccountActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (!task.isSuccessful()) {
+                                        if(task.getException().toString().indexOf("The email address is badly formatted") != -1){
+                                            Toast.makeText(AccountActivity.this, "Địa chỉ email không hợp lệ!" , Toast.LENGTH_LONG).show();
+                                        }
+                                        else if(task.getException().toString().indexOf("The email address is already in use by another account") != -1){
+                                            Toast.makeText(AccountActivity.this, "Địa chỉ email đã tồn tại!" , Toast.LENGTH_LONG).show();
+                                        }
+                                        else{
+                                            Toast.makeText(AccountActivity.this, "Đăng ký không thành công!" , Toast.LENGTH_LONG).show();
+                                        }
+                                        updateUI(null);
+                                        Log.w(TAG, "signUpWithEmail:failure", task.getException());
+                                    } else {
+                                        startActivity(new Intent(AccountActivity.this, MainActivity.class));
+                                        Log.d(TAG, "signUpWithEmail:success");
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        updateUI(user);
+                                        finish();
+                                    }
+                                }
+                            });
+                }
                 // [END create_user_with_email]
             }
         });
@@ -111,15 +132,14 @@ public class AccountActivity extends Activity {
 
     private void login() {
         setContentView(R.layout.activity_login);
-        TextView inputEmail, inputPassword;
-        Button btnLogin, btnSignup;
-        // No user is signed in
+        TextView inputEmail, inputPassword, btnSignup, forget_pass;
+        Button btnLogin;
 
         inputEmail = findViewById(R.id.email_edt_text);
         inputPassword = findViewById(R.id.pass_edt_text);
         btnLogin = findViewById(R.id.login_btn);
         btnSignup = findViewById(R.id.signup_btn);
-
+        forget_pass = findViewById(R.id.forget_pass);
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,35 +148,44 @@ public class AccountActivity extends Activity {
             }
         });
 
+        forget_pass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forgetPassword();
+            }
+        });
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String email = inputEmail.getText().toString();
                 final String password = inputPassword.getText().toString();
-
-                // [START sign_in_with_email]
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(AccountActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            // there was an error
-                            if (email.isEmpty() || password.isEmpty()) {
-                                Toast.makeText(AccountActivity.this, getString(R.string.error_field_required), Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(AccountActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                                updateUI(null);
-                            }
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        } else {
-                            startActivity(new Intent(AccountActivity.this, MainActivity.class));
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                            finish();
-                        }
-                    }
-                });
+                if (email.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
+                }
+                else if (password.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    // [START sign_in_with_email]
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(AccountActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (!task.isSuccessful()) {
+                                        Toast.makeText(AccountActivity.this, "Đặng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu!", Toast.LENGTH_LONG).show();
+                                        updateUI(null);
+                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                    } else {
+                                        startActivity(new Intent(AccountActivity.this, MainActivity.class));
+                                        Log.d(TAG, "signInWithEmail:success");
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        updateUI(user);
+                                        finish();
+                                    }
+                                }
+                            });
+                }
                 // [END sign_in_with_email]
             }
         });
@@ -180,11 +209,10 @@ public class AccountActivity extends Activity {
     private void updatePassword(){
         setContentView(R.layout.activity_changepass);
 
-        TextView inputEmail, inputPassword, inputPasswordConfirm;
-        Button btnConfirm, btnCancel;
-        // No user is signed in
+        TextView old_pass_edt_text, inputPassword, inputPasswordConfirm, btnCancel;
+        Button btnConfirm;
 
-        inputEmail = findViewById(R.id.email_edt_text);
+        old_pass_edt_text = findViewById(R.id.old_pass_edt_text);
         inputPassword = findViewById(R.id.pass_edt_text);
         inputPasswordConfirm = findViewById(R.id.pass_edt_text_confirm);
         btnConfirm = findViewById(R.id.confirm_btn);
@@ -201,22 +229,53 @@ public class AccountActivity extends Activity {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String email = inputEmail.getText().toString();
-                final String password = inputPassword.getText().toString();
+                final String oldPassword = old_pass_edt_text.getText().toString();
+                final String newPassword = inputPassword.getText().toString();
                 final String passwordConfirm = inputPasswordConfirm.getText().toString();
-
+                if (oldPassword.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu cũ!", Toast.LENGTH_LONG).show();
+                }
+                else if (newPassword.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu mới!", Toast.LENGTH_LONG).show();
+                }
+                else if (passwordConfirm.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu xác nhận!", Toast.LENGTH_LONG).show();
+                }
+                else if(!newPassword.equals(passwordConfirm)){
+                    Toast.makeText(AccountActivity.this, "Mật khẩu xác nhận không khớp!", Toast.LENGTH_LONG).show();
+                }
+                else if(newPassword.length()<6){
+                    Toast.makeText(AccountActivity.this, "Mật khẩu quá ngắn, hãy nhập tối thiểu 6 ký tự!", Toast.LENGTH_LONG).show();
+                }
                 final FirebaseUser user = mAuth.getCurrentUser();
-                user.updatePassword(password)
+                AuthCredential credential = EmailAuthProvider
+                        .getCredential(user.getEmail(), oldPassword);
+
+                user.reauthenticate(credential)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User re-authenticated.");
+                                } else {
+                                    Toast.makeText(AccountActivity.this, "Mật khẩu cũ không chính xác!", Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "User re-authenticated failed.");
+                                }
+                            }
+                        });
+
+                user.updatePassword(newPassword)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "User password updated.");
-                                    Toast.makeText(AccountActivity.this, "Changed successfully!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AccountActivity.this, "Đổi mật khẩu thành công!", Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(AccountActivity.this, MoreActivity.class));
                                     finish();
                                 } else {
-                                    Log.d(TAG, "Error password not updated");
+                                    Toast.makeText(AccountActivity.this, "Đổi mật khẩu thất bại!", Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "Error password not updated ");
                                 }
                             }
                         });
@@ -224,6 +283,53 @@ public class AccountActivity extends Activity {
         });
 
     }
+
+    private void forgetPassword(){
+        setContentView(R.layout.activity_forgetpass);
+        TextView inputEmail, btnLogin;
+        Button resetpass_btn;
+
+        inputEmail = findViewById(R.id.email_edt_text);
+        btnLogin = findViewById(R.id.login_btn);
+        resetpass_btn = findViewById(R.id.resetpass_btn);
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login();
+            }
+        });
+
+        resetpass_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String email = inputEmail.getText().toString();
+                if (email.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    // [START sign_in_with_email]
+                    mAuth.sendPasswordResetEmail(email)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (!task.isSuccessful()) {
+                                        Toast.makeText(AccountActivity.this, "Thất bại!", Toast.LENGTH_LONG).show();
+                                        Log.w(TAG, "resetWithEmail:failure", task.getException());
+                                    } else {
+                                        Toast.makeText(AccountActivity.this, "Đã gửi email khôi phục mật khẩu!", Toast.LENGTH_LONG).show();
+                                        Log.d(TAG, "resetWithEmail:success");
+                                        login();
+                                    }
+                                }
+                            });
+                }
+                // [END sign_in_with_email]
+            }
+        });
+    }
+
+
     private void reload() { }
 
     private void updateUI(FirebaseUser user) {
