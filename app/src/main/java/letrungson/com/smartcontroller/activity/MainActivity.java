@@ -59,9 +59,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     ImageButton moreButton, room_btn, reload;
     private FirebaseAuth mAuth;
     MQTTService mqttService;
-
     private Thread readThread;
-
     private boolean mRunning;
 
 
@@ -91,6 +89,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         lstRoom = db.getAllRoom();
 
         setContentView(R.layout.homescreeen);
+
         moreButton = findViewById(R.id.list_btn);
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,35 +99,27 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         });
 
         RecyclerView recyclerView = findViewById(R.id.gridView);
-
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
         SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
         recyclerView.addItemDecoration(itemDecorator);
         RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
         recyclerView.setAdapter(roomViewAdapter);
-        /*
-        recyclerView.animate().setDuration(200).alpha(0).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                roomViewAdapter.notifyDataSetChanged();
-                recyclerView.setAlpha(1);
-            }
-        });*/
-        reload = findViewById(R.id.reloadroom);
+
+        reload = findViewById(R.id.reload_room_tbn);
         reload.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
+                roomViewAdapter.notifyDataSetChanged();
             }
         });
-/*
+
         room_btn = findViewById(R.id.room_manage_btn);
         room_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RoomActivity.class));
             }
-        });*/
+        });
 //        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
 //        recyclerView.invalidate();
 //        GridView gridView  = findViewById(R.id.gridView);
@@ -160,43 +151,19 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 String data_to_microbit = message.toString();
-                //port.write(data_to_microbit.getBytes(),1000);
 
                 if (topic.indexOf("/json") != -1) {
                     String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/')-1) + 1, topic.lastIndexOf('/'));
-                    Data dataMqtt = null;
-                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
-                    }.getType());
+                    Data dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
                     if(!context.equals(dataMqtt.getId())){
-                        /*String roomid = "test";
-                        int inGroup = topic.indexOf('.');
-                        if (inGroup != -1) {
-                            roomid = topic.substring(topic.lastIndexOf('/', inGroup) + 1, inGroup);
-                            if(topic.indexOf("temperature") != -1 ){
-                                checkExistRoom(roomid, lstRoom, room, dataMqtt.getLast_value());
-                            }else{
-                                checkExistRoom(roomid, lstRoom, room, null);
-                            }
-                            Log.w("Room", roomid);
-                        }*/
-
                         Log.d(topic, data_to_microbit);
                         if (topic.indexOf("temperature") != -1 || topic.indexOf("humidity") != -1) {
-                            /*if(topic.indexOf("temperature") != -1 ){
-                                int index = checkExistRoom(roomid, lstRoom, room, dataMqtt.getLast_value());
-                                Room r = lstRoom.get(index);
-                                r.setRoomTemp(dataMqtt.getLast_value());
-                                lstRoom.set(index, r);
-                                room.updateRoom(roomid, dataMqtt.getLast_value());
-                            }
-                            sensor.addSensorLog(dataMqtt, roomid);*/
-
                             db.addSensorLog(dataMqtt);
-                            //                    humidity.setText(dataObject.getLast_value());
                         } else {//Devices
                             db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
                         }
                         db.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
+                        port.write(data_to_microbit.getBytes(),1000);
                     }
                 }
             }
@@ -262,26 +229,12 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         }
     }
 
-    private int checkExistRoom(String roomid, List<Room> lstRoom, Database rooms, String temp){
-        int index = 0;
-        for (Room room: lstRoom){
-            if(roomid.equals(room.getRoomId())){
-                return index;
-            }
-            index++;
-        }
-        rooms.addRoom(roomid, "Test");
-        rooms.updateRoom(roomid, temp);
-        return -1;
-    }
-
     @Override
     public void onNewData(final byte[] data) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 temperature.append(Arrays.toString(data));
-                humidity.append(Arrays.toString(data));
             }
         });
     }

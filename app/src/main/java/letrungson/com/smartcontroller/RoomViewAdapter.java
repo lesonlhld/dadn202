@@ -18,7 +18,6 @@ import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.model.RoomDetail;
 
 public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
-
     private List<Room> roomList;
     private Context context;
 
@@ -36,7 +35,6 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         holder.roomName.setText(this.roomList.get(position).getRoomName());
         holder.roomDescription.setText(this.roomList.get(position).getRoomDescription());
         holder.roomTemp.setText(this.roomList.get(position).getRoomTemp());
@@ -50,14 +48,12 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                 notifyDataSetChanged();
             }
         });
-//        Log.d("List Room", this.roomList.get(position).getRoomName());
     }
 
     @Override
     public int getItemCount() {
         return roomList.size();
     }
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView roomName;

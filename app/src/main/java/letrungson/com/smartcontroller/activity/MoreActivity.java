@@ -16,7 +16,6 @@ import letrungson.com.smartcontroller.RoomViewAdapter;
 
 public class MoreActivity extends Activity {
     private FirebaseAuth mAuth;
-
     TextView welcome;
     Button logout, changePassword;
     ImageButton homeButton;

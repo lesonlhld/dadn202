@@ -23,17 +23,14 @@ import com.google.firebase.auth.FirebaseUser;
 import letrungson.com.smartcontroller.R;
 
 public class AccountActivity extends Activity {
-
     private static final String TAG = "EmailPassword";
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
+    TextView inputEmail, inputPassword, inputPasswordConfirm, btnLogin;
+    Button btnSignup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // [START initialize_auth]
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser == null){
@@ -42,10 +39,8 @@ public class AccountActivity extends Activity {
         else{
             updatePassword();
         }
-        // [END initialize_auth]
     }
 
-    // [START on_start_check_user]
     @Override
     public void onStart() {
         super.onStart();
@@ -55,13 +50,9 @@ public class AccountActivity extends Activity {
             reload();
         }
     }
-    // [END on_start_check_user]
 
     private void createAccount() {
         setContentView(R.layout.activity_register);
-        TextView inputEmail, inputPassword, inputPasswordConfirm, btnLogin;
-        Button btnSignup;
-        // No user is signed in
 
         inputEmail = findViewById(R.id.email_edt_text);
         inputPassword = findViewById(R.id.pass_edt_text);

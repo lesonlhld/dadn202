@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F7F8FA">
     <RelativeLayout
-        android:id="@+id/roomitem_cardview"
+        android:id="@+id/list_room"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
@@ -14,61 +14,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Demo Room"
+            android:text="List Room"
             android:textColor="#686D73"
             android:textSize="32dp"
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/power"
-        android:layout_width="140dp"
-        android:layout_height="65dp"
-        android:layout_below="@+id/roomitem_cardview"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/turn_on"
-        android:elevation="2dp">
-        <ImageButton
-            android:id="@+id/power_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_power_button"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="20dp"
-            />
-
-        <TextView
-            android:id="@+id/power_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="55dp"
-            android:layout_marginTop="10dp"
-            android:text="Turn On"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/power_room_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="55dp"
-            android:layout_marginTop="30dp"
-            android:text="All Rooms"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-    </RelativeLayout>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gridView"
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottomNavigation"
-        android:layout_below="@+id/power"
+        android:layout_below="@+id/list_room"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginRight="20dp"
@@ -157,40 +114,36 @@
             />
     </RelativeLayout>
 
-<!--
+
     <Button
-        android:id="@+id/reload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="280dp"
-        android:layout_marginTop="120dp"
-        android:text="Reload"
-        android:textColor="#FFF"/>
--->
+        android:id="@+id/add_room_tbn"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="190dp"
+        android:layout_marginTop="50dp"
+        android:onClick="imageButtonOnClick"
+        android:textSize="11dp"
+        android:text="Add"/>
 
-
-    <ImageButton
+    <Button
         android:id="@+id/reload_room_tbn"
+        android:layout_width="60dp"
         android:layout_height="45dp"
-        android:layout_width="45dp"
-        android:layout_marginLeft="300dp"
-        android:layout_marginTop="120dp"
-        android:background="@null"
-        android:tint="#324B61"
-        app:srcCompat="@android:drawable/stat_notify_sync_noanim"
-        android:onClick="imageButtonOnClick"/> />
+        android:layout_marginLeft="260dp"
+        android:layout_marginTop="50dp"
+        android:onClick="imageButtonOnClick"
+        android:textSize="11dp"
+        android:text="Load" />
 
-
-    <ImageButton
+    <Button
         android:id="@+id/room_manage_btn"
-        android:layout_width="45dp"
+        android:layout_width="60dp"
         android:layout_height="45dp"
-        android:layout_marginLeft="350dp"
-        android:layout_marginTop="120dp"
-        android:background="@null"
-        android:tint="#324B61"
-        app:srcCompat="@drawable/ic_settings"
-        android:onClick="imageButtonOnClick"/> />
+        android:layout_marginLeft="330dp"
+        android:layout_marginTop="50dp"
+        android:onClick="imageButtonOnClick"
+        android:textSize="11dp"
+        android:text="Remove"/> />
 
 
 </RelativeLayout>

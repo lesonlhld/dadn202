@@ -1,5 +1,10 @@
 package letrungson.com.smartcontroller.model;
 
+import org.w3c.dom.ls.LSInput;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Room {
     private String roomId;
     private String roomName;
@@ -61,5 +66,18 @@ public class Room {
 
     public void setRoomTemp(String roomTemp) {
         this.roomTemp = roomTemp;
+    }
+
+    public static List<String> getAllRoomName(List<Room> lstRoom){
+        List<String> lstRoomName = new ArrayList<>();
+        for (Room room: lstRoom){
+            lstRoomName.add(room.getRoomName());
+        }
+        return lstRoomName;
+    }
+
+    @Override
+    public String toString() {
+        return this.roomName;
     }
 }

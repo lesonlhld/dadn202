@@ -10,6 +10,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDateTime;
@@ -25,10 +26,10 @@ public class Database {
 
     private static final String TAG = "Database";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final DatabaseReference sensors, logs, devices, rooms;
 
     public Database(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         sensors = database.getReference("sensore");
         logs = database.getReference("logs");
         devices = database.getReference("devices");
@@ -96,12 +97,13 @@ public class Database {
     }*/
 
 
-    public void addRoom(String roomid, String roomName) {
-        devices.child(roomid).child("roomName").setValue(roomName);
+    public void addRoom(String roomName) {
+        String id = "Room" + rooms.push().getKey();
+        rooms.child(id).child("roomName").setValue(roomName);
     }
 
     public void updateRoom(String roomid, String temp) {
-        devices.child(roomid).child("roomTemp").setValue(temp);
+        rooms.child(roomid).child("roomTemp").setValue(temp);
     }
 
     public void updateDevice(String deviceId, String deviceName, String currentState) {
@@ -114,16 +116,17 @@ public class Database {
     }
 
     public List<Room> getAllRoom(){
-        List<Room> allRooms = new ArrayList<>();
-        rooms.addValueEventListener(new ValueEventListener() {
+        List<Room> listRoom = new ArrayList<>();
+        Query allRoom = database.getReference("rooms");
+        allRoom.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                allRooms.clear();
+                listRoom.clear();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Room room = data.getValue(Room.class);
                     String roomId = data.getKey();
                     room.setRoomId(roomId);
-                    allRooms.add(room);
+                    listRoom.add(room);
                 }
             }
 
@@ -132,6 +135,6 @@ public class Database {
 
             }
         });
-        return allRooms;
+        return listRoom;
     }
 }
