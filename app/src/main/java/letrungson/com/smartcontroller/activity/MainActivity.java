@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                             db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
                         }
                         db.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
-                        port.write(data_to_microbit.getBytes(),1000);
+                        //port.write(data_to_microbit.getBytes(),1000);
                     }
                 }
             }

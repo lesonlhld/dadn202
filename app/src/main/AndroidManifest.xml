@@ -31,6 +31,7 @@
         <activity android:name=".activity.AccountActivity"/>
         <activity android:name=".activity.MoreActivity"/>
         <activity android:name=".activity.RoomActivity"/>
+        <activity android:name=".activity.RoomDetailActivity"/>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
         <!--<service android:name=".YourService"

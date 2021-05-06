@@ -9,8 +9,8 @@ public class Room {
     private String roomId;
     private String roomName;
     private Boolean roomState;
-    private String roomDescription;
-    private String roomTemp;
+    private String roomTargetTemp;
+    private String roomCurrentTemp;
 
     public Room(){
 
@@ -21,11 +21,11 @@ public class Room {
         this.roomName = roomTemp;
     }
 
-    public Room(String roomName, Boolean roomState, String roomDescription, String roomTemp) {
+    public Room(String roomName, Boolean roomState, String roomTargetTemp, String roomCurrentTemp) {
         this.roomName = roomName;
         this.roomState = roomState;
-        this.roomDescription = roomDescription;
-        this.roomTemp = roomTemp;
+        this.roomTargetTemp = roomTargetTemp;
+        this.roomCurrentTemp = roomCurrentTemp;
     }
 
     public String getRoomId() {
@@ -52,20 +52,20 @@ public class Room {
         this.roomState = roomState;
     }
 
-    public String getRoomDescription() {
-        return roomDescription;
+    public String getRoomTargetTemp() {
+        return roomTargetTemp;
     }
 
-    public void setRoomDescription(String roomDescription) {
-        this.roomDescription = roomDescription;
+    public void setRoomTargetTemp(String roomTargetTemp) {
+        this.roomTargetTemp = roomTargetTemp;
     }
 
-    public String getRoomTemp() {
-        return roomTemp;
+    public String getRoomCurrentTemp() {
+        return roomCurrentTemp;
     }
 
-    public void setRoomTemp(String roomTemp) {
-        this.roomTemp = roomTemp;
+    public void setRoomCurrentTempTemp(String roomCurrentTemp) {
+        this.roomCurrentTemp = roomCurrentTemp;
     }
 
     public static List<String> getAllRoomName(List<Room> lstRoom){

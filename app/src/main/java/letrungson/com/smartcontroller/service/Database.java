@@ -50,59 +50,13 @@ public class Database {
         String id = "Log" + logs.push().getKey();
         logs.child(id).setValue(log);
     }
-/*
-    public String getStateDevice(String deviceId){
-        final String[] currentState = new String[1];
-        mDatabase.child(deviceId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Device device = dataSnapshot.getValue(Device.class);
-                If(device == null){
-                    updateDevice(deviceId, );
-                }
-                currentState[0] = device.getCurrentState();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
-        return currentState[0];
-    }*/
-/*
-    public List<User> getAllUser(){
-        List<User> allUsers = new ArrayList<User>();
-        allUsers.clear();
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                allUsers.clear();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    User user = data.getValue(User.class);
-                    String key = data.getKey();
-                    user.setId(key);
-                    allUsers.add(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        for (User student : allUsers) {
-            System.out.println(student.getUsername());
-        }
-        return allUsers;
-    }*/
-
 
     public void addRoom(String roomName) {
         String id = "Room" + rooms.push().getKey();
         rooms.child(id).child("roomName").setValue(roomName);
     }
 
-    public void updateRoom(String roomid, String temp) {
+    public void updateRoomTemp(String roomid, String temp) {
         rooms.child(roomid).child("roomTemp").setValue(temp);
     }
 
