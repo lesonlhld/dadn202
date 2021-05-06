@@ -1,5 +1,6 @@
 package letrungson.com.smartcontroller.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,11 @@ import android.widget.TextView;
 //import com.benlypan.usbhid.UsbHidDevice;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -54,11 +60,14 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
 
-    TextView temperature, humidity;
     UsbSerialPort port;
-    ImageButton moreButton, room_btn, reload;
+    ImageButton moreButton, room_btn;
     private FirebaseAuth mAuth;
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     MQTTService mqttService;
+    private List<Room> listRoom;
+    private RecyclerView recyclerView;
+    RoomViewAdapter roomViewAdapter;
     private Thread readThread;
     private boolean mRunning;
 
@@ -85,8 +94,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         checkCurrentUser(mAuth);
 
         Database db = new Database();
-        List<Room> lstRoom;
-        lstRoom = db.getAllRoom();
+        getAllRoom();
 
         setContentView(R.layout.homescreeen);
 
@@ -98,20 +106,12 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.gridView);
+        recyclerView = findViewById(R.id.gridView);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
         SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
         recyclerView.addItemDecoration(itemDecorator);
-        RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
+        roomViewAdapter = new RoomViewAdapter(MainActivity.this,listRoom);
         recyclerView.setAdapter(roomViewAdapter);
-
-        reload = findViewById(R.id.reload_room_tbn);
-        reload.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                roomViewAdapter.notifyDataSetChanged();
-            }
-        });
 
         room_btn = findViewById(R.id.room_manage_btn);
         room_btn.setOnClickListener(new View.OnClickListener(){
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                temperature.append(Arrays.toString(data));
+                //temperature.append(Arrays.toString(data));
             }
         });
     }
@@ -259,6 +259,29 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         } catch ( MqttException e){
             Log.d("MQTT", "sendDataMQTT: cannot send message");
         }
+    }
+
+    public void getAllRoom(){
+        listRoom = new ArrayList<>();
+        Query allRoom = database.getReference("rooms");
+        allRoom.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listRoom.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Room room = data.getValue(Room.class);
+                    String roomId = data.getKey();
+                    room.setRoomId(roomId);
+                    listRoom.add(room);
+                }
+                roomViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
 

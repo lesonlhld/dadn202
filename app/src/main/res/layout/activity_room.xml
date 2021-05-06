@@ -119,21 +119,11 @@
         android:id="@+id/add_room_tbn"
         android:layout_width="60dp"
         android:layout_height="45dp"
-        android:layout_marginLeft="190dp"
-        android:layout_marginTop="50dp"
-        android:onClick="imageButtonOnClick"
-        android:textSize="11dp"
-        android:text="Add"/>
-
-    <Button
-        android:id="@+id/reload_room_tbn"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
         android:layout_marginLeft="260dp"
         android:layout_marginTop="50dp"
         android:onClick="imageButtonOnClick"
         android:textSize="11dp"
-        android:text="Load" />
+        android:text="Add"/>
 
     <Button
         android:id="@+id/room_manage_btn"

@@ -10,12 +10,19 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
@@ -26,17 +33,20 @@ import letrungson.com.smartcontroller.service.Database;
 
 public class RoomActivity extends Activity {
     ImageButton moreButton, homeButton;
-    Button room_btn, addRoom, reload, add;
+    Button room_btn, addRoom, add;
     TextView roomName, cancel;
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private List<Room> listRoom;
+    ArrayAdapter<Room> arrayAdapter;
+    ListView listView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Database db = new Database();
-        List<Room> lstRoom;
-        lstRoom = db.getAllRoom();
-
+        getAllRoom();
         setContentView(R.layout.activity_room);
 
         homeButton = findViewById(R.id.home_btn);
@@ -55,8 +65,8 @@ public class RoomActivity extends Activity {
             }
         });
 
-        ListView listView = findViewById(R.id.listView);
-        ArrayAdapter<Room> arrayAdapter = new ArrayAdapter<Room>(this, android.R.layout.simple_list_item_1 , lstRoom);
+        listView = findViewById(R.id.listView);
+        arrayAdapter = new ArrayAdapter<Room>(this, android.R.layout.simple_list_item_1 , listRoom);
         listView.setAdapter(arrayAdapter);
 
         addRoom = findViewById(R.id.add_room_tbn);
@@ -64,14 +74,6 @@ public class RoomActivity extends Activity {
             @Override
             public void onClick(View v) {
                 addRoom(db);
-                arrayAdapter.notifyDataSetChanged();
-            }
-        });
-
-        reload = findViewById(R.id.reload_room_tbn);
-        reload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 arrayAdapter.notifyDataSetChanged();
             }
         });
@@ -107,6 +109,29 @@ public class RoomActivity extends Activity {
             public void onClick(View v) {
 //                setContentView(R.layout.activity_room);
                 startActivity(new Intent(RoomActivity.this, RoomActivity.class));
+            }
+        });
+    }
+
+    public void getAllRoom(){
+        listRoom = new ArrayList<>();
+        Query allRoom = database.getReference("rooms");
+        allRoom.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listRoom.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Room room = data.getValue(Room.class);
+                    String roomId = data.getKey();
+                    room.setRoomId(roomId);
+                    listRoom.add(room);
+                }
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
