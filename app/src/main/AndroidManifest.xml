@@ -27,7 +27,9 @@
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
+        <activity android:name=".RoomDetail">
 
+        </activity>
         <service android:name="org.eclipse.paho.android.service.MqttService" />
         <!--<service android:name=".YourService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>-->

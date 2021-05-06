@@ -51,7 +51,6 @@ public class RoomGridAdapter extends BaseAdapter {
         TextView roomDescription = (TextView) convertView.findViewById(R.id.room_item_description);
         TextView roomTemp = (TextView) convertView.findViewById(R.id.room_item_temp);
         //ImageButton roomPowerBtn = (ImageButton) convertView.findViewById(R.id.room_item_powerbtn);
-
         roomName.setText(listRoom.get(position).getRoomName());
         roomDescription.setText(listRoom.get(position).getRoomDescription());
         roomTemp.setText(listRoom.get(position).getRoomTemp());

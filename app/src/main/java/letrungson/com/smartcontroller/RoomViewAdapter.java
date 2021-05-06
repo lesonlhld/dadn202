@@ -40,9 +40,11 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(context, RoomDetail.class);
-//                intent.putExtra("Room",roomList.get(position).toString());
-//                context.startActivity(intent);
+                Intent intent = new Intent(context, RoomDetail.class);
+                intent.putExtra("RoomName",roomList.get(position).getRoomName());
+                intent.putExtra("RoomTemp",roomList.get(position).getRoomTemp());
+                intent.putExtra("RoomState",roomList.get(position).getRoomState());
+                context.startActivity(intent);
                 Toast.makeText(context, "Clicked" + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
             }
         });

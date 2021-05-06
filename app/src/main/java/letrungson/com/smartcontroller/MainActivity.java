@@ -97,17 +97,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         recyclerView.addItemDecoration(itemDecorator);
         RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
         recyclerView.setAdapter(roomViewAdapter);
-//        GridView gridView  = findViewById(R.id.gridView);
-//        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
-//        gridView.setAdapter(roomGridAdapter);
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getApplicationContext(),RoomDetail.class);
-//                intent.putExtra("roomName", gridView.getItemAtPosition(position).toString());
-//                startActivity(intent);
-//            }
-//        });
+
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
