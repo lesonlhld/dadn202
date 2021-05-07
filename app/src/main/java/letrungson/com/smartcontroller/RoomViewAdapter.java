@@ -14,8 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
+import letrungson.com.smartcontroller.activity.RoomDetailActivity;
+import letrungson.com.smartcontroller.model.Room;
+import letrungson.com.smartcontroller.model.RoomDetail;
 
+import static java.lang.String.valueOf;
+
+public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
     private List<Room> roomList;
     private Context context;
 
@@ -33,19 +38,23 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         holder.roomName.setText(this.roomList.get(position).getRoomName());
-        holder.roomDescription.setText(this.roomList.get(position).getRoomDescription());
-        holder.roomTemp.setText(this.roomList.get(position).getRoomTemp());
+        if(this.roomList.get(position).getRoomTargetTemp()!=null){
+            holder.roomTargetTemp.setText("Heat to " + this.roomList.get(position).getRoomTargetTemp());
+        }
+        else{
+            holder.roomTargetTemp.setText("No schedule");
+        }
+        holder.roomCurrentTemp.setText(this.roomList.get(position).getRoomCurrentTemp());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, RoomDetail.class);
-                intent.putExtra("RoomName",roomList.get(position).getRoomName());
-                intent.putExtra("RoomTemp",roomList.get(position).getRoomTemp());
-                intent.putExtra("RoomState",roomList.get(position).getRoomState());
+                //Toast.makeText(context, "Clicked: " + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, RoomDetailActivity.class);
+                intent.putExtra("roomId", roomList.get(position).getRoomId());
+//                intent.putExtra("roomPos", valueOf(position));
                 context.startActivity(intent);
-                Toast.makeText(context, "Clicked" + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
+                notifyDataSetChanged();
             }
         });
     }
@@ -55,17 +64,16 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         return roomList.size();
     }
 
-
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView roomName;
-        TextView roomDescription;
-        TextView roomTemp;
+        TextView roomTargetTemp;
+        TextView roomCurrentTemp;
+
         public MyViewHolder(View itemView){
             super(itemView);
             roomName = (TextView) itemView.findViewById(R.id.room_item_name);
-            roomDescription = (TextView) itemView.findViewById(R.id.room_item_description);
-            roomTemp = (TextView) itemView.findViewById(R.id.room_item_temp);
+            roomTargetTemp = (TextView) itemView.findViewById(R.id.room_item_description);
+            roomCurrentTemp = (TextView) itemView.findViewById(R.id.room_item_temp);
         }
     }
-
 }

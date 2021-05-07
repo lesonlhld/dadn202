@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.model;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import letrungson.com.smartcontroller.R;
+
 public class RoomDetail extends AppCompatActivity {
-    TextView roomName, roomTempSmall, roomTempBig, roomHumid;
+    /*TextView roomName, roomTempSmall, roomTempBig, roomHumid;
     boolean roomState;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,5 +26,5 @@ public class RoomDetail extends AppCompatActivity {
         roomTempBig.setText(intent.getStringExtra("RoomTemp"));
         //roomState = intent.getIntExtra("RoomState",0);
         Toast.makeText(RoomDetail.this, "Clicked", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 }

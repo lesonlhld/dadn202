@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="letrungson.com.smartcontroller">
 
     <uses-feature android:name="android.hardware.usb.host" />
@@ -16,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartController">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,9 +28,12 @@
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
-        <activity android:name=".RoomDetail">
+        <activity android:name=".activity.AccountActivity"/>
+        <activity android:name=".activity.MoreActivity"/>
+        <activity android:name=".activity.RoomActivity"/>
+        <activity android:name=".activity.RoomDetailActivity"/>
+        <activity android:name=".activity.ScheduleActivity"/>
 
-        </activity>
         <service android:name="org.eclipse.paho.android.service.MqttService" />
         <!--<service android:name=".YourService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>-->
