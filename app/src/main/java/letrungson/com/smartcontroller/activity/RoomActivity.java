@@ -49,22 +49,6 @@ public class RoomActivity extends Activity {
         getAllRoom();
         setContentView(R.layout.activity_room);
 
-        homeButton = findViewById(R.id.home_btn);
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(RoomActivity.this, MainActivity.class));
-            }
-        });
-
-        moreButton = findViewById(R.id.list_btn);
-        moreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(RoomActivity.this, MoreActivity.class));
-            }
-        });
-
         listView = findViewById(R.id.listView);
         arrayAdapter = new ArrayAdapter<Room>(this, android.R.layout.simple_list_item_1 , listRoom);
         listView.setAdapter(arrayAdapter);
