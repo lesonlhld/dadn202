@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.homescreeen);
+/*        setContentView(R.layout.homescreeen);
         List<Room> lstRoom = getListData();
         RecyclerView recyclerView = findViewById(R.id.gridView);
 
@@ -97,7 +98,12 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         recyclerView.addItemDecoration(itemDecorator);
         RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
         recyclerView.setAdapter(roomViewAdapter);
-
+*/
+        setContentView(R.layout.setscheduled);
+        ListView listView = findViewById(R.id.smart_schedule_listview);
+        List<Schedule> lst = getListSchedule();
+        ScheduleListView scheduleListView = new ScheduleListView(getApplicationContext(),lst);
+        listView.setAdapter(scheduleListView);
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
@@ -241,6 +247,16 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         lst.add(room5);
         lst.add(room6);
         lst.add(room7);
+        return lst;
+    }
+    private List<Schedule> getListSchedule(){
+        List<Schedule> lst = new ArrayList<Schedule>();
+        Schedule schedule = new Schedule("Fri","Sat","25.0C","70%","7:00","12:00");
+        Schedule schedule1 = new Schedule("Mon","Sat","15.0C","50%","13:00","12:00");
+        Schedule schedule2 = new Schedule("Tue","Sat","22.0C","90%","10:00","12:00");
+        lst.add(schedule);
+        lst.add(schedule1);
+        lst.add(schedule2);
         return lst;
     }
 }

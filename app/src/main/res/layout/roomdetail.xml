@@ -125,6 +125,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:background="?android:selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_calendar" />
 
         <TextView
@@ -161,6 +162,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_settings"
+            android:background="?android:selectableItemBackgroundBorderless"
             app:tint="@color/white" />
 
         <TextView
