@@ -31,33 +31,36 @@ import static java.lang.String.valueOf;
 public class RoomDetailActivity extends Activity {
     private final DatabaseReference rooms = FirebaseDatabase.getInstance().getReference();
     private Room thisRoom;
-    TextView roomName;
+    TextView roomName, temperature, humidity, targetTemp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
         final String roomId =intent.getStringExtra("roomId");
-        Log.d("RoomId ", roomId);
         getRoom(roomId);
-
-        //Log.d("Room ", thisRoom.getRoomName());
 
         setContentView(R.layout.roomdetail);
         roomName = findViewById(R.id.roomName);
+        temperature = findViewById(R.id.roomdetail_temp_small);
+        humidity = findViewById(R.id.roomdetail_humid);
+        targetTemp = findViewById(R.id.roomdetail_big);
 
     }
 
     public void getRoom(String roomId){
         Query roomDb = rooms.child("rooms").child(roomId);
         roomDb.keepSynced(true);
-        roomDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        roomDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
                     thisRoom = dataSnapshot.getValue(Room.class);
                     Log.d("roomName", thisRoom.getRoomName());
                     roomName.setText(thisRoom.getRoomName());
+                    temperature.setText(thisRoom.getRoomCurrentTemp());
+                    humidity.setText(thisRoom.getRoomCurrentHumidity());
+                    targetTemp.setText(thisRoom.getRoomTargetTemp());
                 }
                 else
                 {

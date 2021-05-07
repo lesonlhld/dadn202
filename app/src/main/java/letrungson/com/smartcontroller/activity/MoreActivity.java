@@ -30,6 +30,7 @@ public class MoreActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MoreActivity.this, MainActivity.class));
+                finish();
             }
         });
 
@@ -61,4 +62,9 @@ public class MoreActivity extends Activity {
         super.onStart();
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(MoreActivity.this, MainActivity.class));
+        finish();
+    }
 }

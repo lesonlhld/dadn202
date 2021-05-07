@@ -62,33 +62,10 @@ public class Database {
 
     public void updateDevice(String deviceId, String deviceName, String currentState) {
         devices.child(deviceId).child("deviceName").setValue(deviceName);
-        devices.child(deviceId).child("State").setValue(currentState);
+        devices.child(deviceId).child("state").setValue(currentState);
     }
 
     public void updateDevice(String deviceId, String currentState) {
-        devices.child(deviceId).child("State").setValue(currentState);
-    }
-
-    public List<Room> getAllRoom(){
-        List<Room> listRoom = new ArrayList<>();
-        Query allRoom = database.getReference("rooms");
-        allRoom.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listRoom.clear();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    Room room = data.getValue(Room.class);
-                    String roomId = data.getKey();
-                    room.setRoomId(roomId);
-                    listRoom.add(room);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        return listRoom;
+        devices.child(deviceId).child("state").setValue(currentState);
     }
 }

@@ -24,15 +24,15 @@ import letrungson.com.smartcontroller.R;
 
 public class AccountActivity extends Activity {
     private static final String TAG = "EmailPassword";
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser;
     TextView inputEmail, inputPassword, inputPasswordConfirm, btnLogin;
     Button btnSignup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
         if(currentUser == null){
             login();
         }
@@ -44,8 +44,6 @@ public class AccountActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             reload();
         }
@@ -238,11 +236,9 @@ public class AccountActivity extends Activity {
                 else if(newPassword.length()<6){
                     Toast.makeText(AccountActivity.this, "Mật khẩu quá ngắn, hãy nhập tối thiểu 6 ký tự!", Toast.LENGTH_LONG).show();
                 }
-                final FirebaseUser user = mAuth.getCurrentUser();
-                AuthCredential credential = EmailAuthProvider
-                        .getCredential(user.getEmail(), oldPassword);
+                AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), oldPassword);
 
-                user.reauthenticate(credential)
+                currentUser.reauthenticate(credential)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -255,7 +251,7 @@ public class AccountActivity extends Activity {
                             }
                         });
 
-                user.updatePassword(newPassword)
+                currentUser.updatePassword(newPassword)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {

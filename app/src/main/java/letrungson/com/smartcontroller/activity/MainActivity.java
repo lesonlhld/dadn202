@@ -1,13 +1,17 @@
 package letrungson.com.smartcontroller.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +60,7 @@ import android.widget.ImageButton;
 
 //https://github.com/rcties/PrinterPlusCOMM
 //https://github.com/mik3y/usb-serial-for-android
-public class MainActivity extends AppCompatActivity  implements SerialInputOutputManager.Listener{
+public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener{
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
 
@@ -68,6 +72,9 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     private List<Room> listRoom;
     private RecyclerView recyclerView;
     RoomViewAdapter roomViewAdapter;
+    Device cDevice;
+    Database db;
+    private Data dataMqtt;
     private Thread readThread;
     private boolean mRunning;
 
@@ -75,6 +82,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
     //private UsbHidDevice device = null;
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -93,7 +101,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth);
 
-        Database db = new Database();
+        db = new Database();
         getAllRoom();
 
         setContentView(R.layout.homescreeen);
@@ -103,6 +111,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, MoreActivity.class));
+                finish();
             }
         });
 
@@ -118,6 +127,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RoomActivity.class));
+                finish();
             }
         });
 //        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
@@ -150,18 +160,13 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                String data_to_microbit = message.toString();
-
                 if (topic.indexOf("/json") != -1) {
+                    String data_to_microbit = message.toString();
                     String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/')-1) + 1, topic.lastIndexOf('/'));
-                    Data dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
+                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
                     if(!context.equals(dataMqtt.getId())){
                         Log.d(topic, data_to_microbit);
-                        if (topic.indexOf("temperature") != -1 || topic.indexOf("humidity") != -1) {
-                            db.addSensorLog(dataMqtt);
-                        } else {//Devices
-                            db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
-                        }
+                        updateData(dataMqtt.getId(), dataMqtt);
                         db.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
                         //port.write(data_to_microbit.getBytes(),1000);
                     }
@@ -244,6 +249,31 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
     }
 
+    @Override
+    public void onBackPressed() {
+/*
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Closing Activity")
+                .setMessage("Are you sure you want to close this activity?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        finish();
+                  }
+
+                })
+                .setNegativeButton("No", null)
+                .show();*/
+        if(Build.VERSION.SDK_INT>=16 && Build.VERSION.SDK_INT<21){
+            finishAffinity();
+        } else if(Build.VERSION.SDK_INT>=21){
+            finishAndRemoveTask();
+        }
+    }
+
     private void sendDataMQTT( String data){
         MqttMessage msg = new MqttMessage();
         msg.setId(1234);
@@ -275,6 +305,27 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
                     listRoom.add(room);
                 }
                 roomViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public void updateData(String id, Data dataMqtt){
+        Query device = database.getReference("devices").child(id);
+        device.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                cDevice = dataSnapshot.getValue(Device.class);
+                if (cDevice.getType().equals("sensor")) {
+                    db.addSensorLog(dataMqtt);
+                } else {//Devices
+                    db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
+                }
             }
 
             @Override

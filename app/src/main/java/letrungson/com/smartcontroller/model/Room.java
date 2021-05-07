@@ -1,7 +1,5 @@
 package letrungson.com.smartcontroller.model;
 
-import org.w3c.dom.ls.LSInput;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,21 +9,18 @@ public class Room {
     private Boolean roomState;
     private String roomTargetTemp;
     private String roomCurrentTemp;
+    private String roomCurrentHumidity;
 
     public Room(){
 
     }
 
-    public Room(String roomName, String roomTemp){
-        this.roomId = roomName;
-        this.roomName = roomTemp;
-    }
-
-    public Room(String roomName, Boolean roomState, String roomTargetTemp, String roomCurrentTemp) {
+    public Room(String roomName, Boolean roomState, String roomTargetTemp, String roomCurrentTemp, String roomCurrentHumidity) {
         this.roomName = roomName;
         this.roomState = roomState;
         this.roomTargetTemp = roomTargetTemp;
         this.roomCurrentTemp = roomCurrentTemp;
+        this.roomCurrentHumidity = roomCurrentHumidity;
     }
 
     public String getRoomId() {
@@ -64,8 +59,16 @@ public class Room {
         return roomCurrentTemp;
     }
 
-    public void setRoomCurrentTempTemp(String roomCurrentTemp) {
+    public void setRoomCurrentTemp(String roomCurrentTemp) {
         this.roomCurrentTemp = roomCurrentTemp;
+    }
+
+    public String getRoomCurrentHumidity() {
+        return roomCurrentHumidity;
+    }
+
+    public void setRoomCurrentHumidity(String roomCurrentHumidity) {
+        this.roomCurrentHumidity = roomCurrentHumidity;
     }
 
     public static List<String> getAllRoomName(List<Room> lstRoom){
