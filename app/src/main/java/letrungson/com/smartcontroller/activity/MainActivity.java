@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
@@ -47,6 +48,8 @@ import java.util.List;
 import letrungson.com.smartcontroller.BuildConfig;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.RoomViewAdapter;
+import letrungson.com.smartcontroller.Schedule;
+import letrungson.com.smartcontroller.ScheduleListView;
 import letrungson.com.smartcontroller.SpacingItemDecorator;
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.Device;
@@ -127,22 +130,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RoomActivity.class));
-                finish();
             }
         });
-//        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
-//        recyclerView.invalidate();
-//        GridView gridView  = findViewById(R.id.gridView);
-//        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
-//        gridView.setAdapter(roomGridAdapter);
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getApplicationContext(),RoomDetail.class);
-//                intent.putExtra("roomName", gridView.getItemAtPosition(position).toString());
-//                startActivity(intent);
-//            }
-//        });
+
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
@@ -320,9 +310,15 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         device.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                cDevice = null;
                 cDevice = dataSnapshot.getValue(Device.class);
                 if (cDevice.getType().equals("sensor")) {
                     db.addSensorLog(dataMqtt);
+                    String value = dataMqtt.getLast_value();
+                    String roomId = cDevice.getRoomId();
+                    String temp = value.substring(0, value.lastIndexOf('-')).trim();
+                    String humid = value.substring(value.lastIndexOf('-') + 1).trim();
+                    db.updateRoom(roomId, temp, humid);
                 } else {//Devices
                     db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
                 }

@@ -56,13 +56,15 @@ public class Database {
         rooms.child(id).child("roomName").setValue(roomName);
     }
 
-    public void updateRoomTemp(String roomid, String temp) {
-        rooms.child(roomid).child("roomTemp").setValue(temp);
+    public void updateRoom(String roomId, String temp, String humid) {
+        rooms.child(roomId).child("roomTemp").setValue(temp);
+        rooms.child(roomId).child("roomHumid").setValue(humid);
     }
 
-    public void updateDevice(String deviceId, String deviceName, String currentState) {
-        devices.child(deviceId).child("deviceName").setValue(deviceName);
-        devices.child(deviceId).child("state").setValue(currentState);
+    public void addDevice(String deviceName, String roomId) {
+        String id = "Device" + rooms.push().getKey();
+        devices.child(id).child("deviceName").setValue(deviceName);
+        devices.child(id).child("roomId").setValue(roomId);
     }
 
     public void updateDevice(String deviceId, String currentState) {

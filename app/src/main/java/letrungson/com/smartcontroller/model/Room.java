@@ -6,7 +6,7 @@ import java.util.List;
 public class Room {
     private String roomId;
     private String roomName;
-    private Boolean roomState;
+    private String roomState;
     private String roomTargetTemp;
     private String roomCurrentTemp;
     private String roomCurrentHumidity;
@@ -15,7 +15,7 @@ public class Room {
 
     }
 
-    public Room(String roomName, Boolean roomState, String roomTargetTemp, String roomCurrentTemp, String roomCurrentHumidity) {
+    public Room(String roomName, String roomState, String roomTargetTemp, String roomCurrentTemp, String roomCurrentHumidity) {
         this.roomName = roomName;
         this.roomState = roomState;
         this.roomTargetTemp = roomTargetTemp;
@@ -39,11 +39,11 @@ public class Room {
         this.roomName = roomName;
     }
 
-    public Boolean getRoomState() {
+    public String getRoomState() {
         return roomState;
     }
 
-    public void setRoomState(Boolean roomState) {
+    public void setRoomState(String roomState) {
         this.roomState = roomState;
     }
 

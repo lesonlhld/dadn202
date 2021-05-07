@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +33,7 @@ public class RoomDetailActivity extends Activity {
     private final DatabaseReference rooms = FirebaseDatabase.getInstance().getReference();
     private Room thisRoom;
     TextView roomName, temperature, humidity, targetTemp;
+    ConstraintLayout smart_schedule;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +46,15 @@ public class RoomDetailActivity extends Activity {
         roomName = findViewById(R.id.roomName);
         temperature = findViewById(R.id.roomdetail_temp_small);
         humidity = findViewById(R.id.roomdetail_humid);
-        targetTemp = findViewById(R.id.roomdetail_big);
+        targetTemp = findViewById(R.id.roomdetail_temp_big);
 
+        smart_schedule = findViewById(R.id.smart_schedule);
+        smart_schedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RoomDetailActivity.this, ScheduleActivity.class));
+            }
+        });
     }
 
     public void getRoom(String roomId){
