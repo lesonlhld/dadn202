@@ -3,12 +3,21 @@ package letrungson.com.smartcontroller.model;
 public class Schedule {
     private String startDay;
     private String endDay;
-    private String temp;
-    private String humid;
+    private int temp;
+    private int humid;
     private String startTime;
     private String endTime;
 
-    public Schedule(String startDay, String endDay, String temp, String humid, String startTime, String endTime) {
+    public Schedule(){
+        this.startDay = "";
+        this.endDay = "";
+        this.temp = -1;
+        this.humid = -1;
+        this.startTime = "";
+        this.endTime = "";
+    }
+
+    public Schedule(String startDay, String endDay, int temp, int humid, String startTime, String endTime) {
         this.startDay = startDay;
         this.endDay = endDay;
         this.temp = temp;
@@ -33,19 +42,19 @@ public class Schedule {
         this.endDay = endDay;
     }
 
-    public String getTemp() {
+    public int getTemp() {
         return temp;
     }
 
-    public void setTemp(String temp) {
+    public void setTemp(int temp) {
         this.temp = temp;
     }
 
-    public String getHumid() {
+    public int getHumid() {
         return humid;
     }
 
-    public void setHumid(String humid) {
+    public void setHumid(int humid) {
         this.humid = humid;
     }
 
