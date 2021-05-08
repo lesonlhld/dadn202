@@ -24,9 +24,9 @@ public class ScheduleScreen extends AppCompatActivity {
 
     private List<Schedule> getListSchedule(){
         List<Schedule> lst = new ArrayList<Schedule>();
-        Schedule schedule = new Schedule("Fri","Sat","25.0C","70%","7:00","12:00");
-        Schedule schedule1 = new Schedule("Mon","Sat","15.0C","50%","13:00","12:00");
-        Schedule schedule2 = new Schedule("Tue","Sat","22.0C","90%","10:00","12:00");
+        Schedule schedule = new Schedule("Fri","Sat",25,70,"7:00","12:00");
+        Schedule schedule1 = new Schedule("Mon","Sat",15,50,"13:00","12:00");
+        Schedule schedule2 = new Schedule("Tue","Sat",22,90,"10:00","12:00");
         lst.add(schedule);
         lst.add(schedule1);
         lst.add(schedule2);
