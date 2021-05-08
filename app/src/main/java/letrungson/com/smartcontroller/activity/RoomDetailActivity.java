@@ -31,15 +31,16 @@ import static java.lang.String.valueOf;
 
 public class RoomDetailActivity extends Activity {
     private final DatabaseReference rooms = FirebaseDatabase.getInstance().getReference();
-    private Room thisRoom;
     TextView roomName, temperature, humidity, targetTemp;
-    ConstraintLayout smart_schedule;
+    ConstraintLayout smart_schedule, device;
+    private Room thisRoom;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        final String roomId =intent.getStringExtra("roomId");
+        final String roomId = intent.getStringExtra("roomId");
         getRoom(roomId);
 
         setContentView(R.layout.roomdetail);
@@ -55,24 +56,35 @@ public class RoomDetailActivity extends Activity {
                 startActivity(new Intent(RoomDetailActivity.this, ScheduleActivity.class));
             }
         });
+
+        device = findViewById(R.id.device);
+        device.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RoomDetailActivity.this, DevicesActivity.class);
+                intent.putExtra("roomName", thisRoom.getRoomName());
+                intent.putExtra("roomId", thisRoom.getRoomId());
+                //Toast.makeText(RoomDetailActivity.this, "Id: " + thisRoom.getRoomId(), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
+        });
     }
 
-    public void getRoom(String roomId){
+    public void getRoom(String roomId) {
         Query roomDb = rooms.child("rooms").child(roomId);
         roomDb.keepSynced(true);
         roomDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     thisRoom = dataSnapshot.getValue(Room.class);
+                    thisRoom.setRoomId(roomId);
                     Log.d("roomName", thisRoom.getRoomName());
                     roomName.setText(thisRoom.getRoomName());
                     temperature.setText(thisRoom.getRoomCurrentTemp());
                     humidity.setText(thisRoom.getRoomCurrentHumidity());
                     targetTemp.setText(thisRoom.getRoomTargetTemp());
-                }
-                else
-                {
+                } else {
                     Log.d("room", "Database is empty now!");
                 }
             }

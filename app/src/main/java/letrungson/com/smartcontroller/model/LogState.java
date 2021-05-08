@@ -6,11 +6,11 @@ public class LogState {
     private String newstate;
     private String userid;
 
-    public LogState(){
+    public LogState() {
 
     }
 
-    public LogState(String datetime, String deviceid, String newstate, String userid){
+    public LogState(String datetime, String deviceid, String newstate, String userid) {
         this.datetime = datetime;
         this.deviceid = deviceid;
         this.newstate = newstate;

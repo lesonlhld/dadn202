@@ -1,23 +1,17 @@
 package letrungson.com.smartcontroller.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
 //import com.benlypan.usbhid.UsbHidDevice;
@@ -42,20 +36,18 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import letrungson.com.smartcontroller.BuildConfig;
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.RoomViewAdapter;
-import letrungson.com.smartcontroller.Schedule;
-import letrungson.com.smartcontroller.ScheduleListView;
-import letrungson.com.smartcontroller.SpacingItemDecorator;
+import letrungson.com.smartcontroller.adapter.RoomViewAdapter;
+import letrungson.com.smartcontroller.adapter.SpacingItemDecorator;
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
+
 import android.widget.ImageButton;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
@@ -63,28 +55,26 @@ import android.widget.ImageButton;
 
 //https://github.com/rcties/PrinterPlusCOMM
 //https://github.com/mik3y/usb-serial-for-android
-public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener{
+public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener {
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
-
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     UsbSerialPort port;
     ImageButton moreButton, room_btn;
-    private FirebaseAuth mAuth;
-    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     MQTTService mqttService;
-    private List<Room> listRoom;
-    private RecyclerView recyclerView;
     RoomViewAdapter roomViewAdapter;
     Device cDevice;
     Database db;
+    private FirebaseAuth mAuth;
+    private List<Room> listRoom;
+    private RecyclerView recyclerView;
     private Data dataMqtt;
     private Thread readThread;
-    private boolean mRunning;
 
 
     //private UsbHidDevice device = null;
-
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    private boolean mRunning;
 
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
@@ -119,14 +109,14 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         });
 
         recyclerView = findViewById(R.id.gridView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
         recyclerView.addItemDecoration(itemDecorator);
-        roomViewAdapter = new RoomViewAdapter(MainActivity.this,listRoom);
+        roomViewAdapter = new RoomViewAdapter(MainActivity.this, listRoom);
         recyclerView.setAdapter(roomViewAdapter);
 
         room_btn = findViewById(R.id.room_manage_btn);
-        room_btn.setOnClickListener(new View.OnClickListener(){
+        room_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RoomActivity.class));
@@ -136,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
-        mqttService = new MQTTService( this);
+        mqttService = new MQTTService(this);
         mqttService.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
@@ -144,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             }
 
             @Override
-            public void connectionLost( Throwable throwable){
+            public void connectionLost(Throwable throwable) {
 
             }
 
@@ -152,9 +142,10 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 if (topic.indexOf("/json") != -1) {
                     String data_to_microbit = message.toString();
-                    String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/')-1) + 1, topic.lastIndexOf('/'));
-                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-                    if(!context.equals(dataMqtt.getId())){
+                    String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1, topic.lastIndexOf('/'));
+                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
+                    }.getType());
+                    if (!context.equals(dataMqtt.getId())) {
                         Log.d(topic, data_to_microbit);
                         updateData(dataMqtt.getId(), dataMqtt);
                         db.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
@@ -164,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             }
 
             @Override
-            public void deliveryComplete( IMqttDeliveryToken token) {
+            public void deliveryComplete(IMqttDeliveryToken token) {
 
             }
         });
@@ -219,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         super.onDestroy();
         try {
             port.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -257,14 +248,14 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 })
                 .setNegativeButton("No", null)
                 .show();*/
-        if(Build.VERSION.SDK_INT>=16 && Build.VERSION.SDK_INT<21){
+        if (Build.VERSION.SDK_INT >= 16 && Build.VERSION.SDK_INT < 21) {
             finishAffinity();
-        } else if(Build.VERSION.SDK_INT>=21){
+        } else if (Build.VERSION.SDK_INT >= 21) {
             finishAndRemoveTask();
         }
     }
 
-    private void sendDataMQTT( String data){
+    private void sendDataMQTT(String data) {
         MqttMessage msg = new MqttMessage();
         msg.setId(1234);
         msg.setQos(0);
@@ -273,15 +264,15 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         byte[] b = data.getBytes(Charset.forName("UTF-8"));
         msg.setPayload(b);
 
-        Log.d("ABC","Publish: " + msg);
+        Log.d("ABC", "Publish: " + msg);
         try {
             mqttService.mqttAndroidClient.publish("[Your path to the feed you want to send message]", msg);
-        } catch ( MqttException e){
+        } catch (MqttException e) {
             Log.d("MQTT", "sendDataMQTT: cannot send message");
         }
     }
 
-    public void getAllRoom(){
+    public void getAllRoom() {
         listRoom = new ArrayList<>();
         Query allRoom = database.getReference("rooms");
         allRoom.addValueEventListener(new ValueEventListener() {
@@ -305,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     }
 
 
-    public void updateData(String id, Data dataMqtt){
+    public void updateData(String id, Data dataMqtt) {
         Query device = database.getReference("devices").child(id);
         device.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

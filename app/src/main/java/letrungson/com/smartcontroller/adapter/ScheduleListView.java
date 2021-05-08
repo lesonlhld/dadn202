@@ -1,6 +1,5 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
+
+import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.model.Schedule;
 
 public class ScheduleListView extends BaseAdapter {
 
@@ -38,7 +40,7 @@ public class ScheduleListView extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        view = inflater.inflate(R.layout.schedule_items,null);
+        view = inflater.inflate(R.layout.schedule_items, null);
         TextView startDay = view.findViewById(R.id.startDay);
         TextView endDay = view.findViewById(R.id.endDay);
         TextView startTime = view.findViewById(R.id.startTime);

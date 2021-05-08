@@ -123,9 +123,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
+            android:background="?android:selectableItemBackgroundBorderless"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="?android:selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_calendar" />
 
         <TextView
@@ -159,10 +159,10 @@
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:background="?android:selectableItemBackgroundBorderless"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_settings"
-            android:background="?android:selectableItemBackgroundBorderless"
             app:tint="@color/white" />
 
         <TextView
@@ -227,6 +227,7 @@
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/roomdetail_temp_small"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
     <TextView
         android:id="@+id/roomdetail_humid"
         android:layout_width="wrap_content"

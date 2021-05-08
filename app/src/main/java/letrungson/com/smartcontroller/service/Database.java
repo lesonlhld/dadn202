@@ -30,7 +30,7 @@ public class Database {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final DatabaseReference sensors, logs, devices, rooms;
 
-    public Database(){
+    public Database() {
         sensors = database.getReference("sensore");
         logs = database.getReference("logs");
         devices = database.getReference("devices");
@@ -44,8 +44,8 @@ public class Database {
 
     public void addLog(String deviceid, String newState) {
         FirebaseUser user = mAuth.getCurrentUser();
-        DateTimeFormatter formatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String datetime =  formatter.format(LocalDateTime.now());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String datetime = formatter.format(LocalDateTime.now());
         String userid = user.getUid();
         LogState log = new LogState(datetime, deviceid, newState, userid);
         String id = "Log" + logs.push().getKey();
@@ -70,26 +70,5 @@ public class Database {
 
     public void updateDevice(String deviceId, String currentState) {
         devices.child(deviceId).child("state").setValue(currentState);
-    }
-    public List<String> getAllDevices(){
-        List<String> listDevices = new ArrayList<>();
-        Query allDevices = database.getReference("devices");
-        allDevices.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listDevices.clear();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    Device device = data.getValue(Device.class);
-                    String deviceId = data.getKey();
-                    device.setRoomId(deviceId);
-                    listDevices.add(device.getState());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        return listDevices;
     }
 }

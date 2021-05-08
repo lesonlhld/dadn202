@@ -12,13 +12,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.RoomViewAdapter;
 
 public class MoreActivity extends Activity {
-    private FirebaseAuth mAuth;
     TextView welcome;
     Button logout, changePassword;
     ImageButton homeButton;
+    private FirebaseAuth mAuth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,10 +35,10 @@ public class MoreActivity extends Activity {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        welcome.setText("Welcome "+ user.getEmail());
+        welcome.setText("Welcome " + user.getEmail());
 
         logout = findViewById(R.id.btn_logout);
-        logout.setOnClickListener(new View.OnClickListener(){
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
@@ -49,7 +48,7 @@ public class MoreActivity extends Activity {
         });
 
         changePassword = findViewById(R.id.btn_changePassword);
-        changePassword.setOnClickListener(new View.OnClickListener(){
+        changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MoreActivity.this, AccountActivity.class));

@@ -11,7 +11,7 @@ public class Room {
     private String roomCurrentTemp;
     private String roomCurrentHumidity;
 
-    public Room(){
+    public Room() {
 
     }
 
@@ -21,6 +21,14 @@ public class Room {
         this.roomTargetTemp = roomTargetTemp;
         this.roomCurrentTemp = roomCurrentTemp;
         this.roomCurrentHumidity = roomCurrentHumidity;
+    }
+
+    public static List<String> getAllRoomName(List<Room> lstRoom) {
+        List<String> lstRoomName = new ArrayList<>();
+        for (Room room : lstRoom) {
+            lstRoomName.add(room.getRoomName());
+        }
+        return lstRoomName;
     }
 
     public String getRoomId() {
@@ -69,14 +77,6 @@ public class Room {
 
     public void setRoomCurrentHumidity(String roomCurrentHumidity) {
         this.roomCurrentHumidity = roomCurrentHumidity;
-    }
-
-    public static List<String> getAllRoomName(List<Room> lstRoom){
-        List<String> lstRoomName = new ArrayList<>();
-        for (Room room: lstRoom){
-            lstRoomName.add(room.getRoomName());
-        }
-        return lstRoomName;
     }
 
     @Override

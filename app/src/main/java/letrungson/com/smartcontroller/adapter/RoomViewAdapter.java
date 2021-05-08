@@ -1,22 +1,20 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.RoomDetailActivity;
 import letrungson.com.smartcontroller.model.Room;
-import letrungson.com.smartcontroller.model.RoomDetail;
 
 import static java.lang.String.valueOf;
 
@@ -24,7 +22,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
     private List<Room> roomList;
     private Context context;
 
-    public RoomViewAdapter(Context context,List<Room> roomList) {
+    public RoomViewAdapter(Context context, List<Room> roomList) {
         this.roomList = roomList;
         this.context = context;
     }
@@ -39,10 +37,9 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.roomName.setText(this.roomList.get(position).getRoomName());
-        if(this.roomList.get(position).getRoomTargetTemp()!=null){
+        if (this.roomList.get(position).getRoomTargetTemp() != null) {
             holder.roomTargetTemp.setText("Heat to " + this.roomList.get(position).getRoomTargetTemp());
-        }
-        else{
+        } else {
             holder.roomTargetTemp.setText("No schedule");
         }
         holder.roomCurrentTemp.setText(this.roomList.get(position).getRoomCurrentTemp());
@@ -52,7 +49,6 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                 //Toast.makeText(context, "Clicked: " + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, RoomDetailActivity.class);
                 intent.putExtra("roomId", roomList.get(position).getRoomId());
-//                intent.putExtra("roomPos", valueOf(position));
                 context.startActivity(intent);
                 notifyDataSetChanged();
             }
@@ -64,12 +60,12 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         return roomList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView roomName;
         TextView roomTargetTemp;
         TextView roomCurrentTemp;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView) {
             super(itemView);
             roomName = (TextView) itemView.findViewById(R.id.room_item_name);
             roomTargetTemp = (TextView) itemView.findViewById(R.id.room_item_description);

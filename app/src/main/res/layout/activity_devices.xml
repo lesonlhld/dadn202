@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.DevicesActivity"
     android:orientation="vertical"
-   >
+    tools:context=".activity.DevicesActivity">
+
     <include
         android:id="@+id/devices_toolbar"
         layout="@layout/toolbar" />
@@ -15,15 +15,15 @@
         android:id="@+id/header_room_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:text="ROOM:"
-        android:textStyle="bold"
-        android:textColor="#00ccff"
-        android:textColorLink="#8DE67F"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        />
+        android:text="ROOM:"
+        android:textAlignment="center"
+        android:textColor="#00ccff"
+        android:textColorLink="#8DE67F"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -33,33 +33,32 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_air_conditioner"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:textAlignment="textStart"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="Air Conditioner"
-            app:iconSize="25dp"
+            android:textAlignment="textStart"
             app:icon="@drawable/air_conditioner"
-            />
+            app:iconSize="25dp" />
+
         <ListView
             android:id="@+id/list_air_conditioners"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_fan"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginRight="5dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:textAlignment="textStart"
+            android:layout_marginRight="5dp"
             android:text="Fan"
-            app:iconSize="25dp"
+            android:textAlignment="textStart"
             app:icon="@drawable/ac"
-            />
+            app:iconSize="25dp" />
 
         <ListView
             android:id="@+id/list_fans"
@@ -76,18 +75,18 @@
         android:gravity="center">
 
         <Button
-            android:layout_marginEnd="15dp"
             android:id="@+id/btn_add_devices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add"/>
+            android:layout_marginEnd="15dp"
+            android:text="Add" />
 
 
         <Button
             android:id="@+id/btn_remove_devices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Remove"
-            android:layout_toRightOf="@+id/btn_add_devices"/>
+            android:layout_toRightOf="@+id/btn_add_devices"
+            android:text="Remove" />
     </RelativeLayout>
 </LinearLayout>

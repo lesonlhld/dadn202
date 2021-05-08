@@ -11,35 +11,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.hoho.android.usbserial.driver.UsbSerialPort;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.RoomViewAdapter;
-import letrungson.com.smartcontroller.SpacingItemDecorator;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 
 public class RoomActivity extends Activity {
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     ImageButton moreButton, homeButton;
     Button room_btn, addRoom, add;
     TextView roomName, cancel;
-    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private List<Room> listRoom;
     ArrayAdapter<Room> arrayAdapter;
     ListView listView;
-
+    private List<Room> listRoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +43,7 @@ public class RoomActivity extends Activity {
         setContentView(R.layout.activity_room);
 
         listView = findViewById(R.id.listView);
-        arrayAdapter = new ArrayAdapter<Room>(this, android.R.layout.simple_list_item_1 , listRoom);
+        arrayAdapter = new ArrayAdapter<Room>(this, android.R.layout.simple_list_item_1, listRoom);
         listView.setAdapter(arrayAdapter);
 
         addRoom = findViewById(R.id.add_room_tbn);
@@ -71,7 +64,7 @@ public class RoomActivity extends Activity {
         });
     }
 
-    private void addRoom(Database db){
+    private void addRoom(Database db) {
         setContentView(R.layout.activity_addroom);
         roomName = findViewById(R.id.room_edt_text);
 
@@ -97,7 +90,7 @@ public class RoomActivity extends Activity {
         });
     }
 
-    public void getAllRoom(){
+    public void getAllRoom() {
         listRoom = new ArrayList<>();
         Query allRoom = database.getReference("rooms");
         allRoom.addValueEventListener(new ValueEventListener() {
