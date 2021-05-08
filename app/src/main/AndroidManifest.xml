@@ -30,13 +30,10 @@
         </activity>
         <activity android:name=".activity.AccountActivity"/>
         <activity android:name=".activity.MoreActivity"/>
-        <activity android:name=".activity.RoomActivity"/>
-        <activity android:name=".activity.RoomDetailActivity"/>
-        <activity android:name=".activity.ScheduleActivity"/>
+        <activity android:name=".activity.RoomActivity"/>        <activity android:name=".activity.DevicesActivity">
+        <activity android:name=".activity.DevicesActivity">
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
-        <!--<service android:name=".YourService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>-->
     </application>
 
 </manifest>
