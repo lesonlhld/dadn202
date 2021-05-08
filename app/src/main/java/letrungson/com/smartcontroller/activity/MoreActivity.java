@@ -29,7 +29,7 @@ public class MoreActivity extends Activity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MoreActivity.this, MainActivity.class));
+                startActivity(new Intent(MoreActivity.this, DevicesActivity.class));
             }
         });
 

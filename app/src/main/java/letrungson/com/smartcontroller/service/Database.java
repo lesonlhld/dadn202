@@ -21,6 +21,7 @@ import java.util.List;
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.LogState;
 import letrungson.com.smartcontroller.model.Room;
+import letrungson.com.smartcontroller.model.Device;
 
 public class Database {
 
@@ -136,5 +137,26 @@ public class Database {
             }
         });
         return listRoom;
+    }
+    public List<String> getAllDevices(){
+        List<String> listDevices = new ArrayList<>();
+        Query allDevices = database.getReference("devices");
+        allDevices.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listDevices.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Device device = data.getValue(Device.class);
+                    String deviceId = data.getKey();
+                    device.setRoomId(deviceId);
+                    listDevices.add(device.getState());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        return listDevices;
     }
 }

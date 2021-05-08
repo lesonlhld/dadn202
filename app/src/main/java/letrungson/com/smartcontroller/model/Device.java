@@ -3,31 +3,20 @@ package letrungson.com.smartcontroller.model;
 public class Device {
     private String deviceId;
     private String deviceName;
-    private String currentState;
     private String roomId;
+    private String type;
+    private String state;
 
     public Device(){
 
     }
 
-    public Device(String deviceName, String currentState){
-        this.deviceName = deviceName;
-        this.currentState = currentState;
-    }
-
-    public Device(String deviceId, String deviceName, String currentState, String roomId){
+    public Device(String deviceId, String deviceName, String roomId, String type, String state){
         this.deviceId = deviceId;
         this.deviceName = deviceName;
-        this.currentState = currentState;
         this.roomId = roomId;
-    }
-
-    public String getCurrentState() {
-        return currentState;
-    }
-
-    public void setCurrentState(String currentState) {
-        this.currentState = currentState;
+        this.type = type;
+        this.state = state;
     }
 
     public String getDeviceId() {
@@ -52,5 +41,21 @@ public class Device {
 
     public void setRoomId(String roomId) {
         this.roomId = roomId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
