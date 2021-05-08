@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
@@ -31,17 +29,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Device;
-import letrungson.com.smartcontroller.model.Room;
-import letrungson.com.smartcontroller.service.Database;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DevicesActivity extends AppCompatActivity {
     private ListView list_view_air_conditioners;
-    private List list_air_conditioners ;
+    private ArrayList<Device> list_air_conditioners ;
 
     private ListView list_view_fans;
-    private List list_fans;
+    private ArrayList<Device> list_fans;
 
     private FirebaseDatabase db;
     private DatabaseReference dbRefDevices;
@@ -74,12 +71,12 @@ public class DevicesActivity extends AppCompatActivity {
 
         //Setup List View
         list_view_air_conditioners=findViewById(R.id.list_air_conditioners);
-        list_air_conditioners = new ArrayList<ArrayList>();
+        list_air_conditioners = new ArrayList<Device>();
         CustomAdapter customAdapterAC = new CustomAdapter(this,R.layout.list_devices_item,list_air_conditioners);
         list_view_air_conditioners.setAdapter(customAdapterAC);
 
         list_view_fans =findViewById(R.id.list_fans);
-        List list_fans =new ArrayList();
+        list_fans =new ArrayList<Device>();
         CustomAdapter customAdapterFan = new CustomAdapter(this,R.layout.list_devices_item,list_fans);
         list_view_fans.setAdapter(customAdapterFan);
 
@@ -103,6 +100,28 @@ public class DevicesActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull  DataSnapshot snapshot, @Nullable  String previousChildName) {
+                Device device=snapshot.getValue(Device.class);
+                String deviceID= snapshot.getKey();
+                if (device.getType()!=null){
+                    if(device.getType().equals("air_conditioner")){
+                        for(int i=0;i<list_air_conditioners.size();i++){
+                            Device model=list_air_conditioners.get(i);
+                            if (model.getDeviceId().equals(deviceID)){
+                                model.assign(device);
+                            }
+                        }
+                        customAdapterAC.notifyDataSetChanged();
+                    }
+                    else if (device.getType().equals("fan")){
+                        for(int i=0;i<list_fans.size();i++){
+                            Device model=list_fans.get(i);
+                            if (model.getDeviceId().equals(deviceID)){
+                                model.assign(device);
+                            }
+                        }
+                        customAdapterFan.notifyDataSetChanged();
+                    }
+                }
 
             }
 
@@ -170,27 +189,29 @@ public class DevicesActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            Device device = getItem(position);
             ViewHolder mainViewholder=null;
             if (convertView==null){
                 LayoutInflater inflater =LayoutInflater.from(getContext());
                 convertView=inflater.inflate(layout,parent, false);
                 ViewHolder viewHolder=new ViewHolder();
-                Device device = getItem(position);
+
                 viewHolder.title=(TextView) convertView.findViewById(R.id.list_ac_item_text);
                 viewHolder.title.setText(device.getDeviceName());
                 viewHolder.switchCompat=(SwitchCompat) convertView.findViewById(R.id.list_ac_item_btn);
                 if (device.getState()!=null){
                    viewHolder.switchCompat.setChecked(device.getState().equals("On"));
-
                 }
                 viewHolder.switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (isChecked) {
                             dbRefDevices.child(device.getDeviceId()).child("state").setValue("On");
+                            device.setState("On");
                         }
                         else {
                             dbRefDevices.child(device.getDeviceId()).child("state").setValue("Off");
+                            device.setState("Off");
                         }
                     }
                 });
@@ -199,6 +220,9 @@ public class DevicesActivity extends AppCompatActivity {
             }
             else {
                 mainViewholder=(ViewHolder) convertView.getTag();
+                if (device.getState()!=null){
+                    mainViewholder.switchCompat.setChecked(device.getState().equals("On"));
+                }
             }
             return convertView;
         }
