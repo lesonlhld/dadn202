@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.Schedule;
+import letrungson.com.smartcontroller.model.Schedule;
 import letrungson.com.smartcontroller.model.Room;
 
 import androidx.fragment.app.DialogFragment;

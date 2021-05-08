@@ -12,6 +12,8 @@ import java.util.List;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Schedule;
 
+import static java.lang.String.valueOf;
+
 public class ScheduleListView extends BaseAdapter {
 
     LayoutInflater inflater;
@@ -52,8 +54,8 @@ public class ScheduleListView extends BaseAdapter {
         endDay.setText(schedules.get(position).getEndDay());
         startTime.setText(schedules.get(position).getStartTime());
         endTime.setText(schedules.get(position).getEndTime());
-        temp.setText(schedules.get(position).getTemp());
-        humid.setText(schedules.get(position).getHumid());
+        temp.setText(valueOf(schedules.get(position).getTemp()));
+        humid.setText(valueOf(schedules.get(position).getHumid()));
 
         return view;
     }

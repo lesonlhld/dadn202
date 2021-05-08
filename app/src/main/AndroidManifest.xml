@@ -33,6 +33,7 @@
         <activity android:name=".activity.RoomActivity"/>
         <activity android:name=".activity.RoomDetailActivity"/>
         <activity android:name=".activity.ScheduleActivity"/>
+        <activity android:name=".activity.DevicesActivity"/>
         <activity android:name=".activity.ScheduleEditActivity"/>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />

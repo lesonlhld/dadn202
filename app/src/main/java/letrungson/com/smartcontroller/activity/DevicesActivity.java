@@ -64,6 +64,7 @@ public class DevicesActivity extends AppCompatActivity {
         customAdapterAC = new CustomAdapter(this, R.layout.list_devices_item, list_air_conditioners);
         list_view_air_conditioners.setAdapter(customAdapterAC);
 
+
         list_view_fans = findViewById(R.id.list_fans);
         customAdapterFan = new CustomAdapter(this, R.layout.list_devices_item, list_fans);
         list_view_fans.setAdapter(customAdapterFan);
@@ -99,8 +100,11 @@ public class DevicesActivity extends AppCompatActivity {
                         list_fans.add(device);
                     }
                 }
-                customAdapterAC.notifyDataSetChanged();
-                customAdapterFan.notifyDataSetChanged();
+
+                list_view_air_conditioners.setAdapter(new CustomAdapter(DevicesActivity.this, R.layout.list_devices_item, list_air_conditioners));
+                list_view_fans.setAdapter(new CustomAdapter(DevicesActivity.this, R.layout.list_devices_item, list_fans));
+                /*customAdapterAC.notifyDataSetChanged();
+                customAdapterFan.notifyDataSetChanged();*/
             }
 
             @Override
