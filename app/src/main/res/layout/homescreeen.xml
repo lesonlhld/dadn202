@@ -87,15 +87,6 @@
         android:layout_marginBottom="0dp"
         android:background="@color/white">
 
-        <ImageButton
-            android:id="@+id/home_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="65dp"
-            android:layout_marginTop="5dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_home"
-            android:tint="#324B61" />
         <!--
         <ImageButton
             android:id="@+id/setting_btn"
@@ -107,6 +98,20 @@
             android:layout_marginTop="5dp"
             android:tint="#324B61"
             />-->
+
+        <ImageButton
+            android:id="@+id/home_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/home_btn_text"
+            android:layout_alignEnd="@+id/home_btn_text"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="7dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_home"
+            android:tint="#324B61" />
 
         <ImageButton
             android:id="@+id/list_btn"
