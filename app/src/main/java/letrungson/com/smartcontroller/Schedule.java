@@ -1,47 +1,44 @@
 package letrungson.com.smartcontroller;
 
 public class Schedule {
-    private String startDay;
-    private String endDay;
+    //private boolean[] repeatDay;
+    private String repeatDay;
     private int temp;
     private int humid;
     private String startTime;
     private String endTime;
     private String scheduleID;
+    private String roomID;
 
     public Schedule(){
-        this.startDay = "";
-        this.endDay = "";
         this.temp = -1;
         this.humid = -1;
         this.startTime = "";
         this.endTime = "";
-
+//        this.repeatDay = new boolean[7];
+//        for(int i = 0; i < 7; i++) {
+//            this.repeatDay[i] = false;
+//        }
+        this.repeatDay = "";
     }
 
-    public Schedule(String startDay, String endDay, int temp, int humid, String startTime, String endTime) {
-        this.startDay = startDay;
-        this.endDay = endDay;
+    public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay) {
         this.temp = temp;
         this.humid = humid;
         this.startTime = startTime;
         this.endTime = endTime;
+//        this.repeatDay = new boolean[7];
+//        for(int i = 0; i < 7; i++) {
+//            this.repeatDay[i] = repeatDay[i];
+        this.repeatDay = repeatDay;
     }
 
-    public String getStartDay() {
-        return startDay;
+    public String getScheduleID() {
+        return scheduleID;
     }
 
-    public void setStartDay(String startDay) {
-        this.startDay = startDay;
-    }
-
-    public String getEndDay() {
-        return endDay;
-    }
-
-    public void setEndDay(String endDay) {
-        this.endDay = endDay;
+    public void setScheduleID(String scheduleID) {
+        this.scheduleID = scheduleID;
     }
 
     public int getTemp() {
@@ -76,11 +73,23 @@ public class Schedule {
         this.endTime = endTime;
     }
 
-    public String getScheduleID() {
-        return scheduleID;
+//    public void getRepeatDay(boolean repeatDay[]){
+//        for(int i = 0; i < 7; i++) {
+//            repeatDay[i] = this.repeatDay[i];
+//        }
+//    }
+//
+//    public void setRepeatDay(boolean repeatDay[])
+//    {
+//        for(int i = 0; i < 7; i++) {
+//            this.repeatDay[i] = repeatDay[i];
+//        }
+//    }
+    public String getRepeatDay(){
+        return this.repeatDay;
     }
 
-    public void setScheduleID(String scheduleID) {
-        this.scheduleID = scheduleID;
+    public void setRepeatDay(String repeatDay){
+        this.repeatDay = repeatDay;
     }
 }

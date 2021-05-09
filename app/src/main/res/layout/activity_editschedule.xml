@@ -212,6 +212,7 @@
             android:layout_marginTop="15dp"
             android:text="Time"
             android:textSize="20dp" />
+
         <TextView
             android:id="@+id/end_time_text"
             android:layout_width="wrap_content"
@@ -243,6 +244,15 @@
             android:layout_marginTop="15dp"
             android:text="Repeat"
             android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/set_repeatTime_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:text="choose day" />
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
