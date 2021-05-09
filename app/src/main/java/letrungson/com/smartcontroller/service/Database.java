@@ -58,8 +58,8 @@ public class Database {
     }
 
     public void updateRoom(String roomId, String temp, String humid) {
-        rooms.child(roomId).child("roomTemp").setValue(temp);
-        rooms.child(roomId).child("roomHumid").setValue(humid);
+        rooms.child(roomId).child("roomCurrentTemp").setValue(temp);
+        rooms.child(roomId).child("roomCurrentHumidity").setValue(humid);
     }
 
     public void addDevice(String deviceName, String roomId) {

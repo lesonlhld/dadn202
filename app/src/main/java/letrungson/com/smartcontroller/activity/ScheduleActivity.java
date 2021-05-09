@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.Schedule;
-import letrungson.com.smartcontroller.ScheduleListView;
+import letrungson.com.smartcontroller.model.Schedule;
+import letrungson.com.smartcontroller.adapter.ScheduleListView;
 
 public class ScheduleActivity extends AppCompatActivity {
     private final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -40,7 +40,7 @@ public class ScheduleActivity extends AppCompatActivity {
         setContentView(R.layout.setscheduled);
         ListView listView = findViewById(R.id.smart_schedule_listview);
         getAllSchedule();
-        scheduleListView = new ScheduleListView(getApplicationContext(),lstSchedule);
+        scheduleListView = new ScheduleListView(getApplicationContext(), lstSchedule);
         listView.setAdapter(scheduleListView);
     }
 

@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller.activity;
+    package letrungson.com.smartcontroller.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,8 +42,8 @@ public class ScheduleEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        //final String scheduleId = intent.getStringExtra("scheduleId");
-        scheduleId = "scheduleId";
+        scheduleId = intent.getStringExtra("scheduleId");
+        getSchedule(scheduleId);
 
         setContentView(R.layout.activity_editschedule);
 
@@ -58,7 +58,6 @@ public class ScheduleEditActivity extends AppCompatActivity {
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
 
-        getSchedule(scheduleId);
 
         start_time.setOnClickListener(new View.OnClickListener() {
             @Override

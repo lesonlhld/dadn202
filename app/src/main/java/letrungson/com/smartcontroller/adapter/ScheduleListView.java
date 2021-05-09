@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +13,10 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.ScheduleActivity;
 import letrungson.com.smartcontroller.activity.ScheduleEditActivity;
+import letrungson.com.smartcontroller.model.Schedule;
 
 public class ScheduleListView extends BaseAdapter {
     Context context;
@@ -65,7 +67,9 @@ public class ScheduleListView extends BaseAdapter {
             public void onClick(View v) {
                 //Toast.makeText(context, "Clicked" + schedules.get(position).getScheduleID(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, ScheduleEditActivity.class);
-                intent.putExtra("scheduleID",schedules.get(position).getScheduleID());
+                intent.putExtra("scheduleId",schedules.get(position).getScheduleID());
+                context.startActivity(intent);
+                notifyDataSetChanged();
             }
         });
         return view;

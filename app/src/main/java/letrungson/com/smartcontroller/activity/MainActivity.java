@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 
         db = new Database();
         getAllRoom();
-        startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
         setContentView(R.layout.homescreeen);
 
         moreButton = findViewById(R.id.list_btn);
