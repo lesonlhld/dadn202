@@ -2,49 +2,68 @@ package letrungson.com.smartcontroller.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.model.Schedule;
-import letrungson.com.smartcontroller.adapter.ScheduleListView;
+import letrungson.com.smartcontroller.Schedule;
+import letrungson.com.smartcontroller.ScheduleListView;
 
 public class ScheduleActivity extends AppCompatActivity {
-    FloatingActionButton floatingActionButton;
+    private final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+    private final FirebaseDatabase firebaseDatabase= FirebaseDatabase.getInstance();
+    private List<Schedule> lstSchedule;
+
+    ScheduleListView scheduleListView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setscheduled);
         ListView listView = findViewById(R.id.smart_schedule_listview);
-        List<Schedule> lst = getListSchedule();
-        ScheduleListView scheduleListView = new ScheduleListView(getApplicationContext(), lst);
+        getAllSchedule();
+        scheduleListView = new ScheduleListView(getApplicationContext(),lstSchedule);
         listView.setAdapter(scheduleListView);
-        floatingActionButton = findViewById(R.id.floatingActionButton);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ScheduleActivity.this, ScheduleEditActivity.class));
-            }
-        });
     }
 
+    private void getAllSchedule(){
+        lstSchedule = new ArrayList<>();
+        Query allSchedule = firebaseDatabase.getReference("schedules");
+        allSchedule.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lstSchedule.clear();
+                for(DataSnapshot data: snapshot.getChildren()){
+                    Schedule schedule = data.getValue(Schedule.class);
+                    String scheduleId = data.getKey();
+                    schedule.setScheduleID(scheduleId);
+                    lstSchedule.add(schedule);
+                }
+                scheduleListView.notifyDataSetChanged();
+            }
 
-    private List<Schedule> getListSchedule() {
-        List<Schedule> lst = new ArrayList<Schedule>();
-        Schedule schedule = new Schedule("Fri", "Sat", 25, 70, "7:00", "12:00");
-        Schedule schedule1 = new Schedule("Mon", "Sat", 15, 50, "13:00", "12:00");
-        Schedule schedule2 = new Schedule("Tue", "Sat", 22, 90, "10:00", "12:00");
-        lst.add(schedule);
-        lst.add(schedule1);
-        lst.add(schedule2);
-        return lst;
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

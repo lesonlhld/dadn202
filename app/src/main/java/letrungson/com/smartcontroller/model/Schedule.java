@@ -7,6 +7,7 @@ public class Schedule {
     private int humid;
     private String startTime;
     private String endTime;
+    private String scheduleID;
 
     public Schedule(){
         this.startDay = "";
@@ -15,6 +16,7 @@ public class Schedule {
         this.humid = -1;
         this.startTime = "";
         this.endTime = "";
+
     }
 
     public Schedule(String startDay, String endDay, int temp, int humid, String startTime, String endTime) {
@@ -72,5 +74,13 @@ public class Schedule {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getScheduleID() {
+        return scheduleID;
+    }
+
+    public void setScheduleID(String scheduleID) {
+        this.scheduleID = scheduleID;
     }
 }
