@@ -18,7 +18,13 @@ public class Device {
         this.type = type;
         this.state = state;
     }
-
+    public Device(Device device){
+        this.deviceId = device.getDeviceId();
+        this.deviceName = device.getDeviceName();
+        this.roomId = device.getRoomId();
+        this.type = device.getType();
+        this.state = device.getState();
+    }
     public String getDeviceId() {
         return deviceId;
     }
