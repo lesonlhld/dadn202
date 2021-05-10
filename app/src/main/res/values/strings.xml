@@ -38,4 +38,10 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
+    <string-array name="default_devices_type">
+        <item>All Devices</item>
+        <item>Air Conditioner</item>
+        <item>Fan</item>
+        <item>Heater</item>
+    </string-array>
 </resources>
