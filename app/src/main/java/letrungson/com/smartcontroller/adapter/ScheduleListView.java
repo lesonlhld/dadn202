@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller.adapter;
+package letrungson.com.smartcontroller;
 
 import android.app.Activity;
 import android.content.Context;
@@ -55,8 +55,8 @@ public class ScheduleListView extends BaseAdapter {
         TextView temp = view.findViewById(R.id.temp);
         TextView humid = view.findViewById(R.id.humid);
 
-        startDay.setText(schedules.get(position).getStartDay());
-        endDay.setText(schedules.get(position).getEndDay());
+        //startDay.setText(schedules.get(position).getStartDay());
+        //endDay.setText(schedules.get(position).getEndDay());
         startTime.setText(schedules.get(position).getStartTime());
         endTime.setText(schedules.get(position).getEndTime());
 
@@ -68,6 +68,7 @@ public class ScheduleListView extends BaseAdapter {
                 //Toast.makeText(context, "Clicked" + schedules.get(position).getScheduleID(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, ScheduleEditActivity.class);
                 intent.putExtra("scheduleId",schedules.get(position).getScheduleID());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
                 notifyDataSetChanged();
             }
