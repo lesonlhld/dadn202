@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.adapter;
 
 import android.app.Activity;
 import android.content.Context;

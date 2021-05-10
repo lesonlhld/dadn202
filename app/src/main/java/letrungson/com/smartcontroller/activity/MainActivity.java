@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     String humid = value.substring(value.lastIndexOf('-') + 1).trim();
                     db.updateRoom(roomId, temp, humid);
                 } else {//Devices
-                    db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
+                    db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
                 }
             }
 

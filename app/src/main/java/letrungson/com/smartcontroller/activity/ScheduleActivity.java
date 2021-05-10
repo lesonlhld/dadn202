@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,16 +34,25 @@ public class ScheduleActivity extends AppCompatActivity {
     private final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     private final FirebaseDatabase firebaseDatabase= FirebaseDatabase.getInstance();
     private List<Schedule> lstSchedule;
+    ImageButton close_btn;
 
     ScheduleListView scheduleListView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setscheduled);
+        close_btn = findViewById(R.id.imageButton);
         ListView listView = findViewById(R.id.smart_schedule_listview);
         getAllSchedule();
         scheduleListView = new ScheduleListView(getApplicationContext(), lstSchedule);
         listView.setAdapter(scheduleListView);
+
+        close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void getAllSchedule(){

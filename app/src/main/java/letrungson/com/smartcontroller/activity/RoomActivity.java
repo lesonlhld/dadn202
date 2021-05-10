@@ -23,6 +23,7 @@ import java.util.List;
 
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Room;
+import letrungson.com.smartcontroller.model.RoomDetail;
 import letrungson.com.smartcontroller.service.Database;
 
 public class RoomActivity extends Activity {
@@ -74,9 +75,8 @@ public class RoomActivity extends Activity {
             public void onClick(View v) {
                 final String name = roomName.getText().toString();
                 db.addRoom(name);
-//                setContentView(R.layout.activity_room);
-
                 startActivity(new Intent(RoomActivity.this, RoomActivity.class));
+                finish();
             }
         });
 
@@ -84,8 +84,8 @@ public class RoomActivity extends Activity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                setContentView(R.layout.activity_room);
                 startActivity(new Intent(RoomActivity.this, RoomActivity.class));
+                finish();
             }
         });
     }
@@ -111,5 +111,11 @@ public class RoomActivity extends Activity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(RoomActivity.this, MainActivity.class));
+        finish();
     }
 }

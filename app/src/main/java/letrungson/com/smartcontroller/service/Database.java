@@ -42,6 +42,15 @@ public class Database {
         sensors.child(id).setValue(o);
     }
 
+    public void addLog(String deviceid, String newState, String userId) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String datetime = formatter.format(LocalDateTime.now());
+        LogState log = new LogState(datetime, deviceid, newState, userId);
+        String id = "Log" + logs.push().getKey();
+        logs.child(id).setValue(log);
+    }
+
     public void addLog(String deviceid, String newState) {
         FirebaseUser user = mAuth.getCurrentUser();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -60,6 +69,11 @@ public class Database {
     public void updateRoom(String roomId, String temp, String humid) {
         rooms.child(roomId).child("roomCurrentTemp").setValue(temp);
         rooms.child(roomId).child("roomCurrentHumidity").setValue(humid);
+    }
+
+    public void removLog(){
+        logs.removeValue();
+        Log.d("db", "removed successfully");
     }
 
     public void addDevice(String deviceName, String roomId) {
