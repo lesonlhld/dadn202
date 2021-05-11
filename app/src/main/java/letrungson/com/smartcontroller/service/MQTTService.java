@@ -15,6 +15,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
+import java.nio.charset.Charset;
+
 public class MQTTService {
     final String serverUri = "tcp://io.adafruit.com:1883";
     final String clientId = MqttClient.generateClientId();
@@ -28,8 +30,6 @@ public class MQTTService {
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean b, String s) {
-
-                Log.w("mqtt", s);
             }
 
             @Override
@@ -39,7 +39,6 @@ public class MQTTService {
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                Log.w("Mqtt", mqttMessage.toString());
             }
 
             @Override
@@ -105,7 +104,7 @@ public class MQTTService {
         }
     }
 
-    public IMqttToken reconnect() {
+    private IMqttToken reconnect() {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setUserName(username);
         mqttConnectOptions.setPassword(password.toCharArray());
@@ -116,6 +115,39 @@ public class MQTTService {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public void sendDataMQTT(String deviceId, String data) {
+        IMqttToken token = reconnect();
+        token.setActionCallback(new IMqttActionListener() {
+            @Override
+            public void onSuccess(IMqttToken asyncActionToken) {
+                //PUBLISH THE MESSAGE
+                MqttMessage message = new MqttMessage(data.getBytes(Charset.forName("UTF-8")));
+                message.setQos(0);
+                message.setRetained(true);
+
+                String topic = "lesonlhld/feeds/" + deviceId;
+
+                try {
+                    mqttAndroidClient.publish(topic, message);
+                    Log.i("mqtt", "Message published");
+                } catch (MqttPersistenceException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (MqttException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                // Something went wrong e.g. connection timeout or firewall problems
+                Log.d("mqtt", "onFailure");
+            }
+        });
     }
 }
 

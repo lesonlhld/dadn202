@@ -34,6 +34,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Device;
@@ -42,61 +44,61 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import letrungson.com.smartcontroller.service.Database;
-public class DevicesActivity extends AppCompatActivity {
-    private  ListView listViewDevices;
-    private ListView list_view_air_conditioners;
-    private ArrayList<Device> list_air_conditioners ;
 
-    private ListView list_view_fans;
-    private ArrayList<Device> list_fans;
+import letrungson.com.smartcontroller.service.Database;
+import letrungson.com.smartcontroller.service.MQTTService;
+
+public class DevicesActivity extends AppCompatActivity {
+    private ListView listViewDevices;
     private Spinner spinnerDeviceType;
     private Database db_service;
     private FirebaseDatabase db;
     private DatabaseReference dbRefDevices;
+    MQTTService mqttService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
+        mqttService = new MQTTService(this);
 
         //Setup database
-        db_service=new Database();
+        db_service = new Database();
         db = FirebaseDatabase.getInstance();
-        dbRefDevices=db.getReference("devices");
+        dbRefDevices = db.getReference("devices");
 
         //Setup  Toolbar
-        Toolbar toolbar=findViewById(R.id.devices_toolbar);
+        Toolbar toolbar = findViewById(R.id.devices_toolbar);
         toolbar.setTitle("Devices");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Setup RoomName
-        Intent intent=getIntent();
-        String roomName=intent.getStringExtra("roomName");
-        String roomID=intent.getStringExtra("roomID");
+        Intent intent = getIntent();
+        String roomName = intent.getStringExtra("roomName");
+        String roomID = intent.getStringExtra("roomID");
 
         //Set up Button Add and Remove
-        Button btn_fan = findViewById(R.id.btn_add_devices);
+        Button btn_add = findViewById(R.id.btn_add_devices);
 
 
         //Setup List View
-        List<String> type= Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
-        ArrayList<DeviceTypeView> deviceTypeViews=new ArrayList<DeviceTypeView>();
-        for (String ty:type){
-           deviceTypeViews.add(new DeviceTypeView(ty));
+        List<String> type = Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
+        ArrayList<DeviceTypeView> deviceTypeViews = new ArrayList<DeviceTypeView>();
+        for (String ty : type) {
+            deviceTypeViews.add(new DeviceTypeView(ty));
         }
         listViewDevices = findViewById(R.id.list_devices);
 
         //Setup spinner
-        spinnerDeviceType=findViewById(R.id.spinner_devices);
-        SpinnerAdapter spinnerAdapter= new SpinnerAdapter(DevicesActivity.this, R.layout.spinner_item,type);
+        spinnerDeviceType = findViewById(R.id.spinner_devices);
+        SpinnerAdapter spinnerAdapter = new SpinnerAdapter(DevicesActivity.this, R.layout.spinner_item, type);
         spinnerDeviceType.setAdapter(spinnerAdapter);
         spinnerDeviceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 listViewDevices.setAdapter(deviceTypeViews.get(position).deviceAdapter);
-//                listViewDevices=deviceTypeViews.get(position).listView;
             }
 
             @Override
@@ -105,62 +107,37 @@ public class DevicesActivity extends AppCompatActivity {
             }
         });
 
-        //Reference to database child "devices" listener
-        dbRefDevices.addChildEventListener(new ChildEventListener() {
+        Query roomDb = db.getReference("devices");
+        roomDb.keepSynced(true);
+        roomDb.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull  DataSnapshot snapshot, @Nullable  String previousChildName) {
-                Device device=snapshot.getValue(Device.class);
-                device.setDeviceId(snapshot.getKey());
-                if (device.getType()!=null){
-                    for (int i=1;i<deviceTypeViews.size();i++){
-                        if (deviceTypeViews.get(i).type.equals(device.getType())){
-                            deviceTypeViews.get(i).deviceAdapter.add(new Device(device));
-                            break;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Device device = data.getValue(Device.class);
+                    String deviceID = data.getKey();
+                    device.setDeviceId(deviceID);
+                    if (device.getType() != null && !device.getType().equals("sensor")) {
+                        for (int i = 0; i < deviceTypeViews.size(); i++) {
+                            deviceTypeViews.get(i).deviceAdapter.clear();
                         }
-                    }
-                    deviceTypeViews.get(0).deviceAdapter.add(new Device(device));
-
-                }
-            }
-            @Override
-            public void onChildChanged(@NonNull  DataSnapshot snapshot, @Nullable  String previousChildName) {
-                Device device=snapshot.getValue(Device.class);
-                String deviceID= snapshot.getKey();
-                if (device.getType()!=null){
-                    for (int i=0;i<deviceTypeViews.size();i++){
-                        for (int j=0; j< deviceTypeViews.get(i).deviceAdapter.getCount();j++){
-                            if (deviceTypeViews.get(i).deviceAdapter.getItem(j).getDeviceId().equals(deviceID)) {
-                                deviceTypeViews.get(i).deviceAdapter.getItem(j).assign(device);
-//                                deviceTypeViews.get(i).deviceAdapter.insert();
-                                if (spinnerDeviceType.getSelectedItemPosition()==i){
-                                    View convertView = listViewDevices.getChildAt(j - listViewDevices.getFirstVisiblePosition());
-                                    SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
-                                    switchCompat.setChecked(device.getState().equals("On"));
-                                }
+                        for (int i = 1; i < deviceTypeViews.size(); i++) {
+                            if (deviceTypeViews.get(i).type.equals(device.getType())) {
+                                deviceTypeViews.get(i).deviceAdapter.add(new Device(device));
                                 break;
                             }
                         }
-
+                        deviceTypeViews.get(0).deviceAdapter.add(new Device(device));
                     }
+                    listViewDevices.setAdapter(deviceTypeViews.get(0).deviceAdapter);
                 }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull  DataSnapshot snapshot) {
 
             }
 
             @Override
-            public void onChildMoved(@NonNull  DataSnapshot snapshot, @Nullable  String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull  DatabaseError error) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
     }
 
     @Override
@@ -179,39 +156,39 @@ public class DevicesActivity extends AppCompatActivity {
         return true;
     }
 
-    public class DeviceTypeView{
+    public class DeviceTypeView {
         public String type;
 
         public DeviceAdapter deviceAdapter;
-        public DeviceTypeView(String type){
-            this.type=type;
-            this.deviceAdapter = new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item, new ArrayList<Device>());
 
+        public DeviceTypeView(String type) {
+            this.type = type;
+            this.deviceAdapter = new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item, new ArrayList<Device>());
         }
     }
 
-    private class DeviceAdapter extends ArrayAdapter<Device>{
+    private class DeviceAdapter extends ArrayAdapter<Device> {
+        /*int index = 0;
+        int index1 = 0;*/
         private int layout;
-
         public DeviceAdapter(Context context, int resource, ArrayList<Device> objects) {
             super(context, resource, objects);
-            layout=resource;
+            layout = resource;
         }
-        int index=0;
-        int index1=0;
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Device device = getItem(position);
-            DeviceHolder mainDeviceViewholder =null;
-            if (convertView==null){
-                LayoutInflater inflater =LayoutInflater.from(getContext());
-                convertView=inflater.inflate(layout,parent, false);
-                DeviceHolder deviceHolder =new DeviceHolder();
+            DeviceHolder mainDeviceViewholder = null;
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                convertView = inflater.inflate(layout, parent, false);
+                DeviceHolder deviceHolder = new DeviceHolder();
 
-                deviceHolder.title=(TextView) convertView.findViewById(R.id.device_item_title);
+                deviceHolder.title = (TextView) convertView.findViewById(R.id.device_item_title);
                 deviceHolder.title.setText(device.getDeviceName());
-                deviceHolder.switchCompat=(SwitchCompat) convertView.findViewById(R.id.device_item_switch);
-                if (device.getState()!=null){
+                deviceHolder.switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
+                if (device.getState() != null) {
                     deviceHolder.switchCompat.setChecked(device.getState().equals("On"));
                 }
 
@@ -221,31 +198,29 @@ public class DevicesActivity extends AppCompatActivity {
                         if (!buttonView.isPressed()) {
                             return;
                         }
+                        String state = "Off";
                         if (isChecked) {
-                            dbRefDevices.child(device.getDeviceId()).child("state").setValue("On");
-                            db_service.addLog(device.getDeviceId(),"On");
+                            state = "On";
                         }
-                        else {
-                            dbRefDevices.child(device.getDeviceId()).child("state").setValue("Off");
-                            db_service.addLog(device.getDeviceId(),"Off");
-                        }
+                        db_service.updateDevice(device.getDeviceId(), state);
+                        db_service.addLog(device.getDeviceId(), state);
+                        mqttService.sendDataMQTT(device.getDeviceId(), state);
                     }
                 });
-                Toast toast = Toast.makeText(DevicesActivity.this, "null"+index, Toast.LENGTH_SHORT);
+                /*Toast toast = Toast.makeText(DevicesActivity.this, "null" + index, Toast.LENGTH_SHORT);
                 index++;
-                toast.show();
+                toast.show();*/
                 convertView.setTag(deviceHolder);
-            }
-            else {
-                mainDeviceViewholder =(DeviceHolder) convertView.getTag();
-                Toast toast = Toast.makeText(DevicesActivity.this, "main"+index1, Toast.LENGTH_SHORT);
-                index1++;
-
+            } else {
+                mainDeviceViewholder = (DeviceHolder) convertView.getTag();
+                /*Toast toast = Toast.makeText(DevicesActivity.this, "main" + index1, Toast.LENGTH_SHORT);
+                index1++;*/
             }
             return convertView;
         }
 
     }
+
     public class DeviceHolder {
         TextView title;
         SwitchCompat switchCompat;
@@ -253,24 +228,26 @@ public class DevicesActivity extends AppCompatActivity {
 
 
     //Spinner Adapter
-    private class SpinnerAdapter extends ArrayAdapter<String>{
+    private class SpinnerAdapter extends ArrayAdapter<String> {
         private int layout;
+
         public SpinnerAdapter(Context context, int resource, List<String> objects) {
             super(context, resource, objects);
-            layout=resource;
+            layout = resource;
         }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            SpinnerViewHolder mainSpinnerViewholder =null;
-            if (convertView==null){
-                LayoutInflater inflater =LayoutInflater.from(getContext());
-                convertView=inflater.inflate(layout,parent, false);
-                SpinnerViewHolder spinnerViewHolder =new SpinnerViewHolder();
+            SpinnerViewHolder mainSpinnerViewholder = null;
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                convertView = inflater.inflate(layout, parent, false);
+                SpinnerViewHolder spinnerViewHolder = new SpinnerViewHolder();
                 String title = getItem(position);
-                spinnerViewHolder.title=(TextView) convertView.findViewById(R.id.spinner_title);
+                spinnerViewHolder.title = (TextView) convertView.findViewById(R.id.spinner_title);
                 spinnerViewHolder.title.setText(title);
-                spinnerViewHolder.imageView=(ImageView) convertView.findViewById(R.id.spinner_image);
-                switch (position){
+                spinnerViewHolder.imageView = (ImageView) convertView.findViewById(R.id.spinner_image);
+                switch (position) {
                     case 0:
                         spinnerViewHolder.imageView.setImageResource(R.drawable.ic_baseline_clear_all_24);
                         break;
@@ -288,18 +265,18 @@ public class DevicesActivity extends AppCompatActivity {
                         break;
                 }
                 convertView.setTag(spinnerViewHolder);
-            }
-            else {
-                mainSpinnerViewholder =(SpinnerViewHolder) convertView.getTag();
+            } else {
+                mainSpinnerViewholder = (SpinnerViewHolder) convertView.getTag();
             }
             return convertView;
         }
 
         @Override
-        public View getDropDownView(int position, @Nullable View convertView, @NonNull  ViewGroup parent) {
+        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             return getView(position, convertView, parent);
         }
     }
+
     public class SpinnerViewHolder {
         ImageView imageView;
         TextView title;

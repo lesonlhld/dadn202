@@ -1,8 +1,10 @@
 package letrungson.com.smartcontroller.service;
 
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,6 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.activity.DevicesActivity;
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.LogState;
 import letrungson.com.smartcontroller.model.Room;
@@ -85,4 +89,5 @@ public class Database {
     public void updateDevice(String deviceId, String currentState) {
         devices.child(deviceId).child("state").setValue(currentState);
     }
+
 }

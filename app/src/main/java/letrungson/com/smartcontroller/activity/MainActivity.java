@@ -39,6 +39,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
 
-        sendDataMQTT("Off", "fan");
+        //sendDataMQTT("Off", "fan");
 /*
         if (availableDrivers.isEmpty()) {
             Log.d("UART", "UART is not available");
@@ -301,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                         String humid = value.substring(value.lastIndexOf('-') + 1).trim();
                         db.updateRoom(roomId, temp, humid);
                     } else {//Devices
-                        db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
+                        //db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
                     }
                 }
             }
@@ -311,40 +312,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 
             }
         });
-    }
-
-    public void sendDataMQTT(String data, String deviceId) {
-        IMqttToken token = mqttService.reconnect();
-        token.setActionCallback(new IMqttActionListener() {
-            @Override
-            public void onSuccess(IMqttToken asyncActionToken) {
-                //PUBLISH THE MESSAGE
-                MqttMessage message = new MqttMessage(data.getBytes());
-                message.setQos(0);
-                message.setRetained(true);
-
-                String topic = "lesonlhld/feeds/" + deviceId;
-
-                try {
-                    mqttService.mqttAndroidClient.publish(topic, message);
-                    Log.i("mqtt", "Message published");
-                } catch (MqttPersistenceException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (MqttException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                // Something went wrong e.g. connection timeout or firewall problems
-                Log.d("mqtt", "onFailure");
-            }
-        });
-
-        receiveDataMQTT();
     }
 }
 
