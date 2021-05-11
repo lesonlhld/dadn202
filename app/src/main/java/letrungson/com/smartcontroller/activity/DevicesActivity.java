@@ -80,17 +80,14 @@ public class DevicesActivity extends AppCompatActivity {
         header_room_name.setText(roomName);
 
 
-        //Set up Button Add and Remove
-
-        Button btn_fan = findViewById(R.id.btn_add_devices);
-
+        //Set up Button Add and Removes
+        Button btn_add = findViewById(R.id.btn_add_devices);
 
         //Setup List View
-
         List<String> type= Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
-        ArrayList<DeviceTypeView> deviceTypeViews=new ArrayList<DeviceTypeView>();
+        ArrayList<DeviceAdapter> deviceAdapterArrayList=new ArrayList<DeviceAdapter>();
         for (String ty:type){
-           deviceTypeViews.add(new DeviceTypeView(ty));
+            deviceAdapterArrayList.add(new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item,new ArrayList<Device>()));
         }
         listViewDevices = findViewById(R.id.list_devices);
 
@@ -102,8 +99,7 @@ public class DevicesActivity extends AppCompatActivity {
         spinnerDeviceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                listViewDevices.setAdapter(deviceTypeViews.get(position).deviceAdapter);
-//                listViewDevices=deviceTypeViews.get(position).listView;
+                listViewDevices.setAdapter(deviceAdapterArrayList.get(position));
             }
 
             @Override
@@ -118,14 +114,13 @@ public class DevicesActivity extends AppCompatActivity {
                 Device device=snapshot.getValue(Device.class);
                 device.setDeviceId(snapshot.getKey());
                 if (device.getType()!=null){
-                    for (int i=1;i<deviceTypeViews.size();i++){
-                        if (deviceTypeViews.get(i).type.equals(device.getType())){
-                            deviceTypeViews.get(i).deviceAdapter.add(new Device(device));
+                    deviceAdapterArrayList.get(0).add(device);
+                    for (int i=1;i<type.size();i++){
+                        if (type.get(i).equals(device.getType())){
+                            deviceAdapterArrayList.get(i).add(device);
                             break;
                         }
                     }
-                    deviceTypeViews.get(0).deviceAdapter.add(new Device(device));
-
                 }
             }
             @Override
@@ -133,20 +128,44 @@ public class DevicesActivity extends AppCompatActivity {
                 Device device=snapshot.getValue(Device.class);
                 String deviceID= snapshot.getKey();
                 if (device.getType()!=null){
-                    for (int i=0;i<deviceTypeViews.size();i++){
-                        for (int j=0; j< deviceTypeViews.get(i).deviceAdapter.getCount();j++){
-                            if (deviceTypeViews.get(i).deviceAdapter.getItem(j).getDeviceId().equals(deviceID)) {
-                                deviceTypeViews.get(i).deviceAdapter.getItem(j).assign(device);
-//                                deviceTypeViews.get(i).deviceAdapter.insert();
-                                if (spinnerDeviceType.getSelectedItemPosition()==i){
-                                    View convertView = listViewDevices.getChildAt(j - listViewDevices.getFirstVisiblePosition());
-                                    SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
-                                    switchCompat.setChecked(device.getState().equals("On"));
-                                }
+                    int currentViewPos= spinnerDeviceType.getSelectedItemPosition();
+                    int currentType=0;
+                    for (int i=1; i<type.size();i++){
+                        if (type.get(i).equals(device.getType()))
+                            currentType=i;
+                    }
+                    if (currentViewPos==0){
+                        DeviceAdapter deviceAdapter0= deviceAdapterArrayList.get(0);
+                        int j;
+                        for (j=0;j<deviceAdapter0.getCount();j++){
+                            if (deviceAdapter0.getItem(j).getDeviceId().equals(deviceID)){
+                                deviceAdapter0.getItem(j).assign(device);
                                 break;
                             }
                         }
-
+                        View convertView = listViewDevices.getChildAt(j - listViewDevices.getFirstVisiblePosition());
+                        SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
+                        switchCompat.setChecked(device.getState().equals("On"));
+                    }
+                    else if(currentType!=currentViewPos){
+                        DeviceAdapter deviceAdapter0= deviceAdapterArrayList.get(currentType);
+                        for (int j=0;j<deviceAdapter0.getCount();j++){
+                            if (deviceAdapter0.getItem(j).getDeviceId().equals(deviceID))
+                                deviceAdapter0.getItem(j).assign(device);
+                        }
+                    }
+                    else{
+                        int j;
+                        DeviceAdapter deviceAdapter0= deviceAdapterArrayList.get(currentType);
+                        for (j=0;j<deviceAdapter0.getCount();j++){
+                            if (deviceAdapter0.getItem(j).getDeviceId().equals(deviceID)){
+                                deviceAdapter0.getItem(j).assign(device);
+                                break;
+                            }
+                        }
+                        View convertView = listViewDevices.getChildAt(j - listViewDevices.getFirstVisiblePosition());
+                        SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
+                        switchCompat.setChecked(device.getState().equals("On"));
                     }
                 }
             }
@@ -167,25 +186,25 @@ public class DevicesActivity extends AppCompatActivity {
             }
         });
 
-
-        for (int i=15;i<18;i++) {
-            Device device= new Device();
-            String deviceID = "Device"+ dbRefDevices.push().getKey();
-            device.setDeviceName("Fan "+ String.valueOf(i));
-            device.setState("Off");
-            device.setType("Fan");
-            device.setRoomId("Room4");
-            dbRefDevices.child(deviceID).setValue(device);
-        }
-        for (int i=20;i<23;i++) {
-            Device device= new Device();
-            String deviceID = "Device"+ dbRefDevices.push().getKey();
-            device.setDeviceName("Air conditioner  "+ String.valueOf(i));
-            device.setState("Off");
-            device.setType("Air Conditioner");
-            device.setRoomId("Room3");
-            dbRefDevices.child(deviceID).setValue(device);
-        }
+//
+//        for (int i=15;i<18;i++) {
+//            Device device= new Device();
+//            String deviceID = "Device"+ dbRefDevices.push().getKey();
+//            device.setDeviceName("Fan "+ String.valueOf(i));
+//            device.setState("Off");
+//            device.setType("Fan");
+//            device.setRoomId("Room4");
+//            dbRefDevices.child(deviceID).setValue(device);
+//        }
+//        for (int i=20;i<23;i++) {
+//            Device device= new Device();
+//            String deviceID = "Device"+ dbRefDevices.push().getKey();
+//            device.setDeviceName("Air conditioner "+ String.valueOf(i));
+//            device.setState("Off");
+//            device.setType("Air Conditioner");
+//            device.setRoomId("Room3");
+//            dbRefDevices.child(deviceID).setValue(device);
+//        }
     }
 
     @Override
@@ -202,17 +221,6 @@ public class DevicesActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_devices, menu);
         return true;
-    }
-
-    public class DeviceTypeView{
-        public String type;
-
-        public DeviceAdapter deviceAdapter;
-        public DeviceTypeView(String type){
-            this.type=type;
-            this.deviceAdapter = new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item, new ArrayList<Device>());
-
-        }
     }
 
     private class DeviceAdapter extends ArrayAdapter<Device>{
