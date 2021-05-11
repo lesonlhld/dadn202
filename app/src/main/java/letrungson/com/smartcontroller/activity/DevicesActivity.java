@@ -75,25 +75,18 @@ public class DevicesActivity extends AppCompatActivity {
         Intent intent=getIntent();
         String roomName=intent.getStringExtra("roomName");
         String roomID=intent.getStringExtra("roomID");
-        TextView header_room_name=findViewById(R.id.header_room_name);
-        roomName="Living Room";
-        header_room_name.setText(roomName);
-
 
         //Set up Button Add and Remove
-
         Button btn_fan = findViewById(R.id.btn_add_devices);
 
 
         //Setup List View
-
         List<String> type= Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
         ArrayList<DeviceTypeView> deviceTypeViews=new ArrayList<DeviceTypeView>();
         for (String ty:type){
            deviceTypeViews.add(new DeviceTypeView(ty));
         }
         listViewDevices = findViewById(R.id.list_devices);
-
 
         //Setup spinner
         spinnerDeviceType=findViewById(R.id.spinner_devices);
@@ -111,6 +104,7 @@ public class DevicesActivity extends AppCompatActivity {
 
             }
         });
+
         //Reference to database child "devices" listener
         dbRefDevices.addChildEventListener(new ChildEventListener() {
             @Override
@@ -167,25 +161,6 @@ public class DevicesActivity extends AppCompatActivity {
             }
         });
 
-
-        for (int i=15;i<18;i++) {
-            Device device= new Device();
-            String deviceID = "Device"+ dbRefDevices.push().getKey();
-            device.setDeviceName("Fan "+ String.valueOf(i));
-            device.setState("Off");
-            device.setType("Fan");
-            device.setRoomId("Room4");
-            dbRefDevices.child(deviceID).setValue(device);
-        }
-        for (int i=20;i<23;i++) {
-            Device device= new Device();
-            String deviceID = "Device"+ dbRefDevices.push().getKey();
-            device.setDeviceName("Air conditioner  "+ String.valueOf(i));
-            device.setState("Off");
-            device.setType("Air Conditioner");
-            device.setRoomId("Room3");
-            dbRefDevices.child(deviceID).setValue(device);
-        }
     }
 
     @Override

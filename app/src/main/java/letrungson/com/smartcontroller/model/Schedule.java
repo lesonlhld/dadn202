@@ -73,23 +73,19 @@ public class Schedule {
         this.endTime = endTime;
     }
 
-//    public void getRepeatDay(boolean repeatDay[]){
-//        for(int i = 0; i < 7; i++) {
-//            repeatDay[i] = this.repeatDay[i];
-//        }
-//    }
-//
-//    public void setRepeatDay(boolean repeatDay[])
-//    {
-//        for(int i = 0; i < 7; i++) {
-//            this.repeatDay[i] = repeatDay[i];
-//        }
-//    }
     public String getRepeatDay(){
         return this.repeatDay;
     }
 
     public void setRepeatDay(String repeatDay){
         this.repeatDay = repeatDay;
+    }
+
+    public String getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(String roomID) {
+        this.roomID = roomID;
     }
 }
