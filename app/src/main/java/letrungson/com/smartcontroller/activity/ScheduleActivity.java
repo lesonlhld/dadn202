@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class ScheduleActivity extends AppCompatActivity {
     private final FirebaseDatabase firebaseDatabase= FirebaseDatabase.getInstance();
     private List<Schedule> lstSchedule;
     ImageButton close_btn;
+    TextView room;
 
     ScheduleListView scheduleListView;
     @Override
@@ -43,7 +45,13 @@ public class ScheduleActivity extends AppCompatActivity {
         setContentView(R.layout.setscheduled);
         close_btn = findViewById(R.id.imageButton);
         ListView listView = findViewById(R.id.smart_schedule_listview);
-        getAllSchedule();
+        Intent intent = getIntent();
+        String roomID = intent.getStringExtra("roomID");
+        String roomName = intent.getStringExtra("roomName");
+        room = findViewById(R.id.textView4);
+        room.setText(roomName);
+
+        getAllSchedule(roomID);
         scheduleListView = new ScheduleListView(getApplicationContext(), lstSchedule);
         listView.setAdapter(scheduleListView);
 
@@ -55,9 +63,9 @@ public class ScheduleActivity extends AppCompatActivity {
         });
     }
 
-    private void getAllSchedule(){
+    private void getAllSchedule(String roomID){
         lstSchedule = new ArrayList<>();
-        Query allSchedule = firebaseDatabase.getReference("schedules");
+        Query allSchedule = firebaseDatabase.getReference("schedules").orderByChild("roomID").equalTo(roomID);
         allSchedule.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

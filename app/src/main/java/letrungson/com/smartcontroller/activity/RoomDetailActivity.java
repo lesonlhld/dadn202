@@ -53,7 +53,10 @@ public class RoomDetailActivity extends Activity {
         smart_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(RoomDetailActivity.this, ScheduleActivity.class));
+                Intent intent = new Intent(RoomDetailActivity.this, ScheduleActivity.class);
+                intent.putExtra("roomID", thisRoom.getRoomId());
+                intent.putExtra("roomName", thisRoom.getRoomName());
+                startActivity(intent);
             }
         });
 
