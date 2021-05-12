@@ -62,9 +62,7 @@ public class RoomDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RoomDetailActivity.this, DevicesActivity.class);
-                intent.putExtra("roomName", thisRoom.getRoomName());
-                intent.putExtra("roomId", thisRoom.getRoomId());
-                //Toast.makeText(RoomDetailActivity.this, "Id: " + thisRoom.getRoomId(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("roomID", thisRoom.getRoomId());
                 startActivity(intent);
             }
         });

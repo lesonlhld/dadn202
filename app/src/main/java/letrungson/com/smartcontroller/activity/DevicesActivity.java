@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.service.controls.DeviceTypes;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -76,7 +77,6 @@ public class DevicesActivity extends AppCompatActivity {
 
         //Setup RoomName
         Intent intent = getIntent();
-        String roomName = intent.getStringExtra("roomName");
         String roomID = intent.getStringExtra("roomID");
 
         //Set up Button Add and Remove
@@ -107,19 +107,19 @@ public class DevicesActivity extends AppCompatActivity {
             }
         });
 
-        Query roomDb = db.getReference("devices");
+        Query roomDb = db.getReference("devices").orderByChild("roomId").equalTo(roomID);
         roomDb.keepSynced(true);
         roomDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (int i = 0; i < deviceTypeViews.size(); i++) {
+                    deviceTypeViews.get(i).deviceAdapter.clear();
+                }
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Device device = data.getValue(Device.class);
                     String deviceID = data.getKey();
                     device.setDeviceId(deviceID);
                     if (device.getType() != null && !device.getType().equals("sensor")) {
-                        for (int i = 0; i < deviceTypeViews.size(); i++) {
-                            deviceTypeViews.get(i).deviceAdapter.clear();
-                        }
                         for (int i = 1; i < deviceTypeViews.size(); i++) {
                             if (deviceTypeViews.get(i).type.equals(device.getType())) {
                                 deviceTypeViews.get(i).deviceAdapter.add(new Device(device));

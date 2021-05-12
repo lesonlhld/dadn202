@@ -35,7 +35,7 @@ public class Database {
     private final DatabaseReference sensors, logs, devices, rooms;
 
     public Database() {
-        sensors = database.getReference("sensore");
+        sensors = database.getReference("sensors");
         logs = database.getReference("logs");
         devices = database.getReference("devices");
         rooms = database.getReference("rooms");
