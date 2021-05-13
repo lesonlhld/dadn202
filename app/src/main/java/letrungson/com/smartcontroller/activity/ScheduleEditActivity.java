@@ -66,6 +66,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
         set_repeatTime_btn = (Button) findViewById(R.id.set_repeatTime_btn);
+        delete_btn = (Button) findViewById(R.id.delete_btn);
 
 
         start_time.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +128,14 @@ public class ScheduleEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateSchedule();
+                finish();
+            }
+        });
+
+        delete_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteSchedule();
                 finish();
             }
         });
@@ -240,6 +249,10 @@ public class ScheduleEditActivity extends AppCompatActivity {
         database.child("schedules").child(thisSchedule.getScheduleID()).child("startTime").setValue(thisSchedule.getStartTime());
         database.child("schedules").child(thisSchedule.getScheduleID()).child("endTime").setValue(thisSchedule.getEndTime());
         database.child("schedules").child(thisSchedule.getScheduleID()).child("repeatDay").setValue(thisSchedule.getRepeatDay());
+    }
+
+    private void deleteSchedule(){
+        database.child("schedules").child(thisSchedule.getScheduleID()).removeValue();
     }
 
     private void setTime(int flag){
