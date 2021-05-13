@@ -75,7 +75,7 @@ public class DevicesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Setup RoomName
+        //Setup Room ID
         Intent intent = getIntent();
         String roomID = intent.getStringExtra("roomID");
 
