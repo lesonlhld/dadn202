@@ -67,7 +67,7 @@ public class Device {
 
     public void assign(Device device){
 //        this.deviceId = device.getDeviceId();
-//        this.deviceName = device.getDeviceName();
+        this.deviceName = device.getDeviceName();
 //        this.roomId = device.getRoomId();
 //        this.type = device.getType();
         this.state = device.getState();
