@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F7F8FA">
+
     <RelativeLayout
         android:id="@+id/roomitem_cardview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="20dp">
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,15 +30,15 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/turn_on"
         android:elevation="2dp">
+
         <ImageButton
             android:id="@+id/power_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_power_button"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
-            />
+            android:layout_marginTop="15dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_power_button" />
 
         <TextView
             android:id="@+id/power_state"
@@ -87,15 +88,6 @@
         android:layout_marginBottom="0dp"
         android:background="@color/white">
 
-        <ImageButton
-            android:id="@+id/home_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="65dp"
-            android:layout_marginTop="5dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_home"
-            android:tint="#324B61" />
         <!--
         <ImageButton
             android:id="@+id/setting_btn"
@@ -107,6 +99,20 @@
             android:layout_marginTop="5dp"
             android:tint="#324B61"
             />-->
+
+        <ImageButton
+            android:id="@+id/home_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/home_btn_text"
+            android:layout_alignEnd="@+id/home_btn_text"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="7dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_home"
+            android:tint="#324B61" />
 
         <ImageButton
             android:id="@+id/list_btn"
@@ -131,66 +137,42 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
-<!--
-        <TextView
-            android:id="@+id/setting_btn_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/setting_btn"
-            android:layout_marginStart="-14dp"
-            android:layout_marginTop="40dp"
-            android:text="Settings"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />-->
+        <!--
+                <TextView
+                    android:id="@+id/setting_btn_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/setting_btn"
+                    android:layout_marginStart="-14dp"
+                    android:layout_marginTop="40dp"
+                    android:text="Settings"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />-->
         <TextView
             android:id="@+id/list_btn_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="60dp"
             android:layout_marginTop="40dp"
+            android:layout_marginEnd="60dp"
             android:text="More"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
     </RelativeLayout>
-
-<!--
-    <Button
-        android:id="@+id/reload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="280dp"
-        android:layout_marginTop="120dp"
-        android:text="Reload"
-        android:textColor="#FFF"/>
--->
-
-
-    <ImageButton
-        android:id="@+id/reload_room_tbn"
-        android:layout_height="45dp"
-        android:layout_width="45dp"
-        android:layout_marginLeft="300dp"
-        android:layout_marginTop="120dp"
-        android:background="@null"
-        android:tint="#324B61"
-        app:srcCompat="@android:drawable/stat_notify_sync_noanim"
-        android:onClick="imageButtonOnClick"/> />
-
 
     <ImageButton
         android:id="@+id/room_manage_btn"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginLeft="350dp"
+        android:layout_marginLeft="300dp"
         android:layout_marginTop="120dp"
         android:background="@null"
+        android:onClick="imageButtonOnClick"
         android:tint="#324B61"
-        app:srcCompat="@drawable/ic_settings"
-        android:onClick="imageButtonOnClick"/> />
+        app:srcCompat="@drawable/ic_settings" />
+    />
 
 
 </RelativeLayout>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/teal_200"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:text="Edit Schedule"
+            android:textSize="30sp" />
+
+        <ImageButton
+            android:id="@+id/close_btn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:srcCompat="@drawable/ic_close" />
+
+        <ImageButton
+            android:id="@+id/tick_btn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
+            app:srcCompat="@drawable/ic_tick" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/delete_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="152dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/button"
+        android:text="DELETE"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/temp_area"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bar">
+
+        <ImageButton
+            android:id="@+id/up_temp_btn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="45dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:srcCompat="@drawable/ic_up_arrow" />
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:text="Temperature"
+            android:textSize="20dp" />
+
+        <ImageButton
+            android:id="@+id/down_temp_btn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="45dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:srcCompat="@drawable/ic_down_arrow" />
+
+        <TextView
+            android:id="@+id/temp_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="25"
+            android:textSize="50sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/humid_area"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/temp_area">
+
+        <TextView
+            android:id="@+id/humi_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="60"
+            android:textSize="50sp" />
+
+        <ImageButton
+            android:id="@+id/up_humi_btn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="45dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:srcCompat="@drawable/ic_up_arrow" />
+
+        <ImageButton
+            android:id="@+id/down_humi_btn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="45dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:srcCompat="@drawable/ic_down_arrow" />
+
+        <TextView
+            android:id="@+id/text21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:text="Humidity"
+            android:textSize="20dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/time_area"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/humid_area">
+
+        <TextView
+            android:id="@+id/start_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="55dp"
+            android:layout_marginEnd="30dp"
+            android:text="HH:mm"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/text5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="95dp"
+            android:text="End"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/text4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="55dp"
+            android:text="Start"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/text3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:text="Time"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/end_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="95dp"
+            android:layout_marginEnd="30dp"
+            android:text="HH:mm"
+            android:textSize="20dp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/repeat_time_area"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/time_area">
+
+        <TextView
+            android:id="@+id/text6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:text="Repeat"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/set_repeatTime_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:text="choose day" />
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

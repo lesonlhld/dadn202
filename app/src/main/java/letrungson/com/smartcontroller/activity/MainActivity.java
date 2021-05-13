@@ -1,22 +1,29 @@
 package letrungson.com.smartcontroller.activity;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 //import com.benlypan.usbhid.OnUsbHidDeviceListener;
 //import com.benlypan.usbhid.UsbHidDevice;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -24,25 +31,28 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import letrungson.com.smartcontroller.BuildConfig;
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.RoomViewAdapter;
-import letrungson.com.smartcontroller.SpacingItemDecorator;
+import letrungson.com.smartcontroller.adapter.RoomViewAdapter;
+import letrungson.com.smartcontroller.adapter.SpacingItemDecorator;
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
+
 import android.widget.ImageButton;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
@@ -50,22 +60,27 @@ import android.widget.ImageButton;
 
 //https://github.com/rcties/PrinterPlusCOMM
 //https://github.com/mik3y/usb-serial-for-android
-public class MainActivity extends AppCompatActivity  implements SerialInputOutputManager.Listener{
+public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener {
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
-
-    TextView temperature, humidity;
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     UsbSerialPort port;
-    ImageButton moreButton, room_btn, reload;
-    private FirebaseAuth mAuth;
+    ImageButton moreButton, room_btn;
     MQTTService mqttService;
+    RoomViewAdapter roomViewAdapter;
+    Device cDevice;
+    Database db;
+    private FirebaseAuth mAuth;
+    private List<Room> listRoom;
+    private RecyclerView recyclerView;
+    private Data dataMqtt;
     private Thread readThread;
-    private boolean mRunning;
 
 
     //private UsbHidDevice device = null;
+    private boolean mRunning;
 
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -84,10 +99,8 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth);
 
-        Database db = new Database();
-        List<Room> lstRoom;
-        lstRoom = db.getAllRoom();
-
+        db = new Database();
+        getAllRoom();
         setContentView(R.layout.homescreeen);
 
         moreButton = findViewById(R.id.list_btn);
@@ -95,88 +108,35 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, MoreActivity.class));
+                finish();
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.gridView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
+        recyclerView = findViewById(R.id.gridView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
         recyclerView.addItemDecoration(itemDecorator);
-        RoomViewAdapter roomViewAdapter = new RoomViewAdapter(MainActivity.this,lstRoom);
+        roomViewAdapter = new RoomViewAdapter(MainActivity.this, listRoom);
         recyclerView.setAdapter(roomViewAdapter);
 
-        reload = findViewById(R.id.reload_room_tbn);
-        reload.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                roomViewAdapter.notifyDataSetChanged();
-            }
-        });
-
         room_btn = findViewById(R.id.room_manage_btn);
-        room_btn.setOnClickListener(new View.OnClickListener(){
+        room_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RoomActivity.class));
             }
         });
-//        recyclerView.setAdapter(new RoomViewAdapter(MainActivity.this,lstRoom));
-//        recyclerView.invalidate();
-//        GridView gridView  = findViewById(R.id.gridView);
-//        RoomGridAdapter roomGridAdapter = new RoomGridAdapter(this, lstRoom);
-//        gridView.setAdapter(roomGridAdapter);
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getApplicationContext(),RoomDetail.class);
-//                intent.putExtra("roomName", gridView.getItemAtPosition(position).toString());
-//                startActivity(intent);
-//            }
-//        });
+
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
-        mqttService = new MQTTService( this);
-        mqttService.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
 
-            }
-
-            @Override
-            public void connectionLost( Throwable throwable){
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                String data_to_microbit = message.toString();
-
-                if (topic.indexOf("/json") != -1) {
-                    String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/')-1) + 1, topic.lastIndexOf('/'));
-                    Data dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {}.getType());
-                    if(!context.equals(dataMqtt.getId())){
-                        Log.d(topic, data_to_microbit);
-                        if (topic.indexOf("temperature") != -1 || topic.indexOf("humidity") != -1) {
-                            db.addSensorLog(dataMqtt);
-                        } else {//Devices
-                            db.addLog(dataMqtt.getId(), dataMqtt.getLast_value());
-                        }
-                        db.updateDevice(dataMqtt.getId(), dataMqtt.getLast_value());
-                        port.write(data_to_microbit.getBytes(),1000);
-                    }
-                }
-            }
-
-            @Override
-            public void deliveryComplete( IMqttDeliveryToken token) {
-
-            }
-        });
+        receiveDataMQTT();
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
 
+        //sendDataMQTT("Off", "fan");
 /*
         if (availableDrivers.isEmpty()) {
             Log.d("UART", "UART is not available");
@@ -224,7 +184,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         super.onDestroy();
         try {
             port.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -234,7 +194,7 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                temperature.append(Arrays.toString(data));
+                //temperature.append(Arrays.toString(data));
             }
         });
     }
@@ -244,21 +204,114 @@ public class MainActivity extends AppCompatActivity  implements SerialInputOutpu
 
     }
 
-    private void sendDataMQTT( String data){
-        MqttMessage msg = new MqttMessage();
-        msg.setId(1234);
-        msg.setQos(0);
-        msg.setRetained(true);
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Thoát")
+                .setMessage("Bạn có muốn thoát ứng dụng?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Build.VERSION.SDK_INT >= 16 && Build.VERSION.SDK_INT < 21) {
+                            finishAffinity();
+                        } else if (Build.VERSION.SDK_INT >= 21) {
+                            finishAndRemoveTask();
+                        }
+                        System.exit(0);
+                  }
 
-        byte[] b = data.getBytes(Charset.forName("UTF-8"));
-        msg.setPayload(b);
+                })
+                .setNegativeButton("Không", null)
+                .show();
+    }
 
-        Log.d("ABC","Publish: " + msg);
-        try {
-            mqttService.mqttAndroidClient.publish("[Your path to the feed you want to send message]", msg);
-        } catch ( MqttException e){
-            Log.d("MQTT", "sendDataMQTT: cannot send message");
-        }
+    public void getAllRoom() {
+        listRoom = new ArrayList<>();
+        Query allRoom = database.getReference("rooms");
+        allRoom.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listRoom.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Room room = data.getValue(Room.class);
+                    String roomId = data.getKey();
+                    room.setRoomId(roomId);
+                    listRoom.add(room);
+                }
+                roomViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void receiveDataMQTT(){
+        mqttService = new MQTTService(this);
+        mqttService.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                if (topic.indexOf("/json") != -1) {
+                    String data_to_microbit = message.toString();
+                    String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1, topic.lastIndexOf('/'));
+                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
+                    }.getType());
+                    if (context.equals(dataMqtt.getKey())) {
+                        Log.d(topic, data_to_microbit);
+                        updateData(dataMqtt.getKey(), dataMqtt);
+                        db.updateDevice(dataMqtt.getKey().replace('.','-'), dataMqtt.getLast_value());
+                        //port.write(data_to_microbit.getBytes(),1000);
+                    }
+                }
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
+    }
+
+    public void updateData(String id, Data dataMqtt) {
+        Query device = database.getReference("devices").child(id);
+        device.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                cDevice = null;
+                cDevice = dataSnapshot.getValue(Device.class);
+                if (cDevice.getType() != null) {
+                    if (cDevice.getType().equals("sensor")) {
+                        db.addSensorLog(dataMqtt);
+                        String value = dataMqtt.getLast_value();
+                        String roomId = cDevice.getRoomId();
+                        String temp = value.substring(0, value.lastIndexOf('-')).trim();
+                        String humid = value.substring(value.lastIndexOf('-') + 1).trim();
+                        db.updateRoom(roomId, temp, humid);
+                    } else {//Devices
+                        //db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
 

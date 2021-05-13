@@ -7,11 +7,11 @@ public class Device {
     private String type;
     private String state;
 
-    public Device(){
+    public Device() {
 
     }
 
-    public Device(String deviceId, String deviceName, String roomId, String type, String state){
+    public Device(String deviceId, String deviceName, String roomId, String type, String state) {
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.roomId = roomId;

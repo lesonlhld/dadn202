@@ -24,19 +24,18 @@ import letrungson.com.smartcontroller.R;
 
 public class AccountActivity extends Activity {
     private static final String TAG = "EmailPassword";
-    private FirebaseAuth mAuth;
     TextView inputEmail, inputPassword, inputPasswordConfirm, btnLogin;
     Button btnSignup;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null){
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
             login();
-        }
-        else{
+        } else {
             updatePassword();
         }
     }
@@ -44,9 +43,7 @@ public class AccountActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             reload();
         }
     }
@@ -75,34 +72,27 @@ public class AccountActivity extends Activity {
                 final String passwordConfirm = inputPasswordConfirm.getText().toString();
                 if (email.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
-                }
-                else if (password.isEmpty()) {
+                } else if (password.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu!", Toast.LENGTH_LONG).show();
-                }
-                else if (passwordConfirm.isEmpty()) {
+                } else if (passwordConfirm.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu xác nhận!", Toast.LENGTH_LONG).show();
-                }
-                else if(!password.equals(passwordConfirm)){
+                } else if (!password.equals(passwordConfirm)) {
                     Toast.makeText(AccountActivity.this, "Mật khẩu xác nhận không khớp!", Toast.LENGTH_LONG).show();
-                }
-                else if(password.length()<6){
+                } else if (password.length() < 6) {
                     Toast.makeText(AccountActivity.this, "Mật khẩu quá ngắn, hãy nhập tối thiểu 6 ký tự!", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     // [START create_user_with_email]
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(AccountActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (!task.isSuccessful()) {
-                                        if(task.getException().toString().indexOf("The email address is badly formatted") != -1){
-                                            Toast.makeText(AccountActivity.this, "Địa chỉ email không hợp lệ!" , Toast.LENGTH_LONG).show();
-                                        }
-                                        else if(task.getException().toString().indexOf("The email address is already in use by another account") != -1){
-                                            Toast.makeText(AccountActivity.this, "Địa chỉ email đã tồn tại!" , Toast.LENGTH_LONG).show();
-                                        }
-                                        else{
-                                            Toast.makeText(AccountActivity.this, "Đăng ký không thành công!" , Toast.LENGTH_LONG).show();
+                                        if (task.getException().toString().indexOf("The email address is badly formatted") != -1) {
+                                            Toast.makeText(AccountActivity.this, "Địa chỉ email không hợp lệ!", Toast.LENGTH_LONG).show();
+                                        } else if (task.getException().toString().indexOf("The email address is already in use by another account") != -1) {
+                                            Toast.makeText(AccountActivity.this, "Địa chỉ email đã tồn tại!", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(AccountActivity.this, "Đăng ký không thành công!", Toast.LENGTH_LONG).show();
                                         }
                                         updateUI(null);
                                         Log.w(TAG, "signUpWithEmail:failure", task.getException());
@@ -153,11 +143,9 @@ public class AccountActivity extends Activity {
                 final String password = inputPassword.getText().toString();
                 if (email.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
-                }
-                else if (password.isEmpty()) {
+                } else if (password.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu!", Toast.LENGTH_LONG).show();
-                }
-                else{
+                } else {
                     // [START sign_in_with_email]
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(AccountActivity.this, new OnCompleteListener<AuthResult>() {
@@ -197,7 +185,7 @@ public class AccountActivity extends Activity {
     }
 
 
-    private void updatePassword(){
+    private void updatePassword() {
         setContentView(R.layout.activity_changepass);
 
         TextView old_pass_edt_text, inputPassword, inputPasswordConfirm, btnCancel;
@@ -225,24 +213,18 @@ public class AccountActivity extends Activity {
                 final String passwordConfirm = inputPasswordConfirm.getText().toString();
                 if (oldPassword.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu cũ!", Toast.LENGTH_LONG).show();
-                }
-                else if (newPassword.isEmpty()) {
+                } else if (newPassword.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu mới!", Toast.LENGTH_LONG).show();
-                }
-                else if (passwordConfirm.isEmpty()) {
+                } else if (passwordConfirm.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu xác nhận!", Toast.LENGTH_LONG).show();
-                }
-                else if(!newPassword.equals(passwordConfirm)){
+                } else if (!newPassword.equals(passwordConfirm)) {
                     Toast.makeText(AccountActivity.this, "Mật khẩu xác nhận không khớp!", Toast.LENGTH_LONG).show();
-                }
-                else if(newPassword.length()<6){
+                } else if (newPassword.length() < 6) {
                     Toast.makeText(AccountActivity.this, "Mật khẩu quá ngắn, hãy nhập tối thiểu 6 ký tự!", Toast.LENGTH_LONG).show();
                 }
-                final FirebaseUser user = mAuth.getCurrentUser();
-                AuthCredential credential = EmailAuthProvider
-                        .getCredential(user.getEmail(), oldPassword);
+                AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), oldPassword);
 
-                user.reauthenticate(credential)
+                currentUser.reauthenticate(credential)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -255,7 +237,7 @@ public class AccountActivity extends Activity {
                             }
                         });
 
-                user.updatePassword(newPassword)
+                currentUser.updatePassword(newPassword)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -275,7 +257,7 @@ public class AccountActivity extends Activity {
 
     }
 
-    private void forgetPassword(){
+    private void forgetPassword() {
         setContentView(R.layout.activity_forgetpass);
         TextView inputEmail, btnLogin;
         Button resetpass_btn;
@@ -297,8 +279,7 @@ public class AccountActivity extends Activity {
                 final String email = inputEmail.getText().toString();
                 if (email.isEmpty()) {
                     Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
-                }
-                else{
+                } else {
                     // [START sign_in_with_email]
                     mAuth.sendPasswordResetEmail(email)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -321,7 +302,8 @@ public class AccountActivity extends Activity {
     }
 
 
-    private void reload() { }
+    private void reload() {
+    }
 
     private void updateUI(FirebaseUser user) {
 

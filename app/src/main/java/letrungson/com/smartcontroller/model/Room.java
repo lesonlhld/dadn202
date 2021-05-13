@@ -1,31 +1,34 @@
 package letrungson.com.smartcontroller.model;
 
-import org.w3c.dom.ls.LSInput;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
     private String roomId;
     private String roomName;
-    private Boolean roomState;
-    private String roomDescription;
-    private String roomTemp;
+    private String roomState;
+    private String roomTargetTemp;
+    private String roomCurrentTemp;
+    private String roomCurrentHumidity;
 
-    public Room(){
+    public Room() {
 
     }
 
-    public Room(String roomName, String roomTemp){
-        this.roomId = roomName;
-        this.roomName = roomTemp;
-    }
-
-    public Room(String roomName, Boolean roomState, String roomDescription, String roomTemp) {
+    public Room(String roomName, String roomState, String roomTargetTemp, String roomCurrentTemp, String roomCurrentHumidity) {
         this.roomName = roomName;
         this.roomState = roomState;
-        this.roomDescription = roomDescription;
-        this.roomTemp = roomTemp;
+        this.roomTargetTemp = roomTargetTemp;
+        this.roomCurrentTemp = roomCurrentTemp;
+        this.roomCurrentHumidity = roomCurrentHumidity;
+    }
+
+    public static List<String> getAllRoomName(List<Room> lstRoom) {
+        List<String> lstRoomName = new ArrayList<>();
+        for (Room room : lstRoom) {
+            lstRoomName.add(room.getRoomName());
+        }
+        return lstRoomName;
     }
 
     public String getRoomId() {
@@ -44,36 +47,36 @@ public class Room {
         this.roomName = roomName;
     }
 
-    public Boolean getRoomState() {
+    public String getRoomState() {
         return roomState;
     }
 
-    public void setRoomState(Boolean roomState) {
+    public void setRoomState(String roomState) {
         this.roomState = roomState;
     }
 
-    public String getRoomDescription() {
-        return roomDescription;
+    public String getRoomTargetTemp() {
+        return roomTargetTemp;
     }
 
-    public void setRoomDescription(String roomDescription) {
-        this.roomDescription = roomDescription;
+    public void setRoomTargetTemp(String roomTargetTemp) {
+        this.roomTargetTemp = roomTargetTemp;
     }
 
-    public String getRoomTemp() {
-        return roomTemp;
+    public String getRoomCurrentTemp() {
+        return roomCurrentTemp;
     }
 
-    public void setRoomTemp(String roomTemp) {
-        this.roomTemp = roomTemp;
+    public void setRoomCurrentTemp(String roomCurrentTemp) {
+        this.roomCurrentTemp = roomCurrentTemp;
     }
 
-    public static List<String> getAllRoomName(List<Room> lstRoom){
-        List<String> lstRoomName = new ArrayList<>();
-        for (Room room: lstRoom){
-            lstRoomName.add(room.getRoomName());
-        }
-        return lstRoomName;
+    public String getRoomCurrentHumidity() {
+        return roomCurrentHumidity;
+    }
+
+    public void setRoomCurrentHumidity(String roomCurrentHumidity) {
+        this.roomCurrentHumidity = roomCurrentHumidity;
     }
 
     @Override

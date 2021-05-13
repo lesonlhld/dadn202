@@ -1,4 +1,4 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.adapter;
 
 import android.graphics.Rect;
 import android.view.View;

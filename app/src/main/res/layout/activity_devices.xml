@@ -5,70 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.DevicesActivity"
-    android:orientation="vertical"
-   >
+    android:orientation="vertical" >
 
     <include
         android:id="@+id/devices_toolbar"
         layout="@layout/toolbar" />
-
-    <TextView
-        android:id="@+id/header_room_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:text="ROOM"
-        android:textStyle="bold"
-        android:textColor="#00ccff"
-        android:textColorLink="#8DE67F"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        />
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:orientation="vertical"-->
-<!--        android:weightSum="2">-->
-
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/btn_air_conditioner"-->
-<!--            android:layout_marginRight="5dp"-->
-<!--            android:layout_marginLeft="5dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:text="Air Conditioner"-->
-<!--            app:iconSize="25dp"-->
-<!--            app:icon="@drawable/air_conditioner"-->
-<!--            />-->
-<!--        <ListView-->
-<!--            android:id="@+id/list_air_conditioners"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:visibility="visible"/>-->
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/btn_fan"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_marginRight="5dp"-->
-<!--            android:layout_marginLeft="5dp"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:text="Fan"-->
-<!--            app:iconSize="25dp"-->
-<!--            app:icon="@drawable/ac"-->
-<!--            />-->
-
-<!--        <ListView-->
-<!--            android:id="@+id/list_fans"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:visibility="visible" />-->
-<!--    </LinearLayout>-->
 
     <Spinner
         android:id="@+id/spinner_devices"

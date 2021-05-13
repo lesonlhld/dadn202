@@ -1,27 +1,28 @@
-package letrungson.com.smartcontroller;
+package letrungson.com.smartcontroller.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.activity.RoomDetailActivity;
 import letrungson.com.smartcontroller.model.Room;
-import letrungson.com.smartcontroller.model.RoomDetail;
+
+import static java.lang.String.valueOf;
 
 public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
     private List<Room> roomList;
     private Context context;
 
-    public RoomViewAdapter(Context context,List<Room> roomList) {
+    public RoomViewAdapter(Context context, List<Room> roomList) {
         this.roomList = roomList;
         this.context = context;
     }
@@ -36,15 +37,19 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.roomName.setText(this.roomList.get(position).getRoomName());
-        holder.roomDescription.setText(this.roomList.get(position).getRoomDescription());
-        holder.roomTemp.setText(this.roomList.get(position).getRoomTemp());
+        if (this.roomList.get(position).getRoomTargetTemp() != null) {
+            holder.roomTargetTemp.setText("Heat to " + this.roomList.get(position).getRoomTargetTemp());
+        } else {
+            holder.roomTargetTemp.setText("No schedule");
+        }
+        holder.roomCurrentTemp.setText(this.roomList.get(position).getRoomCurrentTemp());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(context, RoomDetail.class);
-//                intent.putExtra("Room",roomList.get(position).toString());
-//                context.startActivity(intent);
-                Toast.makeText(context, "Clicked" + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Clicked: " + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, RoomDetailActivity.class);
+                intent.putExtra("roomId", roomList.get(position).getRoomId());
+                context.startActivity(intent);
                 notifyDataSetChanged();
             }
         });
@@ -55,16 +60,16 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         return roomList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView roomName;
-        TextView roomDescription;
-        TextView roomTemp;
-        public MyViewHolder(View itemView){
+        TextView roomTargetTemp;
+        TextView roomCurrentTemp;
+
+        public MyViewHolder(View itemView) {
             super(itemView);
             roomName = (TextView) itemView.findViewById(R.id.room_item_name);
-            roomDescription = (TextView) itemView.findViewById(R.id.room_item_description);
-            roomTemp = (TextView) itemView.findViewById(R.id.room_item_temp);
+            roomTargetTemp = (TextView) itemView.findViewById(R.id.room_item_description);
+            roomCurrentTemp = (TextView) itemView.findViewById(R.id.room_item_temp);
         }
     }
-
 }
