@@ -1,11 +1,5 @@
 package letrungson.com.smartcontroller.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +8,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
-//import com.benlypan.usbhid.OnUsbHidDeviceListener;
-//import com.benlypan.usbhid.UsbHidDevice;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,15 +30,10 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +46,6 @@ import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
-
-import android.widget.ImageButton;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -210,8 +202,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Thoát")
                 .setMessage("Bạn có muốn thoát ứng dụng?")
-                .setPositiveButton("Có", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Build.VERSION.SDK_INT >= 16 && Build.VERSION.SDK_INT < 21) {
@@ -220,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                             finishAndRemoveTask();
                         }
                         System.exit(0);
-                  }
+                    }
 
                 })
                 .setNegativeButton("Không", null)
@@ -237,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Room room = data.getValue(Room.class);
                     String roomId = data.getKey();
-                    room.setRoomId(roomId);
+                    room.setroomId(roomId);
                     listRoom.add(room);
                 }
                 roomViewAdapter.notifyDataSetChanged();
@@ -250,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         });
     }
 
-    public void receiveDataMQTT(){
+    public void receiveDataMQTT() {
         mqttService = new MQTTService(this);
         mqttService.setCallback(new MqttCallbackExtended() {
             @Override
@@ -273,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     if (context.equals(dataMqtt.getKey())) {
                         Log.d(topic, data_to_microbit);
                         updateData(dataMqtt.getKey(), dataMqtt);
-                        db.updateDevice(dataMqtt.getKey().replace('.','-'), dataMqtt.getLast_value());
+                        db.updateDevice(dataMqtt.getKey().replace('.', '-'), dataMqtt.getLast_value());
                         //port.write(data_to_microbit.getBytes(),1000);
                     }
                 }

@@ -5,14 +5,12 @@ public class Data {
     private String last_value;
     private String updated_at;
     private String key;
-//    DetailData data;
 
     public Data(String id, String last_value, String updated_at, String key) {
         this.id = id;
         this.last_value = last_value;
         this.updated_at = updated_at;
         this.key = key;
-//        this.data = data;
     }
 
     public String getId() {
@@ -46,12 +44,4 @@ public class Data {
     public void setKey(String key) {
         this.key = key;
     }
-
-//    public void setData(DetailData data) {
-//        this.data = data;
-//    }
-//
-//    public DetailData getData() {
-//        return data;
-//    }
 }

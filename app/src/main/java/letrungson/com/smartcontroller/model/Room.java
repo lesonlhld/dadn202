@@ -31,11 +31,11 @@ public class Room {
         return lstRoomName;
     }
 
-    public String getRoomId() {
+    public String getroomId() {
         return roomId;
     }
 
-    public void setRoomId(String roomId) {
+    public void setroomId(String roomId) {
         this.roomId = roomId;
     }
 

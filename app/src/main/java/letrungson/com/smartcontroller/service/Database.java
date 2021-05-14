@@ -1,44 +1,31 @@
 package letrungson.com.smartcontroller.service;
 
 import android.util.Log;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
-import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.activity.DevicesActivity;
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.LogState;
-import letrungson.com.smartcontroller.model.Room;
-import letrungson.com.smartcontroller.model.Device;
 
 public class Database {
 
     private static final String TAG = "Database";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private final DatabaseReference sensors, logs, devices, rooms;
+    private final DatabaseReference sensors, logs, devices, rooms, schedules;
 
     public Database() {
         sensors = database.getReference("sensors");
         logs = database.getReference("logs");
         devices = database.getReference("devices");
         rooms = database.getReference("rooms");
+        schedules = database.getReference("schedules");
     }
 
     public void addSensorLog(Data o) {
@@ -46,21 +33,21 @@ public class Database {
         sensors.child(id).setValue(o);
     }
 
-    public void addLog(String deviceid, String newState, String userId) {
+    public void addLog(String deviceId, String newState, String userId) {
         FirebaseUser user = mAuth.getCurrentUser();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String datetime = formatter.format(LocalDateTime.now());
-        LogState log = new LogState(datetime, deviceid, newState, userId);
+        LogState log = new LogState(datetime, deviceId, newState, userId);
         String id = "Log" + logs.push().getKey();
         logs.child(id).setValue(log);
     }
 
-    public void addLog(String deviceid, String newState) {
+    public void addLog(String deviceId, String newState) {
         FirebaseUser user = mAuth.getCurrentUser();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String datetime = formatter.format(LocalDateTime.now());
-        String userid = user.getUid();
-        LogState log = new LogState(datetime, deviceid, newState, userid);
+        String userId = user.getUid();
+        LogState log = new LogState(datetime, deviceId, newState, userId);
         String id = "Log" + logs.push().getKey();
         logs.child(id).setValue(log);
     }
@@ -75,7 +62,7 @@ public class Database {
         rooms.child(roomId).child("roomCurrentHumidity").setValue(humid);
     }
 
-    public void removLog(){
+    public void removLog() {
         logs.removeValue();
         Log.d("db", "removed successfully");
     }

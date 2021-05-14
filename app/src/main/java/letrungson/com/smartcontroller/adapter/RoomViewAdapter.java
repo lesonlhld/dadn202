@@ -16,8 +16,6 @@ import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.RoomDetailActivity;
 import letrungson.com.smartcontroller.model.Room;
 
-import static java.lang.String.valueOf;
-
 public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
     private List<Room> roomList;
     private Context context;
@@ -48,7 +46,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
             public void onClick(View v) {
                 //Toast.makeText(context, "Clicked: " + roomList.get(position).getRoomName(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, RoomDetailActivity.class);
-                intent.putExtra("roomId", roomList.get(position).getRoomId());
+                intent.putExtra("roomId", roomList.get(position).getroomId());
                 context.startActivity(intent);
                 notifyDataSetChanged();
             }
