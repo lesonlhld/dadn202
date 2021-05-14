@@ -39,8 +39,7 @@ public class Tranform {
 
         if (result.length() == 0) {
             return "No day";
-        }
-        else {
+        } else {
             result.deleteCharAt(result.length() - 1);
             return result.toString();
         }

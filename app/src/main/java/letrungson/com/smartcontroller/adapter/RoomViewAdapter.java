@@ -16,8 +16,6 @@ import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.RoomDetailActivity;
 import letrungson.com.smartcontroller.model.Room;
 
-import static java.lang.String.valueOf;
-
 public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
     private List<Room> roomList;
     private Context context;

@@ -18,13 +18,15 @@ public class Device {
         this.type = type;
         this.state = state;
     }
-    public Device(Device device){
+
+    public Device(Device device) {
         this.deviceId = device.getDeviceId();
         this.deviceName = device.getDeviceName();
         this.roomId = device.getRoomId();
         this.type = device.getType();
         this.state = device.getState();
     }
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -65,7 +67,7 @@ public class Device {
         this.state = state;
     }
 
-    public void assign(Device device){
+    public void assign(Device device) {
 //        this.deviceId = device.getDeviceId();
         this.deviceName = device.getDeviceName();
 //        this.roomId = device.getRoomId();

@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -20,14 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Room;
-import letrungson.com.smartcontroller.service.Database;
-
-import static java.lang.String.valueOf;
 
 public class RoomDetailActivity extends Activity {
     private final DatabaseReference rooms = FirebaseDatabase.getInstance().getReference();
@@ -54,7 +45,7 @@ public class RoomDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RoomDetailActivity.this, ScheduleActivity.class);
-                intent.putExtra("roomID", thisRoom.getRoomId());
+                intent.putExtra("roomId", thisRoom.getRoomId());
                 intent.putExtra("roomName", thisRoom.getRoomName());
                 startActivity(intent);
             }
@@ -65,7 +56,7 @@ public class RoomDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RoomDetailActivity.this, DevicesActivity.class);
-                intent.putExtra("roomID", thisRoom.getRoomId());
+                intent.putExtra("roomId", thisRoom.getRoomId());
                 startActivity(intent);
             }
         });

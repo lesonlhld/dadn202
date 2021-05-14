@@ -7,11 +7,11 @@ public class Schedule {
     private int humid;
     private String startTime;
     private String endTime;
-    private String scheduleID;
-    private String roomID;
+    private String scheduleId;
+    private String roomId;
 
-    public Schedule(){
-        this.temp = -1;
+    public Schedule() {
+/*        this.temp = -1;
         this.humid = -1;
         this.startTime = "";
         this.endTime = "";
@@ -19,7 +19,7 @@ public class Schedule {
 //        for(int i = 0; i < 7; i++) {
 //            this.repeatDay[i] = false;
 //        }
-        this.repeatDay = "";
+        this.repeatDay = "";*/
     }
 
     public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay) {
@@ -33,12 +33,12 @@ public class Schedule {
         this.repeatDay = repeatDay;
     }
 
-    public String getScheduleID() {
-        return scheduleID;
+    public String getScheduleId() {
+        return scheduleId;
     }
 
-    public void setScheduleID(String scheduleID) {
-        this.scheduleID = scheduleID;
+    public void setScheduleId(String scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
     public int getTemp() {
@@ -73,19 +73,19 @@ public class Schedule {
         this.endTime = endTime;
     }
 
-    public String getRepeatDay(){
+    public String getRepeatDay() {
         return this.repeatDay;
     }
 
-    public void setRepeatDay(String repeatDay){
+    public void setRepeatDay(String repeatDay) {
         this.repeatDay = repeatDay;
     }
 
-    public String getRoomID() {
-        return roomID;
+    public String getRoomId() {
+        return roomId;
     }
 
-    public void setRoomID(String roomID) {
-        this.roomID = roomID;
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 }
