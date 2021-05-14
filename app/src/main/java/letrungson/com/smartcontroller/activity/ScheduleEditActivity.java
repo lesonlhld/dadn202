@@ -2,13 +2,10 @@ package letrungson.com.smartcontroller.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.app.Activity;
 
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Schedule;
-import letrungson.com.smartcontroller.model.Room;
-
-import androidx.fragment.app.DialogFragment;
+import letrungson.com.smartcontroller.tools.Tranform;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,19 +29,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class ScheduleEditActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     Schedule thisSchedule;
     String scheduleId;
-    TextView start_time, end_time, temp_data, humi_data;
+    TextView start_time, end_time, temp_data, humi_data, repeat_day_text;
     ImageButton up_temp_btn, down_temp_btn, up_humi_btn, down_humi_btn, close_btn, tick_btn;
-    Button set_repeatTime_btn, delete_btn;
+    Button set_repeat_day_btn, delete_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +60,11 @@ public class ScheduleEditActivity extends AppCompatActivity {
         humi_data = (TextView) findViewById(R.id.humi_data_view);
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
-        set_repeatTime_btn = (Button) findViewById(R.id.set_repeatTime_btn);
+        set_repeat_day_btn = (Button) findViewById(R.id.set_repeat_day_btn);
         delete_btn = (Button) findViewById(R.id.delete_btn);
+        repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
 
+        //delete_btn.setText("DELETE");
 
         start_time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +114,33 @@ public class ScheduleEditActivity extends AppCompatActivity {
             }
         });
 
+        AlertDialog.Builder delete_builder = new AlertDialog.Builder(this);
+
+        delete_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete_builder.setMessage("Do you want to delete this schedule?")
+                        .setCancelable(false)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                                deleteSchedule();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog delete_alert = delete_builder.create();
+                delete_alert.setTitle("WARN");
+                delete_alert.show();
+            }
+        });
+
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,18 +155,10 @@ public class ScheduleEditActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        delete_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteSchedule();
-                finish();
-            }
-        });
         // lines below is prepare to set repeat day
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        set_repeatTime_btn.setOnClickListener(new View.OnClickListener() {
+        set_repeat_day_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String[] items = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -182,6 +198,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                                     A[Integer.valueOf(itemsSelected.get(i).toString())] = '1';
                                 }
                                 thisSchedule.setRepeatDay(String.valueOf(A));
+                                repeat_day_text.setText(Tranform.BinaryToDaily(String.valueOf(A)));
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -212,6 +229,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                     humi_data.setText(String.valueOf(thisSchedule.getHumid()));
                     start_time.setText(thisSchedule.getStartTime());
                     end_time.setText(thisSchedule.getEndTime());
+                    repeat_day_text.setText(Tranform.BinaryToDaily(thisSchedule.getRepeatDay()));
                 }
             }
         });
@@ -257,24 +275,32 @@ public class ScheduleEditActivity extends AppCompatActivity {
 
     private void setTime(int flag){
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+        int previous_hour, previous_minute;
+        if (flag == 0) {
+            previous_hour = Integer.valueOf(thisSchedule.getStartTime().substring(0, 2));
+            previous_minute = Integer.valueOf(thisSchedule.getStartTime().substring(3, 5));
+        }
+        else {
+            previous_hour = Integer.valueOf(thisSchedule.getEndTime().substring(0, 2));
+            previous_minute = Integer.valueOf(thisSchedule.getEndTime().substring(3, 5));
+        }
+
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            public void onTimeSet(TimePicker view, int hour, int minute) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
                 if (flag == 0) {
-                    calendar.set(0, 0, 0, hourOfDay, minute);
+                    calendar.set(0, 0, 0, hour, minute);
                     start_time.setText((simpleDateFormat.format(calendar.getTime())));
                     thisSchedule.setStartTime(simpleDateFormat.format(calendar.getTime()));
                 }
                 else {
-                    calendar.set(0, 0, 0, hourOfDay, minute);
+                    calendar.set(0, 0, 0, hour, minute);
                     end_time.setText((simpleDateFormat.format(calendar.getTime())));
                     thisSchedule.setEndTime(simpleDateFormat.format(calendar.getTime()));
                 }
             }
-        }, hour, minute, true);
+        }, previous_hour, previous_minute, true);
         timePickerDialog.show();
     }
 
