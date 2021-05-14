@@ -3,32 +3,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/add_device_header"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="150dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent">-->
+    <RelativeLayout
+        android:id="@+id/header_add_device"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
-<!--        <ImageView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:padding="10dp"-->
-<!--            android:src="" />-->
-<!--    </RelativeLayout>-->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/add_devices_logo" />
+    </RelativeLayout>
 
-<!--    <RelativeLayout-->
-<!--        android:layout_width="220dp"-->
-<!--        android:layout_height="480dp"-->
-<!--        android:background="@drawable/shape_left_panel"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/add_device_header"/>-->
+    <RelativeLayout
+        android:layout_width="220dp"
+        android:layout_height="540dp"
+        android:background="@drawable/shape_left_panel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header_add_device"/>
+
+    <LinearLayout
+        android:id="@+id/form_add_device"
+        app:layout_constraintTop_toBottomOf="@+id/header_add_device"
+        android:layout_marginTop="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="@drawable/shape_form_panel"
+        android:paddingTop="70dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:orientation="vertical">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="Name"
+            android:layout_marginBottom="35dp"
+            android:background="@drawable/edit_text_border"
+            android:popupBackground="#DFFFFFFF"/>
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:autofillHints="Type"
+            android:background="@drawable/spinner_border"
+            android:spinnerMode="dropdown"
+            android:popupBackground="#DFFFFFFF"
+        />
+    </LinearLayout>
+    <Button
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/form_add_device"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_add_device_btn"
+        android:text="ADD" />
+
+
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="350dp">-->
-
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:gravity="center_horizontal">-->
+<!--        <TextView-->
+<!--            android:text="ADD A DEVICE"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:textSize="20sp"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"/>-->
 <!--    </LinearLayout>-->
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

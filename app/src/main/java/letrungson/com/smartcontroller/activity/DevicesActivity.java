@@ -79,9 +79,9 @@ public class DevicesActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String roomID = intent.getStringExtra("roomID");
 
-        //Set up Button Add and Remove
+        //Set up Button Add
         Button btn_add = findViewById(R.id.btn_add_devices);
-
+        
 
         //Setup List View
         List<String> type= Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
