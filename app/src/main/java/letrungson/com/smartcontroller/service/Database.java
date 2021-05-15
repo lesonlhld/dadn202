@@ -76,20 +76,19 @@ public class Database {
         rooms.child(roomId).child("roomCurrentHumidity").setValue(humid);
     }
 
-    public void removLog(){
+    public void removLog() {
         logs.removeValue();
         Log.d("db", "removed successfully");
     }
 
-    public void addDevice(String deviceName, String roomId, String type) {
-        String id = "Device" + rooms.push().getKey();
+    public void addDevice(String deviceId, String deviceName, String type, String roomId) {
         HashMap hashMap = new HashMap();
-        hashMap.put("deviceName",deviceName);
-        hashMap.put("roomId",roomId);
-        hashMap.put("state","Off");
-        hashMap.put("type",type);
-        hashMap.put("deviceName",deviceName);
-        devices.child(id).setValue(hashMap);
+        hashMap.put("deviceName", deviceName);
+        hashMap.put("roomId", roomId);
+        hashMap.put("state", "Off");
+        hashMap.put("type", type);
+        hashMap.put("deviceName", deviceName);
+        devices.child(deviceId).setValue(hashMap);
     }
 
     public void updateDevice(String deviceId, String currentState) {

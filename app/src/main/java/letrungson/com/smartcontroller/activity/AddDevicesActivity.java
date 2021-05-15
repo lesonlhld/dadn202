@@ -40,10 +40,13 @@ public class AddDevicesActivity extends AppCompatActivity {
     private ArrayList<Device> arrayListDevice;
     private Database db_service;
     private EditText textDeviceName;
+    private EditText textDeviceId;
     private FirebaseDatabase db;
     private DatabaseReference dbRefDevices;
     private Spinner spinnerAddDevice;
     private Button buttonAddDevices;
+    private String roomId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +60,11 @@ public class AddDevicesActivity extends AppCompatActivity {
         arrayListDevice = new ArrayList<Device>();
         //Get intent
         Intent intent = getIntent();
-        final String roomID = intent.getStringExtra("roomID");
+        roomId = intent.getStringExtra("roomID");
 
         //Setup DeviceName EditText
         textDeviceName = findViewById(R.id.edit_text_device_name);
+        textDeviceId = findViewById(R.id.edit_text_device_id);
 
         //Setup DeviceType Spinner
         spinnerAddDevice = findViewById(R.id.spinner_add_devices);
@@ -94,10 +98,11 @@ public class AddDevicesActivity extends AppCompatActivity {
         buttonAddDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateDeviceName() && validateDeviceType()) {
+                if (validateDeviceName() && validateDeviceType() && validateDeviceId()) {
+                    String deviceId= textDeviceId.getText().toString().trim();
                     String deviceName = textDeviceName.getText().toString().trim();
                     String type = spinnerAddDevice.getSelectedItem().toString().trim();
-                    db_service.addDevice(deviceName, roomID, type);
+                    db_service.addDevice(deviceId,deviceName,type,roomId);
                     textDeviceName.setText("");
                     Toast.makeText
                             (getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT)
@@ -116,7 +121,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             }
         });
         //Setup database device name listener
-        dbRefDevices.orderByChild("roomId").equalTo(roomID).addChildEventListener(new ChildEventListener() {
+        dbRefDevices.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
@@ -139,6 +144,7 @@ public class AddDevicesActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Device device = snapshot.getValue(Device.class);
@@ -175,13 +181,29 @@ public class AddDevicesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private boolean validateDeviceId() {
+        String inputDeviceId = textDeviceId.getText().toString().trim();
+        if (inputDeviceId.isEmpty()) {
+            textDeviceId.setError("Field can't be empty");
+            return false;
+        } else if (!inputDeviceId.matches("[a-zA-Z0-9.]*")) {
+            textDeviceId.setError("Invalid format of ID");
+            return false;
+        } else if (isDeviceIdExist(inputDeviceId)) {
+            textDeviceId.setError("This ID is already used");
+            return false;
+        }
+        textDeviceId.setError(null);
+        return true;
+    }
+
     private boolean validateDeviceName() {
         String inputDeviceName = textDeviceName.getText().toString().trim();
         if (inputDeviceName.isEmpty()) {
             textDeviceName.setError("Field can't be empty");
             return false;
-        } else if (!inputDeviceName.matches("[a-zA-Z0-9_ ]*")) {
-            textDeviceName.setError("Only contain letters,numbers,and underscore");
+        } else if (!inputDeviceName.matches("[a-zA-Z0-9 ]*")) {
+            textDeviceName.setError("Only contain letters,numbers,and WS");
             return false;
         } else if (inputDeviceName.length() > 20) {
             textDeviceName.setError("Device name too long");
@@ -196,7 +218,16 @@ public class AddDevicesActivity extends AppCompatActivity {
 
     private boolean isDeviceNameExist(String input) {
         for (Device device : arrayListDevice) {
-            if (device.getDeviceName().equals(input))
+            if (device.getRoomId().equals(roomId))
+                if (device.getDeviceName().equals(input))
+                    return true;
+        }
+        return false;
+    }
+
+    private boolean isDeviceIdExist(String input){
+        for (Device device : arrayListDevice) {
+            if (device.getDeviceId().equals(input))
                 return true;
         }
         return false;
