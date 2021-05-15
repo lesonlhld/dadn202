@@ -4,16 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.service.controls.DeviceTypes;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
@@ -35,15 +30,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Device;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import letrungson.com.smartcontroller.service.Database;
@@ -81,20 +73,27 @@ public class DevicesActivity extends AppCompatActivity {
 
         //Set up Button Add
         Button btn_add = findViewById(R.id.btn_add_devices);
-        
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DevicesActivity.this, AddDevicesActivity.class);
+                intent.putExtra("roomID", roomID);
+                startActivity(intent);
+            }
+        });
 
         //Setup List View
-        List<String> type= Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
-        ArrayList<DeviceAdapter> deviceAdapterArrayList=new ArrayList<DeviceAdapter>();
-        for (String ty:type){
-            deviceAdapterArrayList.add(new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item,new ArrayList<Device>()));
+        List<String> type = Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
+        ArrayList<DeviceAdapter> deviceAdapterArrayList = new ArrayList<DeviceAdapter>();
+        for (String ty : type) {
+            deviceAdapterArrayList.add(new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item, new ArrayList<Device>()));
         }
         listViewDevices = findViewById(R.id.list_devices);
 
         //Setup spinner
         spinnerDeviceType = findViewById(R.id.spinner_devices);
-        SpinnerAdapter spinnerAdapter = new SpinnerAdapter(DevicesActivity.this, R.layout.spinner_item, type);
-        spinnerDeviceType.setAdapter(spinnerAdapter);
+        SpinnerAdapter1 spinnerAdapter1 = new SpinnerAdapter1(DevicesActivity.this, R.layout.spinner_item, type);
+        spinnerDeviceType.setAdapter(spinnerAdapter1);
         spinnerDeviceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -109,55 +108,54 @@ public class DevicesActivity extends AppCompatActivity {
         //Reference to database child "devices" listener
         dbRefDevices.orderByChild("roomId").equalTo(roomID).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull  DataSnapshot snapshot, @Nullable  String previousChildName) {
-                Device device=snapshot.getValue(Device.class);
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Device device = snapshot.getValue(Device.class);
                 device.setDeviceId(snapshot.getKey());
-                if (device.getType()!=null && !device.getType().equals("sensor")){
-                    int currentType=0;
+                if (device.getType() != null && !device.getType().equals("sensor")) {
+                    int currentType = 0;
                     deviceAdapterArrayList.get(0).add(device);
-                    for (int i=1;i<type.size();i++){
-                        if (type.get(i).equals(device.getType())){
+                    for (int i = 1; i < type.size(); i++) {
+                        if (type.get(i).equals(device.getType())) {
                             deviceAdapterArrayList.get(i).add(device);
-                            currentType=i;
+                            currentType = i;
                             break;
                         }
                     }
-                    int currentViewPos= spinnerDeviceType.getSelectedItemPosition();
-                    if (currentViewPos==currentType || currentViewPos==0){
+                    int currentViewPos = spinnerDeviceType.getSelectedItemPosition();
+                    if (currentViewPos == currentType || currentViewPos == 0) {
                         listViewDevices.setAdapter(deviceAdapterArrayList.get(currentViewPos));
                     }
                 }
             }
 
             @Override
-            public void onChildChanged(@NonNull  DataSnapshot snapshot, @Nullable  String previousChildName) {
-                Device device=snapshot.getValue(Device.class);
-                String deviceID= snapshot.getKey();
-                if (device.getType()!=null){
-                    int currentViewPos= spinnerDeviceType.getSelectedItemPosition();
-                    int currentType=0;
-                    for (int i=1; i<type.size();i++){
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Device device = snapshot.getValue(Device.class);
+                String deviceID = snapshot.getKey();
+                if (device.getType() != null) {
+                    int currentViewPos = spinnerDeviceType.getSelectedItemPosition();
+                    int currentType = 0;
+                    for (int i = 1; i < type.size(); i++) {
                         if (type.get(i).equals(device.getType()))
-                            currentType=i;
+                            currentType = i;
                     }
-                    if (currentViewPos==0||currentViewPos==currentType ){
+                    if (currentViewPos == 0 || currentViewPos == currentType) {
                         int j;
-                        DeviceAdapter deviceAdapter_current= deviceAdapterArrayList.get(currentViewPos);
-                        for (j=0;j<deviceAdapter_current.getCount();j++){
-                            if (deviceAdapter_current.getItem(j).getDeviceId().equals(deviceID)){
+                        DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentViewPos);
+                        for (j = 0; j < deviceAdapter_current.getCount(); j++) {
+                            if (deviceAdapter_current.getItem(j).getDeviceId().equals(deviceID)) {
                                 deviceAdapter_current.getItem(j).assign(device);
                                 break;
                             }
                         }
                         View convertView = listViewDevices.getChildAt(j - listViewDevices.getFirstVisiblePosition());
                         SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
-                        TextView textView=(TextView)  convertView.findViewById(R.id.device_item_title);
+                        TextView textView = (TextView) convertView.findViewById(R.id.device_item_title);
                         textView.setText(device.getDeviceName());
                         switchCompat.setChecked(device.getState().equals("On"));
-                    }
-                    else{
-                        DeviceAdapter deviceAdapter_current= deviceAdapterArrayList.get(currentType);
-                        for (int j=0;j<deviceAdapter_current.getCount();j++){
+                    } else {
+                        DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentType);
+                        for (int j = 0; j < deviceAdapter_current.getCount(); j++) {
                             if (deviceAdapter_current.getItem(j).getDeviceId().equals(deviceID))
                                 deviceAdapter_current.getItem(j).assign(device);
                         }
@@ -166,42 +164,41 @@ public class DevicesActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildRemoved(@NonNull  DataSnapshot snapshot) {
-                Device device=snapshot.getValue(Device.class);
-                String deviceID= snapshot.getKey();
-                if (device.getType()!=null && !device.getType().equals("sensor")){
-                    int currentType=0;
-                    for (int i=1; i<type.size();i++){
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Device device = snapshot.getValue(Device.class);
+                String deviceID = snapshot.getKey();
+                if (device.getType() != null && !device.getType().equals("sensor")) {
+                    int currentType = 0;
+                    for (int i = 1; i < type.size(); i++) {
                         if (type.get(i).equals(device.getType()))
-                            currentType=i;
+                            currentType = i;
                     }
-                    DeviceAdapter deviceAdapter_current= deviceAdapterArrayList.get(currentType);
+                    DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentType);
                     int j;
-                    for (j=0;j<deviceAdapter_current.getCount();j++){
-                        if (deviceAdapter_current.getItem(j).getDeviceId().equals(deviceID)){
-                            Device del_device= deviceAdapter_current.getItem(j);
+                    for (j = 0; j < deviceAdapter_current.getCount(); j++) {
+                        if (deviceAdapter_current.getItem(j).getDeviceId().equals(deviceID)) {
+                            Device del_device = deviceAdapter_current.getItem(j);
                             deviceAdapter_current.remove(del_device);
                             deviceAdapterArrayList.get(0).remove(del_device);
                             break;
                         }
                     }
-                    int currentViewPos= spinnerDeviceType.getSelectedItemPosition();
-                    if (currentViewPos==currentType){
+                    int currentViewPos = spinnerDeviceType.getSelectedItemPosition();
+                    if (currentViewPos == currentType) {
                         listViewDevices.setAdapter(deviceAdapter_current);
-                    }
-                    else if(currentViewPos==0){
+                    } else if (currentViewPos == 0) {
                         listViewDevices.setAdapter(deviceAdapterArrayList.get(0));
                     }
                 }
             }
 
             @Override
-            public void onChildMoved(@NonNull  DataSnapshot snapshot, @Nullable  String previousChildName) {
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
             }
 
             @Override
-            public void onCancelled(@NonNull  DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
@@ -223,9 +220,10 @@ public class DevicesActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_devices, menu);
         return true;
     }
-    int index=0;
-    int index1=0;
-    private class DeviceAdapter extends ArrayAdapter<Device>{
+
+    //    int index=0;
+//    int index1=0;
+    private class DeviceAdapter extends ArrayAdapter<Device> {
         private int layout;
 
         public DeviceAdapter(Context context, int resource, ArrayList<Device> objects) {
@@ -264,14 +262,14 @@ public class DevicesActivity extends AppCompatActivity {
                         mqttService.sendDataMQTT(device.getDeviceId(), state);
                     }
                 });
-                Toast toast = Toast.makeText(DevicesActivity.this, "null" + index, Toast.LENGTH_SHORT);
-                index++;
-                toast.show();
+//                Toast toast = Toast.makeText(DevicesActivity.this, "null" + index, Toast.LENGTH_SHORT);
+//                index++;
+//                toast.show();
                 convertView.setTag(deviceHolder);
             } else {
                 mainDeviceViewholder = (DeviceHolder) convertView.getTag();
-                Toast toast = Toast.makeText(DevicesActivity.this, "main" + index1, Toast.LENGTH_SHORT);
-                index1++;
+//                Toast toast = Toast.makeText(DevicesActivity.this, "main" + index1, Toast.LENGTH_SHORT);
+//                index1++;
             }
             return convertView;
         }
@@ -285,10 +283,10 @@ public class DevicesActivity extends AppCompatActivity {
 
 
     //Spinner Adapter
-    private class SpinnerAdapter extends ArrayAdapter<String> {
+    private class SpinnerAdapter1 extends ArrayAdapter<String> {
         private int layout;
 
-        public SpinnerAdapter(Context context, int resource, List<String> objects) {
+        public SpinnerAdapter1(Context context, int resource, List<String> objects) {
             super(context, resource, objects);
             layout = resource;
         }
