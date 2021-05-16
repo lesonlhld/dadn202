@@ -105,6 +105,7 @@ public class AddDevicesActivity extends AppCompatActivity {
                     textDeviceId.setText("");
                     textDeviceName.setText("");
                     Toast.makeText(getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });
@@ -194,9 +195,9 @@ public class AddDevicesActivity extends AppCompatActivity {
         if (inputDeviceName.isEmpty()) {
             textDeviceName.setError("Field can't be empty");
             return false;
-        } else if (!inputDeviceName.matches("[a-zA-Z0-9 -]*")) {
+/*        } else if (!inputDeviceName.matches("[a-zA-Z0-9 -]*")) {
             textDeviceName.setError("Only contain letters, numbers and WS");
-            return false;
+            return false;*/
         } else if (inputDeviceName.length() > 20) {
             textDeviceName.setError("Device name too long");
             return false;

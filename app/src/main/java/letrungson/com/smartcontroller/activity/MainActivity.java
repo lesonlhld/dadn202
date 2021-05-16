@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 cDevice = null;
                 cDevice = dataSnapshot.getValue(Device.class);
                 if (cDevice.getType() != null) {
-                    if (cDevice.getType().equals("sensor")) {
+                    if (cDevice.getType().equals("Sensor")) {
                         db.addSensorLog(dataMqtt);
                         String value = dataMqtt.getLast_value();
                         String roomId = cDevice.getRoomId();
