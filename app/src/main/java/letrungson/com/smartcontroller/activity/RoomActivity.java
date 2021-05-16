@@ -35,9 +35,9 @@ public class RoomActivity extends Activity {
     TextView roomName, cancel;
     ArrayAdapter<Room> arrayAdapter;
     ListView listView;
+    Database db = new Database();
     private List<Room> listRoom;
     private DatabaseReference devices, rooms, schedules;
-    Database db = new Database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +60,16 @@ public class RoomActivity extends Activity {
                 String roomId = listRoom.get(pos).getRoomId();
                 Log.d("room", roomId);
                 new AlertDialog.Builder(RoomActivity.this)
-                        .setTitle("Xóa")
-                        .setMessage("Bạn muốn xóa phòng này?")
-                        .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                        .setTitle("Remove")
+                        .setMessage("Do you want to remove this room?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeRoom(roomId);
                                 arrayAdapter.notifyDataSetChanged();
                             }
                         })
-                        .setNegativeButton("Hủy", null)
+                        .setNegativeButton("No", null)
                         .show();
                 return true;
             }

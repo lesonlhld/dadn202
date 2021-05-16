@@ -108,7 +108,7 @@ public class DevicesActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
                 device.setDeviceId(snapshot.getKey());
-                if (device.getType() != null && !device.getType().equals("sensor")) {
+                if (device.getType() != null) {
                     int currentType = 0;
                     deviceAdapterArrayList.get(0).add(device);
                     for (int i = 1; i < type.size(); i++) {
@@ -164,7 +164,7 @@ public class DevicesActivity extends AppCompatActivity {
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Device device = snapshot.getValue(Device.class);
                 String deviceID = snapshot.getKey();
-                if (device.getType() != null && !device.getType().equals("sensor")) {
+                if (device.getType() != null) {
                     int currentType = 0;
                     for (int i = 1; i < type.size(); i++) {
                         if (type.get(i).equals(device.getType()))

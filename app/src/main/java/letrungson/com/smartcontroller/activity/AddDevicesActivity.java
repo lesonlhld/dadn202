@@ -1,9 +1,5 @@
 package letrungson.com.smartcontroller.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +17,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -60,7 +59,7 @@ public class AddDevicesActivity extends AppCompatActivity {
         arrayListDevice = new ArrayList<Device>();
         //Get intent
         Intent intent = getIntent();
-        roomId = intent.getStringExtra("roomID");
+        roomId = intent.getStringExtra("roomId");
 
         //Setup DeviceName EditText
         textDeviceName = findViewById(R.id.edit_text_device_name);
@@ -98,15 +97,13 @@ public class AddDevicesActivity extends AppCompatActivity {
         buttonAddDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateDeviceId()&& validateDeviceName() && validateDeviceType()  ) {
-                    String deviceId= textDeviceId.getText().toString().trim();
+                if (validateDeviceId() && validateDeviceName() && validateDeviceType()) {
+                    String deviceId = textDeviceId.getText().toString().trim();
                     String deviceName = textDeviceName.getText().toString().trim();
                     String type = spinnerAddDevice.getSelectedItem().toString().trim();
-                    db_service.addDevice(deviceId,deviceName,type,roomId);
+                    db_service.addDevice(deviceId, deviceName, type, roomId);
                     textDeviceName.setText("");
-                    Toast.makeText
-                            (getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast.makeText(getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -126,7 +123,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
                 device.setDeviceId(snapshot.getKey());
-                if (device.getType() != null && !device.getType().equals("sensor")) {
+                if (device.getType() != null) {
                     arrayListDevice.add(device);
                 }
             }
@@ -135,7 +132,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
                 String deviceID = snapshot.getKey();
-                if (device.getType() != null && !device.getType().equals("sensor")) {
+                if (device.getType() != null) {
                     for (Device device0 : arrayListDevice) {
                         if (device0.getDeviceId().equals(deviceID)) {
                             device0.assign(device);
@@ -149,7 +146,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Device device = snapshot.getValue(Device.class);
                 String deviceID = snapshot.getKey();
-                if (device.getType() != null && !device.getType().equals("sensor")) {
+                if (device.getType() != null) {
                     for (Device device0 : arrayListDevice) {
                         if (device0.getDeviceId().equals(deviceID)) {
                             arrayListDevice.remove(device0);
@@ -202,8 +199,8 @@ public class AddDevicesActivity extends AppCompatActivity {
         if (inputDeviceName.isEmpty()) {
             textDeviceName.setError("Field can't be empty");
             return false;
-        } else if (!inputDeviceName.matches("[a-zA-Z0-9 ]*")) {
-            textDeviceName.setError("Only contain letters,numbers,and WS");
+        } else if (!inputDeviceName.matches("[a-zA-Z0-9 -]*")) {
+            textDeviceName.setError("Only contain letters, numbers and WS");
             return false;
         } else if (inputDeviceName.length() > 20) {
             textDeviceName.setError("Device name too long");
@@ -225,7 +222,7 @@ public class AddDevicesActivity extends AppCompatActivity {
         return false;
     }
 
-    private boolean isDeviceIdExist(String input){
+    private boolean isDeviceIdExist(String input) {
         for (Device device : arrayListDevice) {
             if (device.getDeviceId().equals(input))
                 return true;
@@ -239,7 +236,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             TextView title = convertView.findViewById(R.id.spinner_add_devices_title);
             title.setError("");
             title.setTextColor(Color.RED);//just to highlight that this is an error
-            title.setText("Must pick a type ");//changes the selected item text to this
+            title.setText("Must pick a type");//changes the selected item text to this
             return false;
         }
         return true;

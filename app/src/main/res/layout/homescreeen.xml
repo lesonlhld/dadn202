@@ -10,12 +10,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Demo Room"
+            android:text="ST4"
             android:textColor="#686D73"
             android:textSize="32dp"
             android:textStyle="bold" />
@@ -63,6 +63,17 @@
             android:textStyle="normal" />
     </RelativeLayout>
 
+    <ImageButton
+        android:id="@+id/room_manage_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/power"
+        android:layout_alignBottom="@id/power"
+        android:layout_alignRight="@id/gridView"
+        android:background="@null"
+        android:onClick="imageButtonOnClick"
+        android:tint="#324B61"
+        app:srcCompat="@drawable/ic_settings" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gridView"
@@ -73,106 +84,16 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="33dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="-3dp"
+        android:layout_marginBottom="20dp"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/bottomNavigation"
+    <include
+        layout="@layout/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp"
-        android:background="@color/white">
-
-        <!--
-        <ImageButton
-            android:id="@+id/setting_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_settings"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:tint="#324B61"
-            />-->
-
-        <ImageButton
-            android:id="@+id/home_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/home_btn_text"
-            android:layout_alignEnd="@+id/home_btn_text"
-            android:layout_marginStart="6dp"
-            android:layout_marginLeft="65dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="7dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_home"
-            android:tint="#324B61" />
-
-        <ImageButton
-            android:id="@+id/list_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="64dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_list"
-            android:tint="#324B61" />
-
-        <TextView
-            android:id="@+id/home_btn_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="60dp"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="40dp"
-            android:text="Home"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-        <!--
-                <TextView
-                    android:id="@+id/setting_btn_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/setting_btn"
-                    android:layout_marginStart="-14dp"
-                    android:layout_marginTop="40dp"
-                    android:text="Settings"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />-->
-        <TextView
-            android:id="@+id/list_btn_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="60dp"
-            android:text="More"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <ImageButton
-        android:id="@+id/room_manage_btn"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginLeft="300dp"
-        android:layout_marginTop="120dp"
-        android:background="@null"
-        android:onClick="imageButtonOnClick"
-        android:tint="#324B61"
-        app:srcCompat="@drawable/ic_settings" />
-    />
-
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

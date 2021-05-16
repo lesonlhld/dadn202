@@ -71,15 +71,15 @@ public class AccountActivity extends Activity {
                 final String password = inputPassword.getText().toString();
                 final String passwordConfirm = inputPasswordConfirm.getText().toString();
                 if (email.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_email_required), Toast.LENGTH_LONG).show();
                 } else if (password.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu!", Toast.LENGTH_LONG).show();
-                } else if (passwordConfirm.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu xác nhận!", Toast.LENGTH_LONG).show();
-                } else if (!password.equals(passwordConfirm)) {
-                    Toast.makeText(AccountActivity.this, "Mật khẩu xác nhận không khớp!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_password_required), Toast.LENGTH_LONG).show();
                 } else if (password.length() < 6) {
-                    Toast.makeText(AccountActivity.this, "Mật khẩu quá ngắn, hãy nhập tối thiểu 6 ký tự!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.minimum_password), Toast.LENGTH_LONG).show();
+                } else if (passwordConfirm.isEmpty()) {
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_confirm_password_required), Toast.LENGTH_LONG).show();
+                } else if (!password.equals(passwordConfirm)) {
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_match_password), Toast.LENGTH_LONG).show();
                 } else {
                     // [START create_user_with_email]
                     mAuth.createUserWithEmailAndPassword(email, password)
@@ -88,11 +88,11 @@ public class AccountActivity extends Activity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (!task.isSuccessful()) {
                                         if (task.getException().toString().indexOf("The email address is badly formatted") != -1) {
-                                            Toast.makeText(AccountActivity.this, "Địa chỉ email không hợp lệ!", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_invalid_email), Toast.LENGTH_LONG).show();
                                         } else if (task.getException().toString().indexOf("The email address is already in use by another account") != -1) {
-                                            Toast.makeText(AccountActivity.this, "Địa chỉ email đã tồn tại!", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_exist_email), Toast.LENGTH_LONG).show();
                                         } else {
-                                            Toast.makeText(AccountActivity.this, "Đăng ký không thành công!", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(AccountActivity.this, getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
                                         }
                                         updateUI(null);
                                         Log.w(TAG, "signUpWithEmail:failure", task.getException());
@@ -142,9 +142,9 @@ public class AccountActivity extends Activity {
                 final String email = inputEmail.getText().toString();
                 final String password = inputPassword.getText().toString();
                 if (email.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_email_required), Toast.LENGTH_LONG).show();
                 } else if (password.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_password_required), Toast.LENGTH_LONG).show();
                 } else {
                     // [START sign_in_with_email]
                     mAuth.signInWithEmailAndPassword(email, password)
@@ -152,7 +152,7 @@ public class AccountActivity extends Activity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (!task.isSuccessful()) {
-                                        Toast.makeText(AccountActivity.this, "Đặng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(AccountActivity.this, getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
                                         updateUI(null);
                                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     } else {
@@ -212,18 +212,18 @@ public class AccountActivity extends Activity {
                 final String newPassword = inputPassword.getText().toString();
                 final String passwordConfirm = inputPasswordConfirm.getText().toString();
                 if (oldPassword.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu cũ!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_old_password_required), Toast.LENGTH_LONG).show();
                 } else if (newPassword.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu mới!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_new_password_required), Toast.LENGTH_LONG).show();
                 } else if (passwordConfirm.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập mật khẩu xác nhận!", Toast.LENGTH_LONG).show();
-                } else if (!newPassword.equals(passwordConfirm)) {
-                    Toast.makeText(AccountActivity.this, "Mật khẩu xác nhận không khớp!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_confirm_password_required), Toast.LENGTH_LONG).show();
                 } else if (newPassword.length() < 6) {
-                    Toast.makeText(AccountActivity.this, "Mật khẩu quá ngắn, hãy nhập tối thiểu 6 ký tự!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.minimum_password), Toast.LENGTH_LONG).show();
+                } else if (!newPassword.equals(passwordConfirm)) {
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_match_password), Toast.LENGTH_LONG).show();
                 }
-                AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), oldPassword);
 
+                AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), oldPassword);
                 currentUser.reauthenticate(credential)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -231,7 +231,7 @@ public class AccountActivity extends Activity {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "User re-authenticated.");
                                 } else {
-                                    Toast.makeText(AccountActivity.this, "Mật khẩu cũ không chính xác!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_incorrect_password), Toast.LENGTH_LONG).show();
                                     Log.d(TAG, "User re-authenticated failed.");
                                 }
                             }
@@ -243,11 +243,11 @@ public class AccountActivity extends Activity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "User password updated.");
-                                    Toast.makeText(AccountActivity.this, "Đổi mật khẩu thành công!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_successfully), Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(AccountActivity.this, MoreActivity.class));
                                     finish();
                                 } else {
-                                    Toast.makeText(AccountActivity.this, "Đổi mật khẩu thất bại!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_failed), Toast.LENGTH_LONG).show();
                                     Log.d(TAG, "Error password not updated ");
                                 }
                             }
@@ -278,7 +278,7 @@ public class AccountActivity extends Activity {
             public void onClick(View v) {
                 final String email = inputEmail.getText().toString();
                 if (email.isEmpty()) {
-                    Toast.makeText(AccountActivity.this, "Vui lòng nhập email!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_email_required), Toast.LENGTH_LONG).show();
                 } else {
                     // [START sign_in_with_email]
                     mAuth.sendPasswordResetEmail(email)
@@ -286,10 +286,10 @@ public class AccountActivity extends Activity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (!task.isSuccessful()) {
-                                        Toast.makeText(AccountActivity.this, "Thất bại!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(AccountActivity.this, getResources().getString(R.string.reset_password_failed), Toast.LENGTH_LONG).show();
                                         Log.w(TAG, "resetWithEmail:failure", task.getException());
                                     } else {
-                                        Toast.makeText(AccountActivity.this, "Đã gửi email khôi phục mật khẩu!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(AccountActivity.this, getResources().getString(R.string.send_password_reset_email), Toast.LENGTH_LONG).show();
                                         Log.d(TAG, "resetWithEmail:success");
                                         login();
                                     }

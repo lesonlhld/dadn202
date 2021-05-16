@@ -119,9 +119,9 @@ public class ScheduleEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new androidx.appcompat.app.AlertDialog.Builder(ScheduleEditActivity.this)
-                        .setTitle("WARN")
+                        .setTitle("Delete")
                         .setMessage("Do you want to delete this schedule?")
-                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
@@ -129,7 +129,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                                 finish();
                             }
                         })
-                        .setNegativeButton("NO", null)
+                        .setNegativeButton("No", null)
                         .show();
             }
         });

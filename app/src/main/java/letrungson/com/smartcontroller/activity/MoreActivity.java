@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,8 +16,7 @@ import letrungson.com.smartcontroller.R;
 
 public class MoreActivity extends Activity {
     TextView welcome;
-    Button logout, changePassword;
-    ImageButton homeButton;
+    Button logout, changePassword, home, more;
     private FirebaseAuth mAuth;
 
     @Override
@@ -24,12 +24,21 @@ public class MoreActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more);
         welcome = findViewById(R.id.welcome);
-        homeButton = findViewById(R.id.home_btn);
-        homeButton.setOnClickListener(new View.OnClickListener() {
+
+
+        home = findViewById(R.id.home);
+        home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MoreActivity.this, MainActivity.class));
                 finish();
+            }
+        });
+
+        more = findViewById(R.id.more);
+        more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
             }
         });
 

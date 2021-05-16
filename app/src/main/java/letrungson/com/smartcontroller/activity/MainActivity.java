@@ -8,7 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -58,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     UsbSerialPort port;
-    ImageButton moreButton, room_btn;
+    Button home, more;
+    ImageButton room_btn;
     MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
     Device cDevice;
@@ -95,8 +98,15 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         getAllRoom();
         setContentView(R.layout.homescreeen);
 
-        moreButton = findViewById(R.id.list_btn);
-        moreButton.setOnClickListener(new View.OnClickListener() {
+        home = findViewById(R.id.home);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        more = findViewById(R.id.more);
+        more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, MoreActivity.class));
