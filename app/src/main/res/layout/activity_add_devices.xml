@@ -48,7 +48,7 @@
             android:popupBackground="#DFFFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
-
+            android:drawableLeft="@drawable/ic_device_id"
             />
 
         <EditText
@@ -60,7 +60,8 @@
             android:hint="Enter device name"
             android:popupBackground="#DFFFFFFF"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:drawableLeft="@drawable/ic_gear"/>
 
         <Spinner
             android:id="@+id/spinner_add_devices"
@@ -80,6 +81,7 @@
         android:layout_height="50dp"
         android:background="@drawable/shape_add_device_btn"
         android:text="ADD"
+        android:textStyle="bold"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/form_add_device"
         app:layout_constraintEnd_toEndOf="parent"
