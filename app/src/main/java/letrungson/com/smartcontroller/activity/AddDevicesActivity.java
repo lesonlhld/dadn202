@@ -103,6 +103,7 @@ public class AddDevicesActivity extends AppCompatActivity {
                     String deviceName = textDeviceName.getText().toString().trim();
                     String type = spinnerAddDevice.getSelectedItem().toString().trim();
                     db_service.addDevice(deviceId, deviceName, type, roomId);
+                    textDeviceId.setText("");
                     textDeviceName.setText("");
                     Toast.makeText
                             (getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT)
@@ -126,9 +127,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
                 device.setDeviceId(snapshot.getKey());
-
                 arrayListDevice.add(device);
-
             }
 
             @Override

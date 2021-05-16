@@ -136,8 +136,10 @@ public class DevicesActivity extends AppCompatActivity {
                 int currentViewPos = spinnerDeviceType.getSelectedItemPosition();
                 int currentType = 0;
                 for (int i = 1; i < type.size(); i++) {
-                    if (type.get(i).equals(device.getType()))
+                    if (type.get(i).equals(device.getType())){
                         currentType = i;
+                        break;
+                    }
                 }
                 if ((currentViewPos == 0 && !is_sensor) || currentViewPos == currentType) {
                     int j;
@@ -173,8 +175,10 @@ public class DevicesActivity extends AppCompatActivity {
                 boolean is_sensor = device.getType().equals("Sensor");
                 int currentType = 0;
                 for (int i = 1; i < type.size(); i++) {
-                    if (type.get(i).equals(device.getType()))
+                    if (type.get(i).equals(device.getType())){
                         currentType = i;
+                        break;
+                    }
                 }
                 DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentType);
                 int j;
@@ -246,7 +250,7 @@ public class DevicesActivity extends AppCompatActivity {
                 deviceHolder.title.setText(device.getDeviceName());
                 deviceHolder.switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
                 if (is_sensor) deviceHolder.switchCompat.setVisibility(View.INVISIBLE);
-                else{
+                else {
                     deviceHolder.switchCompat.setChecked(device.getState().equals("On"));
 
 
