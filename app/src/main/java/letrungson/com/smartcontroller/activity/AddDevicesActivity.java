@@ -212,10 +212,12 @@ public class AddDevicesActivity extends AppCompatActivity {
     }
 
     private boolean isDeviceNameExist(String input) {
+
         for (Device device : arrayListDevice) {
-            if (device.getRoomId().equals(roomId))
-                if (device.getDeviceName().equals(input))
-                    return true;
+            if (device.getRoomId() != null && device.getDeviceName() != null)
+                if (device.getRoomId().equals(roomId))
+                    if (device.getDeviceName().equals(input))
+                        return true;
         }
         return false;
     }
