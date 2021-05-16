@@ -70,8 +70,8 @@ public class AddDevicesActivity extends AppCompatActivity {
         spinnerAddDevice = findViewById(R.id.spinner_add_devices);
         List<String> type = Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
         type.set(0, "Select a device type");
-        SpinnerAddDeviceAdapter spinnerAddDeviceAdapter = new SpinnerAddDeviceAdapter(this, R.layout.spinner_item, type);
-        spinnerAddDeviceAdapter.setDropDownViewResource(R.layout.spinner_item);
+        SpinnerAddDeviceAdapter spinnerAddDeviceAdapter = new SpinnerAddDeviceAdapter(this, R.layout.spinner_add_device_item, type);
+        spinnerAddDeviceAdapter.setDropDownViewResource(R.layout.spinner_add_device_item);
         spinnerAddDevice.setAdapter(spinnerAddDeviceAdapter);
         spinnerAddDevice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -98,7 +98,7 @@ public class AddDevicesActivity extends AppCompatActivity {
         buttonAddDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateDeviceName() && validateDeviceType() && validateDeviceId()) {
+                if (validateDeviceId()&& validateDeviceName() && validateDeviceType()  ) {
                     String deviceId= textDeviceId.getText().toString().trim();
                     String deviceName = textDeviceName.getText().toString().trim();
                     String type = spinnerAddDevice.getSelectedItem().toString().trim();
@@ -236,7 +236,7 @@ public class AddDevicesActivity extends AppCompatActivity {
     private boolean validateDeviceType() {
         if (spinnerAddDevice.getSelectedItemPosition() == 0) {
             View convertView = spinnerAddDevice.getSelectedView();
-            TextView title = convertView.findViewById(R.id.spinner_title);
+            TextView title = convertView.findViewById(R.id.spinner_add_devices_title);
             title.setError("");
             title.setTextColor(Color.RED);//just to highlight that this is an error
             title.setText("Must pick a type ");//changes the selected item text to this
@@ -261,9 +261,9 @@ public class AddDevicesActivity extends AppCompatActivity {
                 convertView = inflater.inflate(layout, parent, false);
                 SpinnerAddDeviceHolder spinnerAddDeviceHolder = new SpinnerAddDeviceHolder();
                 String title = getItem(position);
-                spinnerAddDeviceHolder.title = (TextView) convertView.findViewById(R.id.spinner_title);
+                spinnerAddDeviceHolder.title = (TextView) convertView.findViewById(R.id.spinner_add_devices_title);
                 spinnerAddDeviceHolder.title.setText(title);
-                spinnerAddDeviceHolder.imageView = (ImageView) convertView.findViewById(R.id.spinner_image);
+                spinnerAddDeviceHolder.imageView = (ImageView) convertView.findViewById(R.id.spinner_add_devices_image);
                 switch (position) {
                     case 0:
                         spinnerAddDeviceHolder.imageView.setImageResource(R.drawable.ic_baseline_device_unknown_24);
