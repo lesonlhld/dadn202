@@ -9,6 +9,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.LogState;
@@ -62,10 +65,19 @@ public class Database {
         rooms.child(roomId).child("roomCurrentHumidity").setValue(humid);
     }
 
-    public void addDevice(String deviceName, String roomId) {
-        String id = "Device" + rooms.push().getKey();
-        devices.child(id).child("deviceName").setValue(deviceName);
-        devices.child(id).child("roomId").setValue(roomId);
+    public void removLog() {
+        logs.removeValue();
+        Log.d("db", "removed successfully");
+    }
+
+    public void addDevice(String deviceId, String deviceName, String type, String roomId) {
+        HashMap hashMap = new HashMap();
+        hashMap.put("deviceName", deviceName);
+        hashMap.put("roomId", roomId);
+        hashMap.put("state", "Off");
+        hashMap.put("type", type);
+        hashMap.put("deviceName", deviceName);
+        devices.child(deviceId).setValue(hashMap);
     }
 
     public void updateDevice(String deviceId, String currentState) {
