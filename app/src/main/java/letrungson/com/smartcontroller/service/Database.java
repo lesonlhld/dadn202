@@ -69,12 +69,12 @@ public class Database {
     }
 
     public void addDevice(String deviceId, String deviceName, String type, String roomId) {
-        HashMap hashMap = new HashMap();
+        HashMap<String,String> hashMap = new HashMap();
         hashMap.put("deviceName", deviceName);
         hashMap.put("roomId", roomId);
-        hashMap.put("state", "Off");
+        if (type.equals("Sensor")) hashMap.put("state", "0-0");
+        else hashMap.put("state", "Off");
         hashMap.put("type", type);
-        hashMap.put("deviceName", deviceName);
         devices.child(deviceId).setValue(hashMap);
     }
 

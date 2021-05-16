@@ -102,6 +102,7 @@ public class AddDevicesActivity extends AppCompatActivity {
                     String deviceName = textDeviceName.getText().toString().trim();
                     String type = spinnerAddDevice.getSelectedItem().toString().trim();
                     db_service.addDevice(deviceId, deviceName, type, roomId);
+                    textDeviceId.setText("");
                     textDeviceName.setText("");
                     Toast.makeText(getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT).show();
                 }
@@ -123,21 +124,17 @@ public class AddDevicesActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
                 device.setDeviceId(snapshot.getKey());
-                if (device.getType() != null) {
-                    arrayListDevice.add(device);
-                }
+                arrayListDevice.add(device);
             }
 
             @Override
             public void onChildChanged(DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
                 String deviceID = snapshot.getKey();
-                if (device.getType() != null) {
-                    for (Device device0 : arrayListDevice) {
-                        if (device0.getDeviceId().equals(deviceID)) {
-                            device0.assign(device);
-                            break;
-                        }
+                for (Device device0 : arrayListDevice) {
+                    if (device0.getDeviceId().equals(deviceID)) {
+                        device0.assign(device);
+                        break;
                     }
                 }
             }
@@ -146,12 +143,10 @@ public class AddDevicesActivity extends AppCompatActivity {
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Device device = snapshot.getValue(Device.class);
                 String deviceID = snapshot.getKey();
-                if (device.getType() != null) {
-                    for (Device device0 : arrayListDevice) {
-                        if (device0.getDeviceId().equals(deviceID)) {
-                            arrayListDevice.remove(device0);
-                            break;
-                        }
+                for (Device device0 : arrayListDevice) {
+                    if (device0.getDeviceId().equals(deviceID)) {
+                        arrayListDevice.remove(device0);
+                        break;
                     }
                 }
             }
@@ -275,6 +270,9 @@ public class AddDevicesActivity extends AppCompatActivity {
                         break;
                     case 3:
                         spinnerAddDeviceHolder.imageView.setImageResource(R.drawable.ic_baseline_whatshot_24);
+                        break;
+                    case 4:
+                        spinnerAddDeviceHolder.imageView.setImageResource(R.drawable.ic_sensor);
                         break;
                     default:
                         spinnerAddDeviceHolder.imageView.setImageResource(R.drawable.ic_baseline_device_unknown_24);
