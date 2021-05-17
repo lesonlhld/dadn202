@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +46,11 @@ public class DevicesActivity extends AppCompatActivity {
     private Database db_service;
     private FirebaseDatabase db;
     private DatabaseReference dbRefDevices;
+    private ArrayList<DeviceAdapter> deviceAdapterArrayList;
+    private List<String> type;
+    private String roomID;
+    private ChildEventListener childEventListener;
+    MQTTService mqttService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +86,8 @@ public class DevicesActivity extends AppCompatActivity {
         });
 
         //Setup List View
-        List<String> type = Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
-        ArrayList<DeviceAdapter> deviceAdapterArrayList = new ArrayList<DeviceAdapter>();
+        type = Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
+        deviceAdapterArrayList = new ArrayList<DeviceAdapter>();
         for (String ty : type) {
             deviceAdapterArrayList.add(new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item, new ArrayList<Device>()));
         }
@@ -103,7 +109,7 @@ public class DevicesActivity extends AppCompatActivity {
             }
         });
         //Reference to database child "devices" listener
-        dbRefDevices.orderByChild("roomId").equalTo(roomId).addChildEventListener(new ChildEventListener() {
+        childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
@@ -119,9 +125,10 @@ public class DevicesActivity extends AppCompatActivity {
                     }
                 }
                 int currentViewPos = spinnerDeviceType.getSelectedItemPosition();
-                if (currentViewPos == currentType || (currentViewPos == 0 && !is_sensor)) {
+                if ((currentViewPos == currentType) || (currentViewPos == 0 && !is_sensor)) {
                     listViewDevices.setAdapter(deviceAdapterArrayList.get(currentViewPos));
                 }
+
             }
 
             @Override
@@ -137,7 +144,7 @@ public class DevicesActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                if ((currentViewPos == 0 && !is_sensor) || currentViewPos == currentType) {
+                if ((currentViewPos == 0 && !is_sensor) || (currentViewPos == currentType)) {
                     int j;
                     DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentViewPos);
                     for (j = 0; j < deviceAdapter_current.getCount(); j++) {
@@ -151,8 +158,9 @@ public class DevicesActivity extends AppCompatActivity {
                         SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
                         TextView textView = (TextView) convertView.findViewById(R.id.device_item_title);
                         textView.setText(device.getDeviceName());
-                        switchCompat.setChecked(device.getState().equals("On"));
+                        switchCompat.setChecked(device.getState().equals("1"));
                     }
+
                 } else {
                     DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentType);
                     for (int j = 0; j < deviceAdapter_current.getCount(); j++) {
@@ -160,6 +168,7 @@ public class DevicesActivity extends AppCompatActivity {
                             deviceAdapter_current.getItem(j).assign(device);
                     }
                 }
+
             }
 
             @Override
@@ -201,7 +210,23 @@ public class DevicesActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dbRefDevices.orderByChild("roomId").equalTo(roomID).addChildEventListener(childEventListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dbRefDevices.orderByChild("roomId").equalTo(roomID).removeEventListener(childEventListener);
+        for (int i=0;i<deviceAdapterArrayList.size();i++){
+            deviceAdapterArrayList.get(i).clear();
+        }
     }
 
     @Override
@@ -220,8 +245,7 @@ public class DevicesActivity extends AppCompatActivity {
         return true;
     }
 
-    //    int index=0;
-//    int index1=0;
+
     private class DeviceAdapter extends ArrayAdapter<Device> {
         private int layout;
 
@@ -229,7 +253,8 @@ public class DevicesActivity extends AppCompatActivity {
             super(context, resource, objects);
             layout = resource;
         }
-
+//        int index =0;
+//        int index1=0;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Device device = getItem(position);
@@ -245,18 +270,16 @@ public class DevicesActivity extends AppCompatActivity {
                 deviceHolder.switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
                 if (is_sensor) deviceHolder.switchCompat.setVisibility(View.INVISIBLE);
                 else {
-                    deviceHolder.switchCompat.setChecked(device.getState().equals("On"));
-
-
+                    deviceHolder.switchCompat.setChecked(device.getState().equals("1"));
                     deviceHolder.switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             if (!buttonView.isPressed()) {
                                 return;
                             }
-                            String state = "Off";
+                            String state = "0";
                             if (isChecked) {
-                                state = "On";
+                                state = "1";
                             }
                             db_service.updateDevice(device.getDeviceId(), state);
                             db_service.addLog(device.getDeviceId(), state);

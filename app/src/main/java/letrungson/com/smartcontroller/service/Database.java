@@ -73,7 +73,7 @@ public class Database {
         hashMap.put("deviceName", deviceName);
         hashMap.put("roomId", roomId);
         if (type.equals("Sensor")) hashMap.put("state", "0-0");
-        else hashMap.put("state", "Off");
+        else hashMap.put("state", "0");
         hashMap.put("type", type);
         devices.child(deviceId).setValue(hashMap);
     }
