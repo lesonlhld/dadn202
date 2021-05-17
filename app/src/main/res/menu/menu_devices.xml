@@ -2,25 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
-    <!--    <item-->
-    <!--        android:id="@+id/action_settings"-->
-    <!--        android:orderInCategory="100"-->
-    <!--        android:title="Add"-->
-    <!--        app:showAsAction="never" />-->
-    <!--    <item-->
-    <!--        android:id="@+id/dsfdsf"-->
-    <!--        android:orderInCategory="100"-->
-    <!--        android:title="Remove"-->
-    <!--        app:showAsAction="never" />-->
-    <!--    <item-->
-    <!--        android:id="@+id/action_search"-->
-    <!--        android:orderInCategory="200"-->
-    <!--        android:title="Search"-->
-    <!--        android:icon="@drawable/ic_calendar"-->
-    <!--        app:showAsAction="ifRoom"/>-->
+    tools:context=".activity.DevicesActivity">
     <item
-        android:id="@+id/minus"
+        android:id="@+id/btn_remove"
         android:icon="@drawable/ic_trash"
         android:orderInCategory="300"
         android:title="Remove"
