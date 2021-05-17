@@ -35,6 +35,7 @@
         <activity android:name=".activity.ScheduleActivity"/>
         <activity android:name=".activity.DevicesActivity"/>
         <activity android:name=".activity.ScheduleEditActivity"/>
+        <activity android:name=".activity.ScheduleSetActivity"/>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>

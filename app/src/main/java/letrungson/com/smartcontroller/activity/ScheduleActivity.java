@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +37,7 @@ public class ScheduleActivity extends AppCompatActivity {
     private final FirebaseDatabase firebaseDatabase= FirebaseDatabase.getInstance();
     private List<Schedule> lstSchedule;
     ImageButton close_btn;
+    FloatingActionButton floating_action_btn;
     TextView room;
 
     ScheduleListView scheduleListView;
@@ -44,6 +46,7 @@ public class ScheduleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setscheduled);
         close_btn = findViewById(R.id.imageButton);
+        floating_action_btn = findViewById(R.id.floatingActionButton);
         ListView listView = findViewById(R.id.smart_schedule_listview);
         Intent intent = getIntent();
         String roomID = intent.getStringExtra("roomID");
@@ -59,6 +62,16 @@ public class ScheduleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        floating_action_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ScheduleActivity.this, ScheduleSetActivity.class);
+                intent.putExtra("roomID", roomID);
+                startActivity(intent);
+                scheduleListView.notifyDataSetChanged();
             }
         });
     }

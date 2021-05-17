@@ -36,7 +36,7 @@ import java.util.Calendar;
 public class ScheduleEditActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     Schedule thisSchedule;
-    String scheduleId;
+    String scheduleID;
     TextView start_time, end_time, temp_data, humi_data, repeat_day_text;
     ImageButton up_temp_btn, down_temp_btn, up_humi_btn, down_humi_btn, close_btn, tick_btn;
     Button set_repeat_day_btn, delete_btn;
@@ -45,8 +45,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        scheduleId = intent.getStringExtra("scheduleId");
-        getSchedule(scheduleId);
+        scheduleID = intent.getStringExtra("scheduleID");
 
         setContentView(R.layout.activity_editschedule);
 
@@ -63,6 +62,8 @@ public class ScheduleEditActivity extends AppCompatActivity {
         set_repeat_day_btn = (Button) findViewById(R.id.set_repeat_day_btn);
         delete_btn = (Button) findViewById(R.id.delete_btn);
         repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
+
+        getSchedule(scheduleID);
 
         //delete_btn.setText("DELETE");
 
@@ -306,7 +307,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
 
     public void changeNum(View view, int flag){
         int tempNum = thisSchedule.getTemp();
-        int humiNum = thisSchedule.getHumid();
+        int humidNum = thisSchedule.getHumid();
         switch (flag) {
             case 1:
                 tempNum += 1;
@@ -315,10 +316,10 @@ public class ScheduleEditActivity extends AppCompatActivity {
                 tempNum -= 1;
                 break;
             case 3:
-                humiNum += 1;
+                humidNum += 1;
                 break;
             case 4:
-                humiNum -= 1;
+                humidNum -= 1;
                 break;
         }
         if (flag < 3) {
@@ -331,13 +332,13 @@ public class ScheduleEditActivity extends AppCompatActivity {
             thisSchedule.setTemp(tempNum);
         }
         else {
-            if (humiNum > 60) {
-                humiNum = 60;
-            } else if (humiNum < 40) {
-                humiNum = 40;
+            if (humidNum > 60) {
+                humidNum = 60;
+            } else if (humidNum < 40) {
+                humidNum = 40;
             }
-            humi_data.setText("" + humiNum);
-            thisSchedule.setHumid(humiNum);
+            humi_data.setText("" + humidNum);
+            thisSchedule.setHumid(humidNum);
         }
     }
 }

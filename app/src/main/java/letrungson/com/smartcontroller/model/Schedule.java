@@ -11,15 +11,17 @@ public class Schedule {
     private String roomID;
 
     public Schedule(){
-        this.temp = -1;
-        this.humid = -1;
-        this.startTime = "";
-        this.endTime = "";
+        this.temp = 30;
+        this.humid = 30;
+        this.startTime = "00:00";
+        this.endTime = "00:00";
 //        this.repeatDay = new boolean[7];
 //        for(int i = 0; i < 7; i++) {
 //            this.repeatDay[i] = false;
 //        }
-        this.repeatDay = "";
+        this.repeatDay = "0000000";
+        this.roomID = "";
+        this.scheduleID = "";
     }
 
     public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay) {

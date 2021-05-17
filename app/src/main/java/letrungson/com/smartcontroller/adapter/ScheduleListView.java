@@ -67,7 +67,7 @@ public class ScheduleListView extends BaseAdapter {
             public void onClick(View v) {
                 //Toast.makeText(context, "Clicked" + schedules.get(position).getScheduleID(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, ScheduleEditActivity.class);
-                intent.putExtra("scheduleId",schedules.get(position).getScheduleID());
+                intent.putExtra("scheduleID",schedules.get(position).getScheduleID());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
                 notifyDataSetChanged();
