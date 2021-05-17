@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -138,7 +137,7 @@ public class DevicesActivity extends AppCompatActivity {
                 int currentViewPos = spinnerDeviceType.getSelectedItemPosition();
                 int currentType = 0;
                 for (int i = 1; i < type.size(); i++) {
-                    if (type.get(i).equals(device.getType())){
+                    if (type.get(i).equals(device.getType())) {
                         currentType = i;
                         break;
                     }
@@ -177,7 +176,7 @@ public class DevicesActivity extends AppCompatActivity {
                 boolean is_sensor = device.getType().equals("Sensor");
                 int currentType = 0;
                 for (int i = 1; i < type.size(); i++) {
-                    if (type.get(i).equals(device.getType())){
+                    if (type.get(i).equals(device.getType())) {
                         currentType = i;
                         break;
                     }
@@ -223,7 +222,7 @@ public class DevicesActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         dbRefDevices.orderByChild("roomId").equalTo(roomId).removeEventListener(childEventListener);
-        for (int i=0;i<deviceAdapterArrayList.size();i++){
+        for (int i = 0; i < deviceAdapterArrayList.size(); i++) {
             deviceAdapterArrayList.get(i).clear();
         }
     }
@@ -252,7 +251,8 @@ public class DevicesActivity extends AppCompatActivity {
             super(context, resource, objects);
             layout = resource;
         }
-//        int index =0;
+
+        //        int index =0;
 //        int index1=0;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {

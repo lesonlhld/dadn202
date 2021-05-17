@@ -6,24 +6,16 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -136,12 +128,11 @@ public class ScheduleSetActivity extends AppCompatActivity {
                 final String[] items = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
                 final ArrayList itemsSelected = new ArrayList();
                 boolean yetChecked[] = new boolean[7];
-                for(int i = 0; i < 7; i++){
-                    if (thisSchedule.getRepeatDay().toCharArray()[i] == '1'){
+                for (int i = 0; i < 7; i++) {
+                    if (thisSchedule.getRepeatDay().toCharArray()[i] == '1') {
                         yetChecked[i] = true;
                         itemsSelected.add(i);
-                    }
-                    else {
+                    } else {
                         yetChecked[i] = false;
                     }
                 }
@@ -163,10 +154,10 @@ public class ScheduleSetActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //Your logic when OK button is clicked
                                 char A[] = new char[7];
-                                for(int i = 0; i < 7; i++){
+                                for (int i = 0; i < 7; i++) {
                                     A[i] = '0';
                                 }
-                                for(int i = 0; i < itemsSelected.size(); i++){
+                                for (int i = 0; i < itemsSelected.size(); i++) {
                                     A[Integer.valueOf(itemsSelected.get(i).toString())] = '1';
                                 }
                                 thisSchedule.setRepeatDay(String.valueOf(A));
@@ -186,7 +177,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
         });
     }
 
-    private void addSchedule(){
+    private void addSchedule() {
         scheduleId = "Schedule" + database.child("schedules").push().getKey();
         database.child("schedules").child(scheduleId).child("temp").setValue(thisSchedule.getTemp());
         database.child("schedules").child(scheduleId).child("humid").setValue(thisSchedule.getHumid());
@@ -196,14 +187,13 @@ public class ScheduleSetActivity extends AppCompatActivity {
     }
 
 
-    private void setTime(int flag){
+    private void setTime(int flag) {
         Calendar calendar = Calendar.getInstance();
         int previous_hour, previous_minute;
         if (flag == 0) {
             previous_hour = Integer.valueOf(thisSchedule.getStartTime().substring(0, 2));
             previous_minute = Integer.valueOf(thisSchedule.getStartTime().substring(3, 5));
-        }
-        else {
+        } else {
             previous_hour = Integer.valueOf(thisSchedule.getEndTime().substring(0, 2));
             previous_minute = Integer.valueOf(thisSchedule.getEndTime().substring(3, 5));
         }
@@ -216,8 +206,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
                     calendar.set(0, 0, 0, hour, minute);
                     start_time.setText((simpleDateFormat.format(calendar.getTime())));
                     thisSchedule.setStartTime(simpleDateFormat.format(calendar.getTime()));
-                }
-                else {
+                } else {
                     calendar.set(0, 0, 0, hour, minute);
                     end_time.setText((simpleDateFormat.format(calendar.getTime())));
                     thisSchedule.setEndTime(simpleDateFormat.format(calendar.getTime()));
@@ -227,7 +216,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
         timePickerDialog.show();
     }
 
-    public void changeNum(View view, int flag){
+    public void changeNum(View view, int flag) {
         int tempNum = thisSchedule.getTemp();
         int humiNum = thisSchedule.getHumid();
         switch (flag) {
@@ -252,8 +241,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
             }
             temp_data.setText("" + tempNum);
             thisSchedule.setTemp(tempNum);
-        }
-        else {
+        } else {
             if (humiNum > 60) {
                 humiNum = 60;
             } else if (humiNum < 40) {

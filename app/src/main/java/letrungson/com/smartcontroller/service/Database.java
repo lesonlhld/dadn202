@@ -31,7 +31,7 @@ public class Database {
 
     public void addSensorLog(Data o) {
         String id = "Sensor" + sensors.push().getKey();
-        HashMap<String,String> hashMap = new HashMap();
+        HashMap<String, String> hashMap = new HashMap();
         hashMap.put("deviceId", o.getKey());
         hashMap.put("last_value", o.getLast_value());
         hashMap.put("updated_at", o.getUpdated_at().substring(0, o.getUpdated_at().length() - 4));
@@ -73,7 +73,7 @@ public class Database {
     }
 
     public void addDevice(String deviceId, String deviceName, String type, String roomId) {
-        HashMap<String,String> hashMap = new HashMap();
+        HashMap<String, String> hashMap = new HashMap();
         hashMap.put("deviceName", deviceName);
         hashMap.put("roomId", roomId);
         if (type.equals("Sensor")) hashMap.put("state", "0-0");

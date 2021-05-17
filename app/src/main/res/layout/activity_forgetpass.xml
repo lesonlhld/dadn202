@@ -39,8 +39,8 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/button"
-        android:textAllCaps="false"
         android:text="@string/btn_reset_password"
+        android:textAllCaps="false"
         android:textColor="#FFF"
         android:textSize="18dp"
         android:textStyle="bold" />
