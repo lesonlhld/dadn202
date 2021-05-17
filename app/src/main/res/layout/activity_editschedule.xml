@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -55,8 +54,8 @@
         android:id="@+id/delete_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginStart="150dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/button"
         android:text="DELETE"
         android:textSize="18sp"
@@ -66,7 +65,7 @@
     <RelativeLayout
         android:id="@+id/temp_area"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="140dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bar">
 
@@ -74,8 +73,9 @@
             android:id="@+id/up_temp_btn"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:layout_alignParentTop="false"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="55dp"
             android:layout_marginRight="45dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:scaleX="1.5"
@@ -96,8 +96,9 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_marginLeft="45dp"
+            android:layout_marginTop="55dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:scaleX="1.5"
             android:scaleY="1.5"
@@ -107,7 +108,9 @@
             android:id="@+id/temp_data_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
             android:text="25"
             android:textSize="50sp" />
 
@@ -116,7 +119,7 @@
     <RelativeLayout
         android:id="@+id/humid_area"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="140dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/temp_area">
 
@@ -124,7 +127,9 @@
             android:id="@+id/humi_data_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
             android:text="60"
             android:textSize="50sp" />
 
@@ -132,8 +137,9 @@
             android:id="@+id/up_humi_btn"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="55dp"
             android:layout_marginRight="45dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:scaleX="1.5"
@@ -145,8 +151,9 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="45dp"
+            android:layout_marginTop="55dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:scaleX="1.5"
             android:scaleY="1.5"
@@ -231,7 +238,7 @@
     <RelativeLayout
         android:id="@+id/repeat_time_area"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/time_area">
 
@@ -239,20 +246,30 @@
             android:id="@+id/text6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:text="Repeat"
             android:textSize="20dp" />
 
         <Button
-            android:id="@+id/set_repeatTime_btn"
+            android:id="@+id/set_repeat_day_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="30dp"
             android:text="choose day" />
+
+        <TextView
+            android:id="@+id/repeat_day_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="65dp"
+            android:layout_marginEnd="30dp"
+            android:text="TextView"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

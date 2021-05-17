@@ -1,9 +1,5 @@
 package letrungson.com.smartcontroller.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,9 +18,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
-
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -32,17 +30,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.model.Device;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
 
 public class DevicesActivity extends AppCompatActivity {
+    MQTTService mqttService;
     private ListView listViewDevices;
     private Spinner spinnerDeviceType;
     private Database db_service;
@@ -52,7 +50,7 @@ public class DevicesActivity extends AppCompatActivity {
     private List<String> type;
     private String roomID;
     private ChildEventListener childEventListener;
-    MQTTService mqttService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +74,14 @@ public class DevicesActivity extends AppCompatActivity {
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomID");
 
+
         //Set up Button Add
         Button btn_add = findViewById(R.id.btn_add_devices);
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DevicesActivity.this, AddDevicesActivity.class);
-                intent.putExtra("roomID", roomID);
+                intent.putExtra("roomId", roomID);
                 startActivity(intent);
             }
         });
@@ -97,8 +96,8 @@ public class DevicesActivity extends AppCompatActivity {
 
         //Setup spinner
         spinnerDeviceType = findViewById(R.id.spinner_devices);
-        SpinnerAdapter1 spinnerAdapter1 = new SpinnerAdapter1(DevicesActivity.this, R.layout.spinner_item, type);
-        spinnerDeviceType.setAdapter(spinnerAdapter1);
+        SpinnerAdapter spinnerAdapter = new SpinnerAdapter(DevicesActivity.this, R.layout.spinner_item, type);
+        spinnerDeviceType.setAdapter(spinnerAdapter);
         spinnerDeviceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -111,6 +110,7 @@ public class DevicesActivity extends AppCompatActivity {
             }
         });
         //Reference to database child "devices" listener
+
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -130,7 +130,6 @@ public class DevicesActivity extends AppCompatActivity {
                 if ((currentViewPos == currentType) || (currentViewPos == 0 && !is_sensor)) {
                     listViewDevices.setAdapter(deviceAdapterArrayList.get(currentViewPos));
                 }
-
             }
 
             @Override
@@ -163,7 +162,6 @@ public class DevicesActivity extends AppCompatActivity {
                         textView.setText(device.getDeviceName());
                         switchCompat.setChecked(device.getState().equals("1"));
                     }
-
                 } else {
                     DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentType);
                     for (int j = 0; j < deviceAdapter_current.getCount(); j++) {
@@ -171,7 +169,6 @@ public class DevicesActivity extends AppCompatActivity {
                             deviceAdapter_current.getItem(j).assign(device);
                     }
                 }
-
             }
 
             @Override
@@ -213,6 +210,7 @@ public class DevicesActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+
         };
 
     }
@@ -230,6 +228,7 @@ public class DevicesActivity extends AppCompatActivity {
         for (int i=0;i<deviceAdapterArrayList.size();i++){
             deviceAdapterArrayList.get(i).clear();
         }
+
     }
 
     @Override
@@ -248,7 +247,8 @@ public class DevicesActivity extends AppCompatActivity {
         return true;
     }
 
-
+    //    int index=0;
+//    int index1=0;
     private class DeviceAdapter extends ArrayAdapter<Device> {
         private int layout;
 
@@ -311,10 +311,10 @@ public class DevicesActivity extends AppCompatActivity {
 
 
     //Spinner Adapter
-    private class SpinnerAdapter1 extends ArrayAdapter<String> {
+    private class SpinnerAdapter extends ArrayAdapter<String> {
         private int layout;
 
-        public SpinnerAdapter1(Context context, int resource, List<String> objects) {
+        public SpinnerAdapter(Context context, int resource, List<String> objects) {
             super(context, resource, objects);
             layout = resource;
         }

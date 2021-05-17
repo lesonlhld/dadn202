@@ -2,19 +2,19 @@ package letrungson.com.smartcontroller.model;
 
 public class LogState {
     private String datetime;
-    private String deviceid;
-    private String newstate;
-    private String userid;
+    private String deviceId;
+    private String newState;
+    private String userId;
 
     public LogState() {
 
     }
 
-    public LogState(String datetime, String deviceid, String newstate, String userid) {
+    public LogState(String datetime, String deviceId, String newState, String userId) {
         this.datetime = datetime;
-        this.deviceid = deviceid;
-        this.newstate = newstate;
-        this.userid = userid;
+        this.deviceId = deviceId;
+        this.newState = newState;
+        this.userId = userId;
     }
 
     public String getDatetime() {
@@ -25,27 +25,27 @@ public class LogState {
         this.datetime = datetime;
     }
 
-    public String getDeviceid() {
-        return deviceid;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeviceid(String deviceid) {
-        this.deviceid = deviceid;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
-    public String getNewstate() {
-        return newstate;
+    public String getNewState() {
+        return newState;
     }
 
-    public void setNewstate(String newstate) {
-        this.newstate = newstate;
+    public void setNewState(String newState) {
+        this.newState = newState;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

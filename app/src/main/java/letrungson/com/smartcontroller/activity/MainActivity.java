@@ -1,11 +1,5 @@
 package letrungson.com.smartcontroller.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +8,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
-//import com.benlypan.usbhid.OnUsbHidDeviceListener;
-//import com.benlypan.usbhid.UsbHidDevice;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,15 +32,10 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +49,6 @@ import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
 
-import android.widget.ImageButton;
-
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
 
@@ -66,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     UsbSerialPort port;
-    ImageButton moreButton, room_btn;
+    Button home, more;
+    ImageButton room_btn;
     MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
     Device cDevice;
@@ -103,8 +98,15 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         getAllRoom();
         setContentView(R.layout.homescreeen);
 
-        moreButton = findViewById(R.id.list_btn);
-        moreButton.setOnClickListener(new View.OnClickListener() {
+        home = findViewById(R.id.home);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        more = findViewById(R.id.more);
+        more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, MoreActivity.class));
@@ -207,11 +209,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Thoát")
                 .setMessage("Bạn có muốn thoát ứng dụng?")
-                .setPositiveButton("Có", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Build.VERSION.SDK_INT >= 16 && Build.VERSION.SDK_INT < 21) {
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                             finishAndRemoveTask();
                         }
                         System.exit(0);
-                  }
+                    }
 
                 })
                 .setNegativeButton("Không", null)
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         });
     }
 
-    public void receiveDataMQTT(){
+    public void receiveDataMQTT() {
         mqttService = new MQTTService(this);
         mqttService.setCallback(new MqttCallbackExtended() {
             @Override
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     if (context.equals(dataMqtt.getKey())) {
                         Log.d(topic, data_to_microbit);
                         updateData(dataMqtt.getKey(), dataMqtt);
-                        db.updateDevice(dataMqtt.getKey().replace('.','-'), dataMqtt.getLast_value());
+                        db.updateDevice(dataMqtt.getKey().replace('.', '-'), dataMqtt.getLast_value());
                         //port.write(data_to_microbit.getBytes(),1000);
                     }
                 }
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 cDevice = null;
                 cDevice = dataSnapshot.getValue(Device.class);
                 if (cDevice.getType() != null) {
-                    if (cDevice.getType().equals("sensor")) {
+                    if (cDevice.getType().equals("Sensor")) {
                         db.addSensorLog(dataMqtt);
                         String value = dataMqtt.getLast_value();
                         String roomId = cDevice.getRoomId();

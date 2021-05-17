@@ -1,15 +1,5 @@
 package letrungson.com.smartcontroller.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import android.app.Activity;
-
-import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.model.Schedule;
-import letrungson.com.smartcontroller.model.Room;
-
-import androidx.fragment.app.DialogFragment;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -23,6 +13,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -32,19 +25,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+
+import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.model.Schedule;
+import letrungson.com.smartcontroller.tools.Tranform;
 
 public class ScheduleEditActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     Schedule thisSchedule;
     String scheduleId;
-    TextView start_time, end_time, temp_data, humi_data;
+    TextView start_time, end_time, temp_data, humi_data, repeat_day_text;
     ImageButton up_temp_btn, down_temp_btn, up_humi_btn, down_humi_btn, close_btn, tick_btn;
-    Button set_repeatTime_btn, delete_btn;
+    Button set_repeat_day_btn, delete_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +60,11 @@ public class ScheduleEditActivity extends AppCompatActivity {
         humi_data = (TextView) findViewById(R.id.humi_data_view);
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
-        set_repeatTime_btn = (Button) findViewById(R.id.set_repeatTime_btn);
+        set_repeat_day_btn = (Button) findViewById(R.id.set_repeat_day_btn);
         delete_btn = (Button) findViewById(R.id.delete_btn);
+        repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
 
+        //delete_btn.setText("DELETE");
 
         start_time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +114,26 @@ public class ScheduleEditActivity extends AppCompatActivity {
             }
         });
 
+
+        delete_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new androidx.appcompat.app.AlertDialog.Builder(ScheduleEditActivity.this)
+                        .setTitle("Delete")
+                        .setMessage("Do you want to delete this schedule?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                                deleteSchedule();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
+
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,28 +149,20 @@ public class ScheduleEditActivity extends AppCompatActivity {
             }
         });
 
-        delete_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteSchedule();
-                finish();
-            }
-        });
         // lines below is prepare to set repeat day
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        set_repeatTime_btn.setOnClickListener(new View.OnClickListener() {
+        set_repeat_day_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String[] items = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
                 final ArrayList itemsSelected = new ArrayList();
                 boolean yetChecked[] = new boolean[7];
-                for(int i = 0; i < 7; i++){
-                    if (thisSchedule.getRepeatDay().toCharArray()[i] == '1'){
+                for (int i = 0; i < 7; i++) {
+                    if (thisSchedule.getRepeatDay().toCharArray()[i] == '1') {
                         yetChecked[i] = true;
                         itemsSelected.add(i);
-                    }
-                    else {
+                    } else {
                         yetChecked[i] = false;
                     }
                 }
@@ -175,13 +184,14 @@ public class ScheduleEditActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //Your logic when OK button is clicked
                                 char A[] = new char[7];
-                                for(int i = 0; i < 7; i++){
+                                for (int i = 0; i < 7; i++) {
                                     A[i] = '0';
                                 }
-                                for(int i = 0; i < itemsSelected.size(); i++){
+                                for (int i = 0; i < itemsSelected.size(); i++) {
                                     A[Integer.valueOf(itemsSelected.get(i).toString())] = '1';
                                 }
                                 thisSchedule.setRepeatDay(String.valueOf(A));
+                                repeat_day_text.setText(Tranform.BinaryToDaily(String.valueOf(A)));
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -198,40 +208,38 @@ public class ScheduleEditActivity extends AppCompatActivity {
         });
     }
 
-    private void getSchedule(String scheduleId){
+    private void getSchedule(String scheduleId) {
         database.child("schedules").child(scheduleId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()){
+                if (!task.isSuccessful()) {
                     Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
+                } else {
                     thisSchedule = task.getResult().getValue(Schedule.class);
-                    thisSchedule.setScheduleID(scheduleId);
+                    thisSchedule.setScheduleId(scheduleId);
                     temp_data.setText(String.valueOf(thisSchedule.getTemp()));
                     humi_data.setText(String.valueOf(thisSchedule.getHumid()));
                     start_time.setText(thisSchedule.getStartTime());
                     end_time.setText(thisSchedule.getEndTime());
+                    repeat_day_text.setText(Tranform.BinaryToDaily(thisSchedule.getRepeatDay()));
                 }
             }
         });
     }
 
-    private void getAndListenSchedule(String scheduleId){
+    private void getAndListenSchedule(String scheduleId) {
         Query scheduleDb = database.child("schedules").child(scheduleId);
         scheduleDb.keepSynced(true);
         scheduleDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     thisSchedule = dataSnapshot.getValue(Schedule.class);
                     temp_data.setText(String.valueOf(thisSchedule.getTemp()));
                     humi_data.setText(String.valueOf(thisSchedule.getHumid()));
                     start_time.setText(thisSchedule.getStartTime());
                     end_time.setText(thisSchedule.getEndTime());
-                }
-                else
-                {
+                } else {
                     Log.d("schedule", "Database is empty now!");
                 }
             }
@@ -243,44 +251,50 @@ public class ScheduleEditActivity extends AppCompatActivity {
         });
     }
 
-    private void updateSchedule(){
-        database.child("schedules").child(thisSchedule.getScheduleID()).child("temp").setValue(thisSchedule.getTemp());
-        database.child("schedules").child(thisSchedule.getScheduleID()).child("humid").setValue(thisSchedule.getHumid());
-        database.child("schedules").child(thisSchedule.getScheduleID()).child("startTime").setValue(thisSchedule.getStartTime());
-        database.child("schedules").child(thisSchedule.getScheduleID()).child("endTime").setValue(thisSchedule.getEndTime());
-        database.child("schedules").child(thisSchedule.getScheduleID()).child("repeatDay").setValue(thisSchedule.getRepeatDay());
+    private void updateSchedule() {
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("temp").setValue(thisSchedule.getTemp());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("humid").setValue(thisSchedule.getHumid());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("startTime").setValue(thisSchedule.getStartTime());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("endTime").setValue(thisSchedule.getEndTime());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("repeatDay").setValue(thisSchedule.getRepeatDay());
     }
 
-    private void deleteSchedule(){
-        database.child("schedules").child(thisSchedule.getScheduleID()).removeValue();
+    private void deleteSchedule() {
+        database.child("schedules").child(thisSchedule.getScheduleId()).removeValue();
     }
 
-    private void setTime(int flag){
+    private void setTime(int flag) {
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+        int previous_hour, previous_minute;
+        if (flag == 0) {
+            previous_hour = Integer.valueOf(thisSchedule.getStartTime().substring(0, 2));
+            previous_minute = Integer.valueOf(thisSchedule.getStartTime().substring(3, 5));
+        } else {
+            previous_hour = Integer.valueOf(thisSchedule.getEndTime().substring(0, 2));
+            previous_minute = Integer.valueOf(thisSchedule.getEndTime().substring(3, 5));
+        }
+
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            public void onTimeSet(TimePicker view, int hour, int minute) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
                 if (flag == 0) {
-                    calendar.set(0, 0, 0, hourOfDay, minute);
+                    calendar.set(0, 0, 0, hour, minute);
                     start_time.setText((simpleDateFormat.format(calendar.getTime())));
                     thisSchedule.setStartTime(simpleDateFormat.format(calendar.getTime()));
-                }
-                else {
-                    calendar.set(0, 0, 0, hourOfDay, minute);
+                } else {
+                    calendar.set(0, 0, 0, hour, minute);
                     end_time.setText((simpleDateFormat.format(calendar.getTime())));
                     thisSchedule.setEndTime(simpleDateFormat.format(calendar.getTime()));
                 }
             }
-        }, hour, minute, true);
+        }, previous_hour, previous_minute, true);
         timePickerDialog.show();
     }
 
-    public void changeNum(View view, int flag){
+    public void changeNum(View view, int flag) {
         int tempNum = thisSchedule.getTemp();
-        int humiNum = thisSchedule.getHumid();
+        int humidNum = thisSchedule.getHumid();
         switch (flag) {
             case 1:
                 tempNum += 1;
@@ -289,10 +303,10 @@ public class ScheduleEditActivity extends AppCompatActivity {
                 tempNum -= 1;
                 break;
             case 3:
-                humiNum += 1;
+                humidNum += 1;
                 break;
             case 4:
-                humiNum -= 1;
+                humidNum -= 1;
                 break;
         }
         if (flag < 3) {
@@ -303,15 +317,14 @@ public class ScheduleEditActivity extends AppCompatActivity {
             }
             temp_data.setText("" + tempNum);
             thisSchedule.setTemp(tempNum);
-        }
-        else {
-            if (humiNum > 60) {
-                humiNum = 60;
-            } else if (humiNum < 40) {
-                humiNum = 40;
+        } else {
+            if (humidNum > 60) {
+                humidNum = 60;
+            } else if (humidNum < 40) {
+                humidNum = 40;
             }
-            humi_data.setText("" + humiNum);
-            thisSchedule.setHumid(humiNum);
+            humi_data.setText("" + humidNum);
+            thisSchedule.setHumid(humidNum);
         }
     }
 }

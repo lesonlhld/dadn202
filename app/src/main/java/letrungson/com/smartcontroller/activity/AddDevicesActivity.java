@@ -1,9 +1,5 @@
 package letrungson.com.smartcontroller.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +17,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -60,7 +59,7 @@ public class AddDevicesActivity extends AppCompatActivity {
         arrayListDevice = new ArrayList<Device>();
         //Get intent
         Intent intent = getIntent();
-        roomId = intent.getStringExtra("roomID");
+        roomId = intent.getStringExtra("roomId");
 
         //Setup DeviceName EditText
         textDeviceName = findViewById(R.id.edit_text_device_name);
@@ -105,9 +104,8 @@ public class AddDevicesActivity extends AppCompatActivity {
                     db_service.addDevice(deviceId, deviceName, type, roomId);
                     textDeviceId.setText("");
                     textDeviceName.setText("");
-                    Toast.makeText
-                            (getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast.makeText(getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });
@@ -197,9 +195,9 @@ public class AddDevicesActivity extends AppCompatActivity {
         if (inputDeviceName.isEmpty()) {
             textDeviceName.setError("Field can't be empty");
             return false;
-        } else if (!inputDeviceName.matches("[a-zA-Z0-9 ]*")) {
-            textDeviceName.setError("Only contain letters,numbers,and WS");
-            return false;
+/*        } else if (!inputDeviceName.matches("[a-zA-Z0-9 -]*")) {
+            textDeviceName.setError("Only contain letters, numbers and WS");
+            return false;*/
         } else if (inputDeviceName.length() > 20) {
             textDeviceName.setError("Device name too long");
             return false;
@@ -236,7 +234,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             TextView title = convertView.findViewById(R.id.spinner_add_devices_title);
             title.setError("");
             title.setTextColor(Color.RED);//just to highlight that this is an error
-            title.setText("Must pick a type ");//changes the selected item text to this
+            title.setText("Must pick a type");//changes the selected item text to this
             return false;
         }
         return true;
