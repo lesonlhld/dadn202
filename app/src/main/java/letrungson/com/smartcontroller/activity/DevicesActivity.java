@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,6 +50,7 @@ public class DevicesActivity extends AppCompatActivity {
     private List<String> type;
     private String roomId;
     private ChildEventListener childEventListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,7 @@ public class DevicesActivity extends AppCompatActivity {
 
             }
         });
+
         //Reference to database child "devices" listener
         childEventListener = new ChildEventListener() {
             @Override
@@ -126,7 +129,6 @@ public class DevicesActivity extends AppCompatActivity {
                 if ((currentViewPos == currentType) || (currentViewPos == 0 && !is_sensor)) {
                     listViewDevices.setAdapter(deviceAdapterArrayList.get(currentViewPos));
                 }
-
             }
 
             @Override
@@ -151,6 +153,7 @@ public class DevicesActivity extends AppCompatActivity {
                             break;
                         }
                     }
+
                     if (j < deviceAdapter_current.getCount()) {
                         View convertView = listViewDevices.getChildAt(j - listViewDevices.getFirstVisiblePosition());
                         SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
@@ -158,7 +161,6 @@ public class DevicesActivity extends AppCompatActivity {
                         textView.setText(device.getDeviceName());
                         switchCompat.setChecked(device.getState().equals("1"));
                     }
-
                 } else {
                     DeviceAdapter deviceAdapter_current = deviceAdapterArrayList.get(currentType);
                     for (int j = 0; j < deviceAdapter_current.getCount(); j++) {
@@ -166,7 +168,6 @@ public class DevicesActivity extends AppCompatActivity {
                             deviceAdapter_current.getItem(j).assign(device);
                     }
                 }
-
             }
 
             @Override
@@ -222,6 +223,8 @@ public class DevicesActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         dbRefDevices.orderByChild("roomId").equalTo(roomId).removeEventListener(childEventListener);
+        for (int i=0;i<deviceAdapterArrayList.size();i++){
+        dbRefDevices.orderByChild("roomId").equalTo(roomId).removeEventListener(childEventListener);
         for (int i = 0; i < deviceAdapterArrayList.size(); i++) {
             deviceAdapterArrayList.get(i).clear();
         }
@@ -251,13 +254,13 @@ public class DevicesActivity extends AppCompatActivity {
             super(context, resource, objects);
             layout = resource;
         }
-
-        //        int index =0;
+//        int index =0;
 //        int index1=0;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Device device = getItem(position);
             DeviceHolder mainDeviceViewholder = null;
+            convertView=null;
             boolean is_sensor = device.getType().equals("Sensor");
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());

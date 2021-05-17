@@ -105,7 +105,6 @@ public class AddDevicesActivity extends AppCompatActivity {
                     textDeviceId.setText("");
                     textDeviceName.setText("");
                     Toast.makeText(getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT).show();
-                    finish();
                 }
             }
         });
@@ -119,6 +118,7 @@ public class AddDevicesActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         //Setup database device name listener
         dbRefDevices.addChildEventListener(new ChildEventListener() {
             @Override
@@ -287,7 +287,6 @@ public class AddDevicesActivity extends AppCompatActivity {
             }
             return convertView;
         }
-
         @Override
         public boolean isEnabled(int position) {
             if (position == 0) {
@@ -304,7 +303,6 @@ public class AddDevicesActivity extends AppCompatActivity {
             return getView(position, convertView, parent);
         }
     }
-
     public class SpinnerAddDeviceHolder {
         ImageView imageView;
         TextView title;
