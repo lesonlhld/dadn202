@@ -10,16 +10,18 @@ public class Schedule {
     private String scheduleId;
     private String roomId;
 
-    public Schedule() {
-/*        this.temp = -1;
-        this.humid = -1;
-        this.startTime = "";
-        this.endTime = "";
+    public Schedule(){
+        this.temp = 30;
+        this.humid = 30;
+        this.startTime = "00:00";
+        this.endTime = "00:00";
 //        this.repeatDay = new boolean[7];
 //        for(int i = 0; i < 7; i++) {
 //            this.repeatDay[i] = false;
 //        }
-        this.repeatDay = "";*/
+        this.repeatDay = "0000000";
+        this.roomId = "";
+        this.scheduleId = "";
     }
 
     public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay) {

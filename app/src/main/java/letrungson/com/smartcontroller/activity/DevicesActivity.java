@@ -224,8 +224,6 @@ public class DevicesActivity extends AppCompatActivity {
         super.onStop();
         dbRefDevices.orderByChild("roomId").equalTo(roomId).removeEventListener(childEventListener);
         for (int i=0;i<deviceAdapterArrayList.size();i++){
-        dbRefDevices.orderByChild("roomId").equalTo(roomId).removeEventListener(childEventListener);
-        for (int i = 0; i < deviceAdapterArrayList.size(); i++) {
             deviceAdapterArrayList.get(i).clear();
         }
     }
@@ -293,7 +291,7 @@ public class DevicesActivity extends AppCompatActivity {
 //                index++;
 //                toast.show();
                 convertView.setTag(deviceHolder);
-            } else {
+//            } else {
                 mainDeviceViewholder = (DeviceHolder) convertView.getTag();
 //                Toast toast = Toast.makeText(DevicesActivity.this, "main" + index1, Toast.LENGTH_SHORT);
 //                index1++;

@@ -16,31 +16,31 @@ public class Tranform {
 
         StringBuilder result = new StringBuilder("");
         if (A[0] == '1') {
-            result.append("Mon,");
+            result.append("Mon, ");
         }
         if (A[1] == '1') {
-            result.append("Tue,");
+            result.append("Tue, ");
         }
         if (A[2] == '1') {
-            result.append("Wed,");
+            result.append("Wed, ");
         }
         if (A[3] == '1') {
-            result.append("Thu,");
+            result.append("Thu, ");
         }
         if (A[4] == '1') {
-            result.append("Fri,");
+            result.append("Fri, ");
         }
         if (A[5] == '1') {
-            result.append("Sat,");
+            result.append("Sat, ");
         }
         if (A[6] == '1') {
-            result.append("Sun,");
+            result.append("Sun, ");
         }
 
         if (result.length() == 0) {
             return "No day";
         } else {
-            result.deleteCharAt(result.length() - 1);
+            result.deleteCharAt(result.length() - 2);
             return result.toString();
         }
     }
