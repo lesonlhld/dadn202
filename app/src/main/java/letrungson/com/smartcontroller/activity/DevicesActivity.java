@@ -257,6 +257,7 @@ public class DevicesActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             Device device = getItem(position);
             DeviceHolder mainDeviceViewholder = null;
+            convertView=null;
             boolean is_sensor = device.getType().equals("Sensor");
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -289,7 +290,7 @@ public class DevicesActivity extends AppCompatActivity {
 //                index++;
 //                toast.show();
                 convertView.setTag(deviceHolder);
-            } else {
+//            } else {
                 mainDeviceViewholder = (DeviceHolder) convertView.getTag();
 //                Toast toast = Toast.makeText(DevicesActivity.this, "main" + index1, Toast.LENGTH_SHORT);
 //                index1++;
