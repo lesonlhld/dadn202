@@ -287,9 +287,6 @@ public class DevicesActivity extends AppCompatActivity {
             layout = resource;
         }
 
-        int index = 0;
-
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -311,7 +308,7 @@ public class DevicesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         AlertDialog alertDialog = new AlertDialog.Builder(DevicesActivity.this).create();
-                        alertDialog.setIcon(android.R.drawable.ic_alert);
+                        alertDialog.setIcon(R.drawable.ic_alert);
                         alertDialog.setTitle("Remove device: " + device.getDeviceName());
                         alertDialog.setMessage("Are you sure?");
 
@@ -359,12 +356,12 @@ public class DevicesActivity extends AppCompatActivity {
                         }
                     });
                 }
+                else{
+                    deviceHolder.switchCompat.setVisibility(View.INVISIBLE);
+                }
 
             }
             convertView.setTag(deviceHolder);
-//            Toast toast = Toast.makeText(DevicesActivity.this, "null" + index, Toast.LENGTH_SHORT);
-//            index++;
-//            toast.show();
             return convertView;
         }
 
