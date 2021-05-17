@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +47,7 @@ public class DevicesActivity extends AppCompatActivity {
     private DatabaseReference dbRefDevices;
     private ArrayList<DeviceAdapter> deviceAdapterArrayList;
     private List<String> type;
-    private String roomID;
+    private String roomId;
     private ChildEventListener childEventListener;
 
 
@@ -72,16 +71,14 @@ public class DevicesActivity extends AppCompatActivity {
 
         //Setup Room ID
         Intent intent = getIntent();
-        roomID = intent.getStringExtra("roomID");
-
-
+        roomId = intent.getStringExtra("roomId");
         //Set up Button Add
         Button btn_add = findViewById(R.id.btn_add_devices);
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DevicesActivity.this, AddDevicesActivity.class);
-                intent.putExtra("roomId", roomID);
+                intent.putExtra("roomId", roomId);
                 startActivity(intent);
             }
         });
@@ -218,13 +215,13 @@ public class DevicesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        dbRefDevices.orderByChild("roomId").equalTo(roomID).addChildEventListener(childEventListener);
+        dbRefDevices.orderByChild("roomId").equalTo(roomId).addChildEventListener(childEventListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        dbRefDevices.orderByChild("roomId").equalTo(roomID).removeEventListener(childEventListener);
+        dbRefDevices.orderByChild("roomId").equalTo(roomId).removeEventListener(childEventListener);
         for (int i=0;i<deviceAdapterArrayList.size();i++){
             deviceAdapterArrayList.get(i).clear();
         }
@@ -256,8 +253,6 @@ public class DevicesActivity extends AppCompatActivity {
             super(context, resource, objects);
             layout = resource;
         }
-        int index =0;
-        int index1=0;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Device device = getItem(position);
@@ -290,14 +285,14 @@ public class DevicesActivity extends AppCompatActivity {
                         }
                     });
                 }
-                Toast toast = Toast.makeText(DevicesActivity.this, "null" + index, Toast.LENGTH_SHORT);
-                index++;
-                toast.show();
+//                Toast toast = Toast.makeText(DevicesActivity.this, "null" + index, Toast.LENGTH_SHORT);
+//                index++;
+//                toast.show();
                 convertView.setTag(deviceHolder);
             } else {
                 mainDeviceViewholder = (DeviceHolder) convertView.getTag();
-                Toast toast = Toast.makeText(DevicesActivity.this, "main" + index1, Toast.LENGTH_SHORT);
-                index1++;
+//                Toast toast = Toast.makeText(DevicesActivity.this, "main" + index1, Toast.LENGTH_SHORT);
+//                index1++;
             }
             return convertView;
         }
