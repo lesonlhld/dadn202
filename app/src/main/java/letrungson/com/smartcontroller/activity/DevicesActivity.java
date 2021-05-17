@@ -161,7 +161,7 @@ public class DevicesActivity extends AppCompatActivity {
                         SwitchCompat switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
                         TextView textView = (TextView) convertView.findViewById(R.id.device_item_title);
                         textView.setText(device.getDeviceName());
-                        switchCompat.setChecked(device.getState().equals("On"));
+                        switchCompat.setChecked(device.getState().equals("1"));
                     }
 
                 } else {
@@ -273,16 +273,16 @@ public class DevicesActivity extends AppCompatActivity {
                 deviceHolder.switchCompat = (SwitchCompat) convertView.findViewById(R.id.device_item_switch);
                 if (is_sensor) deviceHolder.switchCompat.setVisibility(View.INVISIBLE);
                 else {
-                    deviceHolder.switchCompat.setChecked(device.getState().equals("On"));
+                    deviceHolder.switchCompat.setChecked(device.getState().equals("1"));
                     deviceHolder.switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             if (!buttonView.isPressed()) {
                                 return;
                             }
-                            String state = "Off";
+                            String state = "0";
                             if (isChecked) {
-                                state = "On";
+                                state = "1";
                             }
                             db_service.updateDevice(device.getDeviceId(), state);
                             db_service.addLog(device.getDeviceId(), state);
