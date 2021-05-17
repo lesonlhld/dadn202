@@ -82,6 +82,10 @@ public class Database {
         devices.child(deviceId).setValue(hashMap);
     }
 
+    public void removeDevice(String deviceId){
+        devices.child(deviceId).removeValue();
+    }
+
     public void updateDevice(String deviceId, String currentState) {
         devices.child(deviceId).child("state").setValue(currentState);
     }

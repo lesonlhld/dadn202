@@ -33,9 +33,24 @@
             android:layout_marginBottom="20dp"
             android:checked="true"
             android:textColor="#f00"
-            android:textOff="Off"
-            android:textOn="On"
-            android:theme="@style/SCBSwitch" />
+            android:textOff="0"
+            android:textOn="1"
+            android:theme="@style/SCBSwitch"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/device_item_x"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_x"
+            android:visibility="invisible"
+             />
     </RelativeLayout>
 
 
