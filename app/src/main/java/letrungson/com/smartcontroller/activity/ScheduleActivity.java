@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +32,9 @@ public class ScheduleActivity extends AppCompatActivity {
     private final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     ImageButton close_btn;
+    FloatingActionButton floating_action_btn;
     TextView room;
+    String roomId;
     ScheduleListView scheduleListView;
     private List<Schedule> lstSchedule;
 
@@ -38,9 +43,10 @@ public class ScheduleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         close_btn = findViewById(R.id.imageButton);
+        floating_action_btn = findViewById(R.id.floatingActionButton);
         ListView listView = findViewById(R.id.smart_schedule_listview);
         Intent intent = getIntent();
-        String roomId = intent.getStringExtra("roomId");
+        roomId = intent.getStringExtra("roomId");
         String roomName = intent.getStringExtra("roomName");
         room = findViewById(R.id.textView4);
         room.setText(roomName);
@@ -53,6 +59,16 @@ public class ScheduleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        floating_action_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ScheduleActivity.this, ScheduleSetActivity.class);
+                intent.putExtra("roomId", roomId);
+                startActivity(intent);
+                scheduleListView.notifyDataSetChanged();
             }
         });
     }

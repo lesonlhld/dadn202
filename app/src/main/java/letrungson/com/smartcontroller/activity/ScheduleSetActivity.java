@@ -27,8 +27,9 @@ import letrungson.com.smartcontroller.tools.Tranform;
 
 public class ScheduleSetActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    Schedule thisSchedule = new Schedule();
+    Schedule thisSchedule;
     String scheduleId;
+    String roomId;
     TextView start_time, end_time, temp_data, humi_data, repeat_day_text;
     ImageButton up_temp_btn, down_temp_btn, up_humi_btn, down_humi_btn, close_btn, tick_btn;
     Button set_repeat_day_btn, delete_btn;
@@ -37,6 +38,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        roomId = intent.getStringExtra("roomId");
 
         setContentView(R.layout.activity_editschedule);
 
@@ -55,7 +57,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
         delete_btn.setVisibility(View.GONE);
         repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
 
-        //delete_btn.setText("DELETE");
+        setSchedule();
 
         start_time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,8 +179,20 @@ public class ScheduleSetActivity extends AppCompatActivity {
         });
     }
 
+    private void setSchedule(){
+        thisSchedule = new Schedule();
+        thisSchedule.setRoomId(roomId);
+        temp_data.setText(String.valueOf(thisSchedule.getTemp()));
+        humi_data.setText(String.valueOf(thisSchedule.getHumid()));
+        start_time.setText(thisSchedule.getStartTime());
+        end_time.setText(thisSchedule.getEndTime());
+        repeat_day_text.setText(Tranform.BinaryToDaily(thisSchedule.getRepeatDay()));
+    }
+
     private void addSchedule() {
         scheduleId = "Schedule" + database.child("schedules").push().getKey();
+        thisSchedule.setScheduleId(scheduleId);
+        database.child("schedules").child(scheduleId).child("roomId").setValue(thisSchedule.getRoomId());
         database.child("schedules").child(scheduleId).child("temp").setValue(thisSchedule.getTemp());
         database.child("schedules").child(scheduleId).child("humid").setValue(thisSchedule.getHumid());
         database.child("schedules").child(scheduleId).child("startTime").setValue(thisSchedule.getStartTime());
@@ -186,16 +200,16 @@ public class ScheduleSetActivity extends AppCompatActivity {
         database.child("schedules").child(scheduleId).child("repeatDay").setValue(thisSchedule.getRepeatDay());
     }
 
-
     private void setTime(int flag) {
         Calendar calendar = Calendar.getInstance();
         int previous_hour, previous_minute;
         if (flag == 0) {
-            previous_hour = Integer.valueOf(thisSchedule.getStartTime().substring(0, 2));
-            previous_minute = Integer.valueOf(thisSchedule.getStartTime().substring(3, 5));
-        } else {
-            previous_hour = Integer.valueOf(thisSchedule.getEndTime().substring(0, 2));
-            previous_minute = Integer.valueOf(thisSchedule.getEndTime().substring(3, 5));
+            previous_hour = calendar.get(Calendar.HOUR_OF_DAY);
+            previous_minute = calendar.get(Calendar.MINUTE);
+        }
+        else {
+            previous_hour = calendar.get(Calendar.HOUR_OF_DAY) + 1;
+            previous_minute = calendar.get(Calendar.MINUTE);
         }
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
@@ -218,7 +232,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
 
     public void changeNum(View view, int flag) {
         int tempNum = thisSchedule.getTemp();
-        int humiNum = thisSchedule.getHumid();
+        int humidNum = thisSchedule.getHumid();
         switch (flag) {
             case 1:
                 tempNum += 1;
@@ -227,10 +241,10 @@ public class ScheduleSetActivity extends AppCompatActivity {
                 tempNum -= 1;
                 break;
             case 3:
-                humiNum += 1;
+                humidNum += 1;
                 break;
             case 4:
-                humiNum -= 1;
+                humidNum -= 1;
                 break;
         }
         if (flag < 3) {
@@ -242,13 +256,13 @@ public class ScheduleSetActivity extends AppCompatActivity {
             temp_data.setText("" + tempNum);
             thisSchedule.setTemp(tempNum);
         } else {
-            if (humiNum > 60) {
-                humiNum = 60;
-            } else if (humiNum < 40) {
-                humiNum = 40;
+            if (humidNum > 60) {
+                humidNum = 60;
+            } else if (humidNum < 40) {
+                humidNum = 40;
             }
-            humi_data.setText("" + humiNum);
-            thisSchedule.setHumid(humiNum);
+            humi_data.setText("" + humidNum);
+            thisSchedule.setHumid(humidNum);
         }
     }
 }
