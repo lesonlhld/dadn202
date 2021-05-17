@@ -48,9 +48,8 @@ public class DevicesActivity extends AppCompatActivity {
     private DatabaseReference dbRefDevices;
     private ArrayList<DeviceAdapter> deviceAdapterArrayList;
     private List<String> type;
-    private String roomID;
+    private String roomId;
     private ChildEventListener childEventListener;
-    MQTTService mqttService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,7 @@ public class DevicesActivity extends AppCompatActivity {
 
         //Setup Room ID
         Intent intent = getIntent();
-        String roomId = intent.getStringExtra("roomId");
+        roomId = intent.getStringExtra("roomId");
 
         //Set up Button Add
         Button btn_add = findViewById(R.id.btn_add_devices);
@@ -217,13 +216,13 @@ public class DevicesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        dbRefDevices.orderByChild("roomId").equalTo(roomID).addChildEventListener(childEventListener);
+        dbRefDevices.orderByChild("roomId").equalTo(roomId).addChildEventListener(childEventListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        dbRefDevices.orderByChild("roomId").equalTo(roomID).removeEventListener(childEventListener);
+        dbRefDevices.orderByChild("roomId").equalTo(roomId).removeEventListener(childEventListener);
         for (int i=0;i<deviceAdapterArrayList.size();i++){
             deviceAdapterArrayList.get(i).clear();
         }

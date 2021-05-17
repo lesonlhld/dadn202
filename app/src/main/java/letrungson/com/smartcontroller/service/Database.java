@@ -31,7 +31,11 @@ public class Database {
 
     public void addSensorLog(Data o) {
         String id = "Sensor" + sensors.push().getKey();
-        sensors.child(id).setValue(o);
+        HashMap<String,String> hashMap = new HashMap();
+        hashMap.put("deviceId", o.getKey());
+        hashMap.put("last_value", o.getLast_value());
+        hashMap.put("updated_at", o.getUpdated_at().substring(0, o.getUpdated_at().length() - 4));
+        sensors.child(id).setValue(hashMap);
     }
 
     public void addLog(String deviceId, String newState, String userId) {

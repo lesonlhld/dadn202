@@ -209,9 +209,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setTitle("Thoát")
-                .setMessage("Bạn có muốn thoát ứng dụng?")
-                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                .setTitle("Exit")
+                .setMessage("Do you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Build.VERSION.SDK_INT >= 16 && Build.VERSION.SDK_INT < 21) {
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     }
 
                 })
-                .setNegativeButton("Không", null)
+                .setNegativeButton("No", null)
                 .show();
     }
 

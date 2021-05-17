@@ -20,9 +20,9 @@ import java.nio.charset.Charset;
 public class MQTTService {
     final String serverUri = "tcp://io.adafruit.com:1883";
     final String clientId = MqttClient.generateClientId();
-    final String subscriptionTopic = "lesonlhld/feeds/#";
-    final String username = "lesonlhld";
-    final String password = "aio_WwjF84LarniCFSKcbFyhnFEFnqlG";
+    final String username = "leson0108";
+    final String password = "aio_rHhv85FXuO6uVO2wgnOrl0FWF7az";
+    final String topic = username + "/feeds/";
     public MqttAndroidClient mqttAndroidClient;
 
     public MQTTService(Context context) {
@@ -85,6 +85,7 @@ public class MQTTService {
     }
 
     private void subscribeToTopic() {
+        String subscriptionTopic = topic + "#";
         try {
             mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
                 @Override
@@ -119,6 +120,7 @@ public class MQTTService {
 
 
     public void sendDataMQTT(String deviceId, String data) {
+        String topicOfDevice = topic + deviceId;
         IMqttToken token = reconnect();
         token.setActionCallback(new IMqttActionListener() {
             @Override
@@ -128,10 +130,8 @@ public class MQTTService {
                 message.setQos(0);
                 message.setRetained(true);
 
-                String topic = "lesonlhld/feeds/" + deviceId;
-
                 try {
-                    mqttAndroidClient.publish(topic, message);
+                    mqttAndroidClient.publish(topicOfDevice, message);
                     Log.i("mqtt", "Message published");
                 } catch (MqttPersistenceException e) {
                     // TODO Auto-generated catch block
