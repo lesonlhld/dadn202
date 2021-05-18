@@ -15,7 +15,6 @@ import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.LogState;
 
 public class Database {
-
     private static final String TAG = "Database";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -82,7 +81,7 @@ public class Database {
         devices.child(deviceId).setValue(hashMap);
     }
 
-    public void removeDevice(String deviceId){
+    public void removeDevice(String deviceId) {
         devices.child(deviceId).removeValue();
     }
 

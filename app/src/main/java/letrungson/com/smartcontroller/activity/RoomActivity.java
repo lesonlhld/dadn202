@@ -5,16 +5,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,9 +35,10 @@ import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 
-public class RoomActivity extends Activity {
+public class RoomActivity extends AppCompatActivity {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    Button addRoom, add;
+    Button add;
+    FloatingActionButton addRoom;
     TextView roomName, cancel;
     ArrayAdapter<Room> arrayAdapter;
     ListView listView;
@@ -42,13 +49,20 @@ public class RoomActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_room);
 
         devices = database.getReference("devices");
         rooms = database.getReference("rooms");
         schedules = database.getReference("schedules");
 
+        //Setup Toolbar
+        Toolbar toolbar = findViewById(R.id.room_manage_toolbar);
+        toolbar.setTitle("Manage Room");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         getAllRoom();
-        setContentView(R.layout.activity_room);
 
         listView = findViewById(R.id.listView);
         arrayAdapter = new ArrayAdapter<Room>(this, android.R.layout.simple_list_item_1, listRoom);
@@ -85,6 +99,17 @@ public class RoomActivity extends Activity {
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void addRoom() {
         setContentView(R.layout.activity_addroom);
         roomName = findViewById(R.id.room_edt_text);
@@ -94,9 +119,13 @@ public class RoomActivity extends Activity {
             @Override
             public void onClick(View v) {
                 final String name = roomName.getText().toString();
-                db.addRoom(name);
-                startActivity(new Intent(RoomActivity.this, RoomActivity.class));
-                finish();
+                if (name.isEmpty()) {
+                    Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_required), Toast.LENGTH_LONG).show();
+                } else {
+                    db.addRoom(name);
+                    startActivity(new Intent(RoomActivity.this, RoomActivity.class));
+                    finish();
+                }
             }
         });
 
@@ -122,6 +151,7 @@ public class RoomActivity extends Activity {
                     String roomId = data.getKey();
                     room.setRoomId(roomId);
                     listRoom.add(room);
+                    Log.d("DB", room.getRoomName());
                 }
                 arrayAdapter.notifyDataSetChanged();
             }

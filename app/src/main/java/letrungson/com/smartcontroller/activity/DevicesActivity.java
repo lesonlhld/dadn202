@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,7 +64,7 @@ public class DevicesActivity extends AppCompatActivity {
         db_service = new Database();
         dbRefDevices = FirebaseDatabase.getInstance().getReference("devices");
 
-        //Setup  Toolbar
+        //Setup Toolbar
         Toolbar toolbar = findViewById(R.id.devices_toolbar);
         toolbar.setTitle("Devices");
         setSupportActionBar(toolbar);
@@ -355,8 +354,7 @@ public class DevicesActivity extends AppCompatActivity {
                             mqttService.sendDataMQTT(device.getDeviceId(), state);
                         }
                     });
-                }
-                else{
+                } else {
                     deviceHolder.switchCompat.setVisibility(View.INVISIBLE);
                 }
             }

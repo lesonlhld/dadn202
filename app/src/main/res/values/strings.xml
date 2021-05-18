@@ -7,6 +7,7 @@
     <string name="error_match_password">This confirmation password do not match</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_email_required">This email is required</string>
+    <string name="error_room_name_required">This room name is required</string>
     <string name="error_password_required">This password is required</string>
     <string name="error_old_password_required">This old password is required</string>
     <string name="error_new_password_required">This new password is required</string>
@@ -29,6 +30,8 @@
     <string name="title_activity_profile">Firebase</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="add_new_room">Add new room</string>
+    <string name="room_name">Room name</string>
     <string name="btn_login">Login</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_link_to_register">Not a member? Register now!</string>
@@ -39,6 +42,7 @@
     <string name="hint_new_email">New Email</string>
     <string name="btn_change">Change</string>
     <string name="btn_send">Send</string>
+    <string name="btn_add">Add</string>
     <string name="btn_remove">Remove</string>
     <string name="btn_sign_out">Sign Out</string>
     <string name="btn_register">Register</string>

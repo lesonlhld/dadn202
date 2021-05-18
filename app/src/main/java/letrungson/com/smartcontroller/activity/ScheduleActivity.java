@@ -2,6 +2,7 @@ package letrungson.com.smartcontroller.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -10,9 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,7 +33,6 @@ public class ScheduleActivity extends AppCompatActivity {
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     ImageButton close_btn;
     FloatingActionButton floating_action_btn;
-    TextView room;
     String roomId;
     ScheduleListView scheduleListView;
     private List<Schedule> lstSchedule;
@@ -42,25 +41,21 @@ public class ScheduleActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
-        close_btn = findViewById(R.id.imageButton);
         floating_action_btn = findViewById(R.id.floatingActionButton);
         ListView listView = findViewById(R.id.smart_schedule_listview);
         Intent intent = getIntent();
         roomId = intent.getStringExtra("roomId");
-        String roomName = intent.getStringExtra("roomName");
-        room = findViewById(R.id.textView4);
-        room.setText(roomName);
+
+        //Setup Toolbar
+        Toolbar toolbar = findViewById(R.id.schedule_toolbar);
+        toolbar.setTitle("Smart Schedule");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getAllSchedule(roomId);
         scheduleListView = new ScheduleListView(getApplicationContext(), lstSchedule);
         listView.setAdapter(scheduleListView);
-
-        close_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         floating_action_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +66,17 @@ public class ScheduleActivity extends AppCompatActivity {
                 scheduleListView.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void getAllSchedule(String roomId) {

@@ -10,7 +10,7 @@ public class Schedule {
     private String scheduleId;
     private String roomId;
 
-    public Schedule(){
+    public Schedule() {
         this.temp = 30;
         this.humid = 30;
         this.startTime = "00:00";

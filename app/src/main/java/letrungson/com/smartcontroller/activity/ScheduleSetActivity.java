@@ -179,7 +179,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
         });
     }
 
-    private void setSchedule(){
+    private void setSchedule() {
         thisSchedule = new Schedule();
         thisSchedule.setRoomId(roomId);
         temp_data.setText(String.valueOf(thisSchedule.getTemp()));
@@ -206,8 +206,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
         if (flag == 0) {
             previous_hour = calendar.get(Calendar.HOUR_OF_DAY);
             previous_minute = calendar.get(Calendar.MINUTE);
-        }
-        else {
+        } else {
             previous_hour = calendar.get(Calendar.HOUR_OF_DAY) + 1;
             previous_minute = calendar.get(Calendar.MINUTE);
         }

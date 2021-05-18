@@ -35,8 +35,7 @@
             android:textColor="#f00"
             android:textOff="0"
             android:textOn="1"
-            android:theme="@style/SCBSwitch"
-            />
+            android:theme="@style/SCBSwitch" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/device_item_x"
@@ -49,8 +48,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:src="@drawable/ic_x"
-            android:visibility="invisible"
-             />
+            android:visibility="invisible" />
     </RelativeLayout>
 
 

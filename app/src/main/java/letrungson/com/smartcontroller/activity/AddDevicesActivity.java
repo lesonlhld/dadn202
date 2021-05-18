@@ -34,8 +34,10 @@ import java.util.List;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.service.Database;
+import letrungson.com.smartcontroller.service.MQTTService;
 
 public class AddDevicesActivity extends AppCompatActivity {
+    MQTTService mqttService;
     private ArrayList<Device> arrayListDevice;
     private Database db_service;
     private EditText textDeviceName;
@@ -50,6 +52,7 @@ public class AddDevicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_devices);
+        mqttService = new MQTTService(this);
 
         //Setup Database
         db_service = new Database();
@@ -104,6 +107,11 @@ public class AddDevicesActivity extends AppCompatActivity {
                     db_service.addDevice(deviceId, deviceName, type, roomId);
                     textDeviceId.setText("");
                     textDeviceName.setText("");
+                    spinnerAddDevice.setAdapter(spinnerAddDeviceAdapter);
+                    String state;
+                    if (type.equals("Sensor")) state = "0-0";
+                    else state = "0";
+                    mqttService.sendDataMQTT(deviceId, state);
                     Toast.makeText(getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -287,6 +295,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             }
             return convertView;
         }
+
         @Override
         public boolean isEnabled(int position) {
             if (position == 0) {
@@ -303,6 +312,7 @@ public class AddDevicesActivity extends AppCompatActivity {
             return getView(position, convertView, parent);
         }
     }
+
     public class SpinnerAddDeviceHolder {
         ImageView imageView;
         TextView title;
