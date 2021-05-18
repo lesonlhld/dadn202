@@ -45,14 +45,14 @@ public class ScheduleListView extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
         view = inflater.inflate(R.layout.schedule_items, null);
         TextView startDay = view.findViewById(R.id.startDay);
-        TextView endDay = view.findViewById(R.id.endDay);
         TextView startTime = view.findViewById(R.id.startTime);
         TextView endTime = view.findViewById(R.id.endTime);
         TextView temp = view.findViewById(R.id.temp);
         TextView humid = view.findViewById(R.id.humid);
 
-        //startDay.setText(schedules.get(position).getStartDay());
-        //endDay.setText(schedules.get(position).getEndDay());
+
+        String repeatDay = reapeatDayMakeText(schedules.get(position).getRepeatDay());
+        startDay.setText(repeatDay);
         startTime.setText(schedules.get(position).getStartTime());
         endTime.setText(schedules.get(position).getEndTime());
 
@@ -71,4 +71,29 @@ public class ScheduleListView extends BaseAdapter {
         });
         return view;
     }
+
+    private String reapeatDayMakeText(String repeatDay) {
+        Boolean isDaily = true;
+        Boolean firstDay = true;
+        String daily = "Daily";
+        String days  = "";
+        String[] items = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
+        char[] arr = new char[repeatDay.length()];
+        //Convert String to Array Char
+        for (int i = 0; i < repeatDay.length(); i++) {
+            arr[i] = repeatDay.charAt(i);
+            if (arr[i] == '0') isDaily = false;
+            else{
+                if (firstDay) {
+                    days+= items[i];
+                    firstDay = false;
+                }
+                else days = days + " - " +items;
+            }
+        }
+        if (isDaily) return daily;
+        else return days;
+    }
+
+
 }
