@@ -24,7 +24,7 @@
             android:background="?android:selectableItemBackgroundBorderless"
             android:scaleX="2"
             android:scaleY="2"
-            android:tint="#F20808"
+            android:tint="#688396"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_power_button" />
