@@ -44,7 +44,7 @@ import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
 
 public class DevicesActivity extends AppCompatActivity {
-    MQTTService mqttService;
+    private MQTTService mqttService;
     private ListView listViewDevices;
     private Spinner spinnerDeviceType;
     private Database db_service;
@@ -362,6 +362,7 @@ public class DevicesActivity extends AppCompatActivity {
 
             }
             convertView.setTag(deviceHolder);
+
             return convertView;
         }
 
