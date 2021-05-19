@@ -56,6 +56,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String roomId = this.roomList.get(position).getRoomId();
+
         ArrayList<Device> listRoomDevice = new ArrayList<Device>();
         holder.roomName.setText(this.roomList.get(position).getRoomName());
         if (this.roomList.get(position).getRoomTargetTemp() != null) {
@@ -77,10 +78,12 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                     if (countDeviceOn==0){
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#688396"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#8FA4B5"));
+                        holder.isOn=false;
                     }
                     else if (countDeviceOn==1){
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#F20808"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFBE04"));
+                        holder.isOn=true;
                     }
                 }
             }
@@ -103,10 +106,12 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                     if (countDeviceOn==0){
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#688396"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#8FA4B5"));
+                        holder.isOn=false;
                     }
                     else if (countDeviceOn==1){
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#F20808"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFBE04"));
+                        holder.isOn=true;
                     }
                 }
             }
@@ -127,10 +132,12 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                     if (countDeviceOn==0){
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#688396"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#8FA4B5"));
+                        holder.isOn=false;
                     }
                     else if (countDeviceOn==1){
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#F20808"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFBE04"));
+                        holder.isOn=true;
                     }
                 }
             }
@@ -151,9 +158,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
             public void onClick(View v) {
                 if (listRoomDevice.size()>0){
                     String newState = "0";
-                    Drawable background = holder.constraintLayout.getBackground();
-                    int color = ((ColorDrawable) background).getColor();
-                    if (color == Color.parseColor("#8FA4B5")) {
+                    if (!holder.isOn) {
                         newState = "1";
                     }
                     for (Device device : listRoomDevice) {
@@ -191,6 +196,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         TextView roomCurrentTemp;
         ImageButton roomPowerButton;
         ConstraintLayout constraintLayout;
+        boolean isOn;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -199,6 +205,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
             roomCurrentTemp = (TextView) itemView.findViewById(R.id.room_item_temp);
             roomPowerButton = (ImageButton) itemView.findViewById(R.id.room_item_power_btn);
             constraintLayout = (ConstraintLayout) itemView.findViewById(R.id.room_item_layout);
+            isOn=false;
         }
     }
 }

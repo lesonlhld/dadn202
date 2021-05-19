@@ -226,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     }
                 }
             }
-
         });
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
