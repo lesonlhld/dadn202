@@ -64,7 +64,6 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
             holder.roomTargetTemp.setText("No schedule");
         }
         holder.roomCurrentTemp.setText(this.roomList.get(position).getRoomCurrentTemp());
-
         Query refRoomDevices = FirebaseDatabase.getInstance().getReference("devices").orderByChild("roomId").equalTo(roomId);
         refRoomDevices.addChildEventListener(new ChildEventListener() {
             private int countDeviceOn = 0;
@@ -150,16 +149,18 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         holder.roomPowerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newState = "0";
-                Drawable background = holder.constraintLayout.getBackground();
-                int color = ((ColorDrawable) background).getColor();
-                if (color == Color.parseColor("#8FA4B5")) {
-                    newState = "1";
-                }
-                for (Device device : listRoomDevice) {
-                    db_service.updateDevice(device.getDeviceId(), newState);
-                    db_service.addLog(device.getDeviceId(), newState);
-                    mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                if (listRoomDevice.size()>0){
+                    String newState = "0";
+                    Drawable background = holder.constraintLayout.getBackground();
+                    int color = ((ColorDrawable) background).getColor();
+                    if (color == Color.parseColor("#8FA4B5")) {
+                        newState = "1";
+                    }
+                    for (Device device : listRoomDevice) {
+                        db_service.updateDevice(device.getDeviceId(), newState);
+                        db_service.addLog(device.getDeviceId(), newState);
+                        mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                    }
                 }
             }
         });
