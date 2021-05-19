@@ -2,9 +2,13 @@ package letrungson.com.smartcontroller.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,7 +27,9 @@ import letrungson.com.smartcontroller.model.Room;
 public class RoomDetailActivity extends Activity {
     private final DatabaseReference rooms = FirebaseDatabase.getInstance().getReference();
     TextView roomName, temperature, humidity, targetTemp;
-    ConstraintLayout smart_schedule, device;
+    ConstraintLayout  smart_schedule,device;
+    ImageView smartScheduleImg, deviceImg,closeBtn;
+    //ImageButton closeBtn;
     private Room thisRoom;
 
     @Override
@@ -41,6 +47,11 @@ public class RoomDetailActivity extends Activity {
         targetTemp = findViewById(R.id.roomdetail_temp_big);
 
         smart_schedule = findViewById(R.id.smart_schedule);
+        smartScheduleImg = findViewById(R.id.calendar);
+        smartScheduleImg.setImageResource(R.drawable.ic_calendar);
+        deviceImg = findViewById(R.id.deviceImg);
+        deviceImg.setImageResource(R.drawable.ic_settings);
+        deviceImg.setColorFilter(getApplicationContext().getResources().getColor(R.color.white));
         smart_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +69,15 @@ public class RoomDetailActivity extends Activity {
                 Intent intent = new Intent(RoomDetailActivity.this, DevicesActivity.class);
                 intent.putExtra("roomId", thisRoom.getRoomId());
                 startActivity(intent);
+            }
+        });
+
+        closeBtn =findViewById(R.id.closeBtn);
+        closeBtn.setImageResource(R.drawable.ic_close);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

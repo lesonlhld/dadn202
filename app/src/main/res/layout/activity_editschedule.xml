@@ -2,13 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F7F8FA">
 
     <RelativeLayout
         android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/teal_200"
+        android:background="#2898D7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -52,27 +53,31 @@
 
     <Button
         android:id="@+id/delete_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="150dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/button"
-        android:text="DELETE"
+        android:background="@drawable/button_schedule"
+        android:text="DELETE SCHEDULE"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <RelativeLayout
         android:id="@+id/temp_area"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="130dp"
+        android:background="@drawable/schedule_items_bg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bar">
+        app:layout_constraintTop_toBottomOf="@id/bar"
+        >
 
         <ImageButton
             android:id="@+id/up_temp_btn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentTop="false"
             android:layout_alignParentRight="true"
             android:layout_marginTop="55dp"
@@ -89,12 +94,13 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:text="Temperature"
+            android:textColor="#717274"
             android:textSize="20dp" />
 
         <ImageButton
             android:id="@+id/down_temp_btn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="45dp"
@@ -112,6 +118,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:text="25"
+            android:textColor="#717274"
             android:textSize="50sp" />
 
     </RelativeLayout>
@@ -120,6 +127,7 @@
         android:id="@+id/humid_area"
         android:layout_width="match_parent"
         android:layout_height="140dp"
+        android:background="@drawable/schedule_items_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/temp_area">
 
@@ -131,12 +139,13 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:text="60"
+            android:textColor="#717274"
             android:textSize="50sp" />
 
         <ImageButton
             android:id="@+id/up_humi_btn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="55dp"
@@ -148,8 +157,8 @@
 
         <ImageButton
             android:id="@+id/down_humi_btn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="45dp"
@@ -174,6 +183,7 @@
         android:id="@+id/time_area"
         android:layout_width="match_parent"
         android:layout_height="140dp"
+        android:background="@drawable/schedule_items_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/humid_area">
 
@@ -187,6 +197,7 @@
             android:layout_marginTop="55dp"
             android:layout_marginEnd="30dp"
             android:text="HH:mm"
+            android:textColor="#717274"
             android:textSize="20dp" />
 
         <TextView
@@ -198,6 +209,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="95dp"
             android:text="End"
+            android:textColor="@color/black"
             android:textSize="20dp" />
 
         <TextView
@@ -209,6 +221,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="55dp"
             android:text="Start"
+            android:textColor="@color/black"
             android:textSize="20dp" />
 
         <TextView
@@ -218,6 +231,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:text="Time"
+            android:textColor="#717274"
             android:textSize="20dp" />
 
         <TextView
@@ -230,6 +244,7 @@
             android:layout_marginTop="95dp"
             android:layout_marginEnd="30dp"
             android:text="HH:mm"
+            android:textColor="#717274"
             android:textSize="20dp" />
 
 
@@ -239,6 +254,7 @@
         android:id="@+id/repeat_time_area"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:background="@drawable/schedule_items_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/time_area">
 
@@ -249,6 +265,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:text="Repeat"
+            android:textColor="#717274"
             android:textSize="20dp" />
 
         <Button
@@ -269,6 +286,7 @@
             android:layout_marginTop="65dp"
             android:layout_marginEnd="30dp"
             android:text="TextView"
+            android:textColor="#717274"
             android:textSize="20sp" />
 
     </RelativeLayout>

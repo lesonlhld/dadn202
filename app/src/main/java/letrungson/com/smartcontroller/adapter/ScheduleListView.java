@@ -56,8 +56,8 @@ public class ScheduleListView extends BaseAdapter {
         startTime.setText(schedules.get(position).getStartTime());
         endTime.setText(schedules.get(position).getEndTime());
 
-        temp.setText(String.valueOf(schedules.get(position).getTemp()));
-        humid.setText(String.valueOf(schedules.get(position).getHumid()));
+        temp.setText(String.valueOf(schedules.get(position).getTemp())+"C");
+        humid.setText(String.valueOf(schedules.get(position).getHumid())+"%");
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +88,7 @@ public class ScheduleListView extends BaseAdapter {
                     days+= items[i];
                     firstDay = false;
                 }
-                else days = days + " - " +items;
+                else days = days + " - " +items[i];
             }
         }
         if (isDaily) return daily;

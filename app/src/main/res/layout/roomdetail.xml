@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/room_detail_bg">
+    android:background="@drawable/room_detail_bg"
+    tools:ignore="ContentDescription">
 
-
-    <ImageButton
-        android:id="@+id/closeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:background="?android:selectableItemBackgroundBorderless"
-        android:tint="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close" />
 
     <TextView
         android:id="@+id/roomName"
@@ -57,11 +46,11 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="112dp"
                 android:layout_marginTop="16dp"
                 android:text="Heating to"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,14 +58,15 @@
                 android:id="@+id/roomdetail_temp_big"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="104dp"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="26dp"
                 android:text="Null"
                 android:textColor="@color/white"
                 android:textSize="80sp"
                 android:textStyle="bold"
+
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -111,18 +101,18 @@
         android:layout_height="36dp"
         android:layout_marginTop="28dp"
         android:background="@drawable/room_detail_button_bg"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/calendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="8dp"
-            android:background="?android:selectableItemBackgroundBorderless"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_calendar" />
@@ -135,10 +125,10 @@
             android:text="SMART SCHEDULE"
             android:textColor="@color/black"
             android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/imageView2"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintBottom_toBottomOf="@+id/calendar"
+            app:layout_constraintStart_toEndOf="@+id/calendar"
+            app:layout_constraintTop_toTopOf="@+id/calendar"
+            app:layout_constraintVertical_bias="0.53" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -147,18 +137,19 @@
         android:layout_height="36dp"
         android:layout_marginTop="76dp"
         android:background="@drawable/room_detail_button_bg"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/deviceImg"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:background="?android:selectableItemBackgroundBorderless"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_settings"
@@ -172,9 +163,9 @@
             android:text="Device"
             android:textColor="@color/black"
             android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/deviceImg"
+            app:layout_constraintStart_toEndOf="@+id/deviceImg"
+            app:layout_constraintTop_toTopOf="@+id/deviceImg"
             app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -249,5 +240,15 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/roomdetail_humid"
         app:layout_constraintStart_toEndOf="@+id/roomdetail_humid" />
+
+    <ImageView
+        android:id="@+id/closeBtn"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
