@@ -2,13 +2,10 @@ package letrungson.com.smartcontroller.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,8 +24,8 @@ import letrungson.com.smartcontroller.model.Room;
 public class RoomDetailActivity extends Activity {
     private final DatabaseReference rooms = FirebaseDatabase.getInstance().getReference();
     TextView roomName, temperature, humidity, targetTemp;
-    ConstraintLayout  smart_schedule,device;
-    ImageView smartScheduleImg, deviceImg,closeBtn;
+    ConstraintLayout smart_schedule, device;
+    ImageView smartScheduleImg, deviceImg, closeBtn;
     //ImageButton closeBtn;
     private Room thisRoom;
 
@@ -72,7 +69,7 @@ public class RoomDetailActivity extends Activity {
             }
         });
 
-        closeBtn =findViewById(R.id.closeBtn);
+        closeBtn = findViewById(R.id.closeBtn);
         closeBtn.setImageResource(R.drawable.ic_close);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,7 +3,6 @@ package letrungson.com.smartcontroller.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -143,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         Query refRoomDevices = FirebaseDatabase.getInstance().getReference("devices");
         refRoomDevices.addChildEventListener(new ChildEventListener() {
             private int countDeviceOn = 0;
+
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
@@ -215,10 +215,10 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         powerAllRooms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (allDevices.size()>0){
+                if (allDevices.size() > 0) {
                     String newState = "0";
                     if (power_state.getText().equals("Turn On"))
-                        newState="1";
+                        newState = "1";
                     for (Device device : allDevices) {
                         db.updateDevice(device.getDeviceId(), newState);
                         db.addLog(device.getDeviceId(), newState);

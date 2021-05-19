@@ -62,8 +62,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <RelativeLayout
         android:id="@+id/temp_area"
@@ -71,8 +70,7 @@
         android:layout_height="130dp"
         android:background="@drawable/schedule_items_bg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bar"
-        >
+        app:layout_constraintTop_toBottomOf="@id/bar">
 
         <ImageButton
             android:id="@+id/up_temp_btn"

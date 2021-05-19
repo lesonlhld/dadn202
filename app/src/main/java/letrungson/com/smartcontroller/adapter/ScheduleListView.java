@@ -13,6 +13,7 @@ import java.util.List;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.ScheduleEditActivity;
 import letrungson.com.smartcontroller.model.Schedule;
+import letrungson.com.smartcontroller.tools.Tranform;
 
 public class ScheduleListView extends BaseAdapter {
     Context context;
@@ -51,13 +52,13 @@ public class ScheduleListView extends BaseAdapter {
         TextView humid = view.findViewById(R.id.humid);
 
 
-        String repeatDay = reapeatDayMakeText(schedules.get(position).getRepeatDay());
+        String repeatDay = Tranform.BinaryToDaily(schedules.get(position).getRepeatDay());
         startDay.setText(repeatDay);
         startTime.setText(schedules.get(position).getStartTime());
         endTime.setText(schedules.get(position).getEndTime());
 
-        temp.setText(String.valueOf(schedules.get(position).getTemp())+"C");
-        humid.setText(String.valueOf(schedules.get(position).getHumid())+"%");
+        temp.setText(String.valueOf(schedules.get(position).getTemp()) + "C");
+        humid.setText(String.valueOf(schedules.get(position).getHumid()) + "%");
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,29 +72,4 @@ public class ScheduleListView extends BaseAdapter {
         });
         return view;
     }
-
-    private String reapeatDayMakeText(String repeatDay) {
-        Boolean isDaily = true;
-        Boolean firstDay = true;
-        String daily = "Daily";
-        String days  = "";
-        String[] items = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
-        char[] arr = new char[repeatDay.length()];
-        //Convert String to Array Char
-        for (int i = 0; i < repeatDay.length(); i++) {
-            arr[i] = repeatDay.charAt(i);
-            if (arr[i] == '0') isDaily = false;
-            else{
-                if (firstDay) {
-                    days+= items[i];
-                    firstDay = false;
-                }
-                else days = days + " - " +items[i];
-            }
-        }
-        if (isDaily) return daily;
-        else return days;
-    }
-
-
 }

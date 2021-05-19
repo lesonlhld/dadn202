@@ -3,8 +3,6 @@ package letrungson.com.smartcontroller.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -26,9 +23,9 @@ import com.google.firebase.database.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.RoomDetailActivity;
+import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
@@ -68,6 +65,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         Query refRoomDevices = FirebaseDatabase.getInstance().getReference("devices").orderByChild("roomId").equalTo(roomId);
         refRoomDevices.addChildEventListener(new ChildEventListener() {
             private int countDeviceOn = 0;
+
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Device device = snapshot.getValue(Device.class);
@@ -75,15 +73,14 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                 if (!device.getType().equals("Sensor")) {
                     if (device.getState().equals("1")) countDeviceOn++;
                     listRoomDevice.add(device);
-                    if (countDeviceOn==0){
+                    if (countDeviceOn == 0) {
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#688396"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#8FA4B5"));
-                        holder.isOn=false;
-                    }
-                    else if (countDeviceOn==1){
+                        holder.isOn = false;
+                    } else if (countDeviceOn == 1) {
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#F20808"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFBE04"));
-                        holder.isOn=true;
+                        holder.isOn = true;
                     }
                 }
             }
@@ -103,15 +100,14 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                             break;
                         }
                     }
-                    if (countDeviceOn==0){
+                    if (countDeviceOn == 0) {
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#688396"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#8FA4B5"));
-                        holder.isOn=false;
-                    }
-                    else if (countDeviceOn==1){
+                        holder.isOn = false;
+                    } else if (countDeviceOn == 1) {
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#F20808"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFBE04"));
-                        holder.isOn=true;
+                        holder.isOn = true;
                     }
                 }
             }
@@ -129,15 +125,14 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                             break;
                         }
                     }
-                    if (countDeviceOn==0){
+                    if (countDeviceOn == 0) {
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#688396"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#8FA4B5"));
-                        holder.isOn=false;
-                    }
-                    else if (countDeviceOn==1){
+                        holder.isOn = false;
+                    } else if (countDeviceOn == 1) {
                         holder.roomPowerButton.setColorFilter(Color.parseColor("#F20808"));
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFBE04"));
-                        holder.isOn=true;
+                        holder.isOn = true;
                     }
                 }
             }
@@ -156,7 +151,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         holder.roomPowerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listRoomDevice.size()>0){
+                if (listRoomDevice.size() > 0) {
                     String newState = "0";
                     if (!holder.isOn) {
                         newState = "1";
@@ -205,7 +200,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
             roomCurrentTemp = (TextView) itemView.findViewById(R.id.room_item_temp);
             roomPowerButton = (ImageButton) itemView.findViewById(R.id.room_item_power_btn);
             constraintLayout = (ConstraintLayout) itemView.findViewById(R.id.room_item_layout);
-            isOn=false;
+            isOn = false;
         }
     }
 }
