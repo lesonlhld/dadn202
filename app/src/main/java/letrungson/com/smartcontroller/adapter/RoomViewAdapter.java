@@ -150,7 +150,6 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
         holder.roomPowerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> listDeviceId= new ArrayList<String>();
                 String newState = "0";
                 Drawable background = holder.constraintLayout.getBackground();
                 int color = ((ColorDrawable) background).getColor();
@@ -158,12 +157,9 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                     newState = "1";
                 }
                 for (Device device : listRoomDevice) {
-                    listDeviceId.add(device.getDeviceId());
-                }
-                for (String deviceId: listDeviceId){
-                    db_service.updateDevice(deviceId, newState);
-                    db_service.addLog(deviceId, newState);
-                    mqttService.sendDataMQTT(deviceId, newState);
+                    db_service.updateDevice(device.getDeviceId(), newState);
+                    db_service.addLog(device.getDeviceId(), newState);
+                    mqttService.sendDataMQTT(device.getDeviceId(), newState);
                 }
             }
         });

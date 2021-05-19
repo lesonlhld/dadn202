@@ -215,17 +215,14 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         powerAllRooms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> listDeviceId= new ArrayList<String>();
+
                 String newState = "0";
                 if (power_state.getText().equals("Turn On"))
                     newState="1";
                 for (Device device : allDevices) {
-                    listDeviceId.add(device.getDeviceId());
-                }
-                for (String deviceId: listDeviceId){
-                    db.updateDevice(deviceId, newState);
-                    db.addLog(deviceId, newState);
-                    mqttService.sendDataMQTT(deviceId, newState);
+                    db.updateDevice(device.getDeviceId(), newState);
+                    db.addLog(device.getDeviceId(), newState);
+                    mqttService.sendDataMQTT(device.getDeviceId(), newState);
                 }
             }
 
