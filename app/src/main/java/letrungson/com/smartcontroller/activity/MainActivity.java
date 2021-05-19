@@ -3,6 +3,7 @@ package letrungson.com.smartcontroller.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,8 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -61,12 +66,15 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     UsbSerialPort port;
     Button home, more;
     ImageButton room_btn;
+    RelativeLayout powerAllRooms;
+    TextView power_state;
     MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
     Device cDevice;
     Database db;
     private FirebaseAuth mAuth;
     private List<Room> listRoom;
+    private List<Device> allDevices;
     private RecyclerView recyclerView;
     private Data dataMqtt;
     private Thread readThread;
@@ -128,6 +136,97 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
             }
         });
 
+        //Setup power all room:
+        powerAllRooms = (RelativeLayout) findViewById(R.id.power);
+        power_state = (TextView) findViewById(R.id.power_state);
+        allDevices = new ArrayList<Device>();
+        Query refRoomDevices = FirebaseDatabase.getInstance().getReference("devices");
+        refRoomDevices.addChildEventListener(new ChildEventListener() {
+            private int countDeviceOn = 0;
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Device device = snapshot.getValue(Device.class);
+                device.setDeviceId(snapshot.getKey());
+                if (!device.getType().equals("Sensor")) {
+                    if (device.getState().equals("1")) countDeviceOn++;
+                    allDevices.add(device);
+                    if (countDeviceOn == 0) {
+                        power_state.setText("Turn On");
+                    } else if (countDeviceOn == 1) {
+                        power_state.setText("Turn Off");
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot snapshot, @Nullable String previousChildName) {
+                Device device = snapshot.getValue(Device.class);
+                String deviceID = snapshot.getKey();
+                if (!device.getType().equals("Sensor")) {
+                    for (Device device0 : allDevices) {
+                        if (device0.getDeviceId().equals(deviceID)) {
+                            if (device.getState().equals("1") && device0.getState().equals("0"))
+                                countDeviceOn++;
+                            else if (device.getState().equals("0") && device0.getState().equals("1"))
+                                countDeviceOn--;
+                            device0.assign(device);
+                            break;
+                        }
+                    }
+                    if (countDeviceOn == 0) {
+                        power_state.setText("Turn On");
+                    } else if (countDeviceOn == 1) {
+                        power_state.setText("Turn Off");
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Device device = snapshot.getValue(Device.class);
+                String deviceID = snapshot.getKey();
+                if (!device.getType().equals("Sensor")) {
+                    for (Device device0 : allDevices) {
+                        if (device0.getDeviceId().equals(deviceID)) {
+                            if (device0.getState().equals("1"))
+                                countDeviceOn--;
+                            allDevices.remove(device0);
+                            break;
+                        }
+                    }
+                    if (countDeviceOn == 0) {
+                        power_state.setText("Turn On");
+                    } else if (countDeviceOn == 1) {
+                        power_state.setText("Turn Off");
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        powerAllRooms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (allDevices.size()>0){
+                    String newState = "0";
+                    if (power_state.getText().equals("Turn On"))
+                        newState="1";
+                    for (Device device : allDevices) {
+                        db.updateDevice(device.getDeviceId(), newState);
+                        db.addLog(device.getDeviceId(), newState);
+                        mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                    }
+                }
+            }
+        });
 //        temperature = findViewById(R.id.temperature);
 //        humidity = findViewById(R.id.humidity);
 
@@ -208,9 +307,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setTitle("Exit")
-                .setMessage("Do you want to exit?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setTitle("Thoát")
+                .setMessage("Bạn có muốn thoát ứng dụng?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Build.VERSION.SDK_INT >= 16 && Build.VERSION.SDK_INT < 21) {
@@ -222,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     }
 
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton("Không", null)
                 .show();
     }
 
