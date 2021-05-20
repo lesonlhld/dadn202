@@ -357,6 +357,7 @@ public class DevicesActivity extends AppCompatActivity {
                 } else {
                     deviceHolder.switchCompat.setVisibility(View.INVISIBLE);
                 }
+
             }
             convertView.setTag(deviceHolder);
 
