@@ -40,7 +40,6 @@ public class RoomActivity extends AppCompatActivity {
     TextView roomName, cancel;
     ArrayAdapter<Room> arrayAdapter;
     ListView listView;
-    Database db = new Database();
     private List<Room> listRoom;
     private DatabaseReference devices, rooms, schedules;
 
@@ -120,7 +119,7 @@ public class RoomActivity extends AppCompatActivity {
                 if (name.isEmpty()) {
                     Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_required), Toast.LENGTH_LONG).show();
                 } else {
-                    db.addRoom(name);
+                    Database.addRoom(name);
                     startActivity(new Intent(RoomActivity.this, RoomActivity.class));
                     finish();
                 }

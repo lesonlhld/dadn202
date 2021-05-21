@@ -37,8 +37,8 @@ public class ScheduleEditActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     Schedule thisSchedule;
     String scheduleId;
-    TextView start_time, end_time, temp_data, humi_data, repeat_day_text;
-    ImageButton up_temp_btn, down_temp_btn, up_humi_btn, down_humi_btn, close_btn, tick_btn;
+    TextView start_time, end_time, temp_data, humid_data, repeat_day_text;
+    ImageButton up_temp_btn, down_temp_btn, up_humid_btn, down_humid_btn, close_btn, tick_btn;
     Button set_repeat_day_btn, delete_btn;
 
     @Override
@@ -54,17 +54,15 @@ public class ScheduleEditActivity extends AppCompatActivity {
         end_time = (TextView) findViewById(R.id.end_time_text);
         up_temp_btn = (ImageButton) findViewById(R.id.up_temp_btn);
         down_temp_btn = (ImageButton) findViewById(R.id.down_temp_btn);
-        up_humi_btn = (ImageButton) findViewById(R.id.up_humi_btn);
-        down_humi_btn = (ImageButton) findViewById(R.id.down_humi_btn);
+        up_humid_btn = (ImageButton) findViewById(R.id.up_humi_btn);
+        down_humid_btn = (ImageButton) findViewById(R.id.down_humi_btn);
         temp_data = (TextView) findViewById(R.id.temp_data_view);
-        humi_data = (TextView) findViewById(R.id.humi_data_view);
+        humid_data = (TextView) findViewById(R.id.humi_data_view);
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
         set_repeat_day_btn = (Button) findViewById(R.id.set_repeat_day_btn);
         delete_btn = (Button) findViewById(R.id.delete_btn);
         repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
-
-        //delete_btn.setText("DELETE");
 
         start_time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +96,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
             }
         });
 
-        up_humi_btn.setOnClickListener(new View.OnClickListener() {
+        up_humid_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int flag = 3;
@@ -106,7 +104,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
             }
         });
 
-        down_humi_btn.setOnClickListener(new View.OnClickListener() {
+        down_humid_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int flag = 4;
@@ -218,7 +216,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                     thisSchedule = task.getResult().getValue(Schedule.class);
                     thisSchedule.setScheduleId(scheduleId);
                     temp_data.setText(String.valueOf(thisSchedule.getTemp()));
-                    humi_data.setText(String.valueOf(thisSchedule.getHumid()));
+                    humid_data.setText(String.valueOf(thisSchedule.getHumid()));
                     start_time.setText(thisSchedule.getStartTime());
                     end_time.setText(thisSchedule.getEndTime());
                     repeat_day_text.setText(Tranform.BinaryToDaily(thisSchedule.getRepeatDay()));
@@ -236,7 +234,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     thisSchedule = dataSnapshot.getValue(Schedule.class);
                     temp_data.setText(String.valueOf(thisSchedule.getTemp()));
-                    humi_data.setText(String.valueOf(thisSchedule.getHumid()));
+                    humid_data.setText(String.valueOf(thisSchedule.getHumid()));
                     start_time.setText(thisSchedule.getStartTime());
                     end_time.setText(thisSchedule.getEndTime());
                 } else {
@@ -267,11 +265,11 @@ public class ScheduleEditActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         int previous_hour, previous_minute;
         if (flag == 0) {
-            previous_hour = Integer.valueOf(thisSchedule.getStartTime().substring(0, 2));
-            previous_minute = Integer.valueOf(thisSchedule.getStartTime().substring(3, 5));
+            previous_hour = Integer.parseInt(thisSchedule.getStartTime().substring(0, 2));
+            previous_minute = Integer.parseInt(thisSchedule.getStartTime().substring(3, 5));
         } else {
-            previous_hour = Integer.valueOf(thisSchedule.getEndTime().substring(0, 2));
-            previous_minute = Integer.valueOf(thisSchedule.getEndTime().substring(3, 5));
+            previous_hour = Integer.parseInt(thisSchedule.getEndTime().substring(0, 2));
+            previous_minute = Integer.parseInt(thisSchedule.getEndTime().substring(3, 5));
         }
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
@@ -315,7 +313,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
             } else if (tempNum < 16) {
                 tempNum = 16;
             }
-            temp_data.setText("" + tempNum);
+            temp_data.setText(String.valueOf(tempNum));
             thisSchedule.setTemp(tempNum);
         } else {
             if (humidNum > 60) {
@@ -323,7 +321,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
             } else if (humidNum < 40) {
                 humidNum = 40;
             }
-            humi_data.setText("" + humidNum);
+            humid_data.setText(String.valueOf(humidNum));
             thisSchedule.setHumid(humidNum);
         }
     }

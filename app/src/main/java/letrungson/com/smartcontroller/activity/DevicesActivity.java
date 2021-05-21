@@ -46,7 +46,6 @@ public class DevicesActivity extends AppCompatActivity {
     private MQTTService mqttService;
     private ListView listViewDevices;
     private Spinner spinnerDeviceType;
-    private Database db_service;
     private DatabaseReference dbRefDevices;
     private ArrayList<DeviceAdapter> deviceAdapterArrayList;
     private List<String> type;
@@ -61,7 +60,6 @@ public class DevicesActivity extends AppCompatActivity {
         mqttService = new MQTTService(this);
 
         //Setup database
-        db_service = new Database();
         dbRefDevices = FirebaseDatabase.getInstance().getReference("devices");
 
         //Setup Toolbar
@@ -314,7 +312,7 @@ public class DevicesActivity extends AppCompatActivity {
                         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        db_service.removeDevice(device.getDeviceId());
+                                        Database.removeDevice(device.getDeviceId());
                                         dialog.dismiss();
                                     }
                                 });
@@ -349,8 +347,8 @@ public class DevicesActivity extends AppCompatActivity {
                             if (isChecked) {
                                 state = "1";
                             }
-                            db_service.updateDevice(device.getDeviceId(), state);
-                            db_service.addLog(device.getDeviceId(), state);
+                            Database.updateDevice(device.getDeviceId(), state);
+                            Database.addLog(device.getDeviceId(), state);
                             mqttService.sendDataMQTT(device.getDeviceId(), state);
                         }
                     });

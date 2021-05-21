@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
     Device cDevice;
-    Database db;
     private FirebaseAuth mAuth;
     private List<Room> listRoom;
     private List<Device> allDevices;
@@ -100,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         mAuth = FirebaseAuth.getInstance();
         checkCurrentUser(mAuth);
 
-        db = new Database();
         getAllRoom();
         setContentView(R.layout.homescreeen);
 
@@ -220,8 +218,8 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     if (power_state.getText().equals("Turn On"))
                         newState = "1";
                     for (Device device : allDevices) {
-                        db.updateDevice(device.getDeviceId(), newState);
-                        db.addLog(device.getDeviceId(), newState);
+                        Database.updateDevice(device.getDeviceId(), newState);
+                        Database.addLog(device.getDeviceId(), newState);
                         mqttService.sendDataMQTT(device.getDeviceId(), newState);
                     }
                 }
@@ -307,9 +305,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setTitle("Thoát")
-                .setMessage("Bạn có muốn thoát ứng dụng?")
-                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                .setTitle("Exit")
+                .setMessage("Do you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Build.VERSION.SDK_INT >= 16 && Build.VERSION.SDK_INT < 21) {
@@ -321,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     }
 
                 })
-                .setNegativeButton("Không", null)
+                .setNegativeButton("No", null)
                 .show();
     }
 
@@ -371,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     if (context.equals(dataMqtt.getKey())) {
                         Log.d(topic, data_to_microbit);
                         updateData(dataMqtt.getKey(), dataMqtt);
-                        db.updateDevice(dataMqtt.getKey().replace('.', '-'), dataMqtt.getLast_value());
+                        Database.updateDevice(dataMqtt.getKey().replace('.', '-'), dataMqtt.getLast_value());
                         //port.write(data_to_microbit.getBytes(),1000);
                     }
                 }
@@ -393,12 +391,12 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 cDevice = dataSnapshot.getValue(Device.class);
                 if (cDevice.getType() != null) {
                     if (cDevice.getType().equals("Sensor")) {
-                        db.addSensorLog(dataMqtt);
+                        Database.addSensorLog(dataMqtt);
                         String value = dataMqtt.getLast_value();
                         String roomId = cDevice.getRoomId();
                         String temp = value.substring(0, value.lastIndexOf('-')).trim();
                         String humid = value.substring(value.lastIndexOf('-') + 1).trim();
-                        db.updateRoom(roomId, temp, humid);
+                        Database.updateRoom(roomId, temp, humid);
                     } else {//Devices
                         //db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
                     }

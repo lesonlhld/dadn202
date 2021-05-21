@@ -16,19 +16,15 @@ import letrungson.com.smartcontroller.model.LogState;
 
 public class Database {
     private static final String TAG = "Database";
-    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private final DatabaseReference sensors, logs, devices, rooms, schedules;
+    private static final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private static final DatabaseReference sensors = database.getReference("sensors");
+    private static final DatabaseReference logs = database.getReference("logs");
+    private static final DatabaseReference devices = database.getReference("devices");;
+    private static final DatabaseReference rooms = database.getReference("rooms");
+    private static final DatabaseReference schedules = database.getReference("schedules");
 
-    public Database() {
-        sensors = database.getReference("sensors");
-        logs = database.getReference("logs");
-        devices = database.getReference("devices");
-        rooms = database.getReference("rooms");
-        schedules = database.getReference("schedules");
-    }
-
-    public void addSensorLog(Data o) {
+    public static void addSensorLog(Data o) {
         String id = "Sensor" + sensors.push().getKey();
         HashMap<String, String> hashMap = new HashMap();
         hashMap.put("deviceId", o.getKey());
@@ -37,7 +33,7 @@ public class Database {
         sensors.child(id).setValue(hashMap);
     }
 
-    public void addLog(String deviceId, String newState, String userId) {
+    public static void addLog(String deviceId, String newState, String userId) {
         FirebaseUser user = mAuth.getCurrentUser();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String datetime = formatter.format(LocalDateTime.now());
@@ -46,7 +42,7 @@ public class Database {
         logs.child(id).setValue(log);
     }
 
-    public void addLog(String deviceId, String newState) {
+    public static void addLog(String deviceId, String newState) {
         FirebaseUser user = mAuth.getCurrentUser();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String datetime = formatter.format(LocalDateTime.now());
@@ -56,22 +52,22 @@ public class Database {
         logs.child(id).setValue(log);
     }
 
-    public void addRoom(String roomName) {
+    public static void addRoom(String roomName) {
         String id = "Room" + rooms.push().getKey();
         rooms.child(id).child("roomName").setValue(roomName);
     }
 
-    public void updateRoom(String roomId, String temp, String humid) {
+    public static void updateRoom(String roomId, String temp, String humid) {
         rooms.child(roomId).child("roomCurrentTemp").setValue(temp);
         rooms.child(roomId).child("roomCurrentHumidity").setValue(humid);
     }
 
-    public void removLog() {
+    public static void removLog() {
         logs.removeValue();
         Log.d("db", "removed successfully");
     }
 
-    public void addDevice(String deviceId, String deviceName, String type, String roomId) {
+    public static void addDevice(String deviceId, String deviceName, String type, String roomId) {
         HashMap<String, String> hashMap = new HashMap();
         hashMap.put("deviceName", deviceName);
         hashMap.put("roomId", roomId);
@@ -81,11 +77,11 @@ public class Database {
         devices.child(deviceId).setValue(hashMap);
     }
 
-    public void removeDevice(String deviceId) {
+    public static void removeDevice(String deviceId) {
         devices.child(deviceId).removeValue();
     }
 
-    public void updateDevice(String deviceId, String currentState) {
+    public static void updateDevice(String deviceId, String currentState) {
         devices.child(deviceId).child("state").setValue(currentState);
     }
 

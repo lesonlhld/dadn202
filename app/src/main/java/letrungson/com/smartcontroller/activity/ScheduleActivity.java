@@ -28,9 +28,7 @@ import letrungson.com.smartcontroller.adapter.ScheduleListView;
 import letrungson.com.smartcontroller.model.Schedule;
 
 public class ScheduleActivity extends AppCompatActivity {
-    private final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    ImageButton close_btn;
     FloatingActionButton floating_action_btn;
     String roomId;
     ScheduleListView scheduleListView;

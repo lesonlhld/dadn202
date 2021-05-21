@@ -39,7 +39,6 @@ import letrungson.com.smartcontroller.service.MQTTService;
 public class AddDevicesActivity extends AppCompatActivity {
     MQTTService mqttService;
     private ArrayList<Device> arrayListDevice;
-    private Database db_service;
     private EditText textDeviceName;
     private EditText textDeviceId;
     private FirebaseDatabase db;
@@ -54,8 +53,6 @@ public class AddDevicesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_devices);
         mqttService = new MQTTService(this);
 
-        //Setup Database
-        db_service = new Database();
         db = FirebaseDatabase.getInstance();
         dbRefDevices = db.getReference("devices");
         //Setup List device name
@@ -104,7 +101,7 @@ public class AddDevicesActivity extends AppCompatActivity {
                     String deviceId = textDeviceId.getText().toString().trim();
                     String deviceName = textDeviceName.getText().toString().trim();
                     String type = spinnerAddDevice.getSelectedItem().toString().trim();
-                    db_service.addDevice(deviceId, deviceName, type, roomId);
+                    Database.addDevice(deviceId, deviceName, type, roomId);
                     textDeviceId.setText("");
                     textDeviceName.setText("");
                     spinnerAddDevice.setAdapter(spinnerAddDeviceAdapter);

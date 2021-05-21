@@ -34,12 +34,10 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
     private List<Room> roomList;
     private Context context;
     private MQTTService mqttService;
-    private Database db_service;
 
     public RoomViewAdapter(Context context, List<Room> roomList) {
         this.roomList = roomList;
         this.context = context;
-        this.db_service = new Database();
         this.mqttService = new MQTTService(this.context);
     }
 
@@ -157,8 +155,8 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                         newState = "1";
                     }
                     for (Device device : listRoomDevice) {
-                        db_service.updateDevice(device.getDeviceId(), newState);
-                        db_service.addLog(device.getDeviceId(), newState);
+                        Database.updateDevice(device.getDeviceId(), newState);
+                        Database.addLog(device.getDeviceId(), newState);
                         mqttService.sendDataMQTT(device.getDeviceId(), newState);
                     }
                 }

@@ -30,8 +30,8 @@ public class ScheduleSetActivity extends AppCompatActivity {
     Schedule thisSchedule;
     String scheduleId;
     String roomId;
-    TextView start_time, end_time, temp_data, humi_data, repeat_day_text;
-    ImageButton up_temp_btn, down_temp_btn, up_humi_btn, down_humi_btn, close_btn, tick_btn;
+    TextView start_time, end_time, temp_data, humid_data, repeat_day_text;
+    ImageButton up_temp_btn, down_temp_btn, up_humid_btn, down_humid_btn, close_btn, tick_btn;
     Button set_repeat_day_btn, delete_btn;
 
     @Override
@@ -46,10 +46,10 @@ public class ScheduleSetActivity extends AppCompatActivity {
         end_time = (TextView) findViewById(R.id.end_time_text);
         up_temp_btn = (ImageButton) findViewById(R.id.up_temp_btn);
         down_temp_btn = (ImageButton) findViewById(R.id.down_temp_btn);
-        up_humi_btn = (ImageButton) findViewById(R.id.up_humi_btn);
-        down_humi_btn = (ImageButton) findViewById(R.id.down_humi_btn);
+        up_humid_btn = (ImageButton) findViewById(R.id.up_humi_btn);
+        down_humid_btn = (ImageButton) findViewById(R.id.down_humi_btn);
         temp_data = (TextView) findViewById(R.id.temp_data_view);
-        humi_data = (TextView) findViewById(R.id.humi_data_view);
+        humid_data = (TextView) findViewById(R.id.humi_data_view);
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
         set_repeat_day_btn = (Button) findViewById(R.id.set_repeat_day_btn);
@@ -91,7 +91,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
             }
         });
 
-        up_humi_btn.setOnClickListener(new View.OnClickListener() {
+        up_humid_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int flag = 3;
@@ -99,7 +99,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
             }
         });
 
-        down_humi_btn.setOnClickListener(new View.OnClickListener() {
+        down_humid_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int flag = 4;
@@ -183,7 +183,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
         thisSchedule = new Schedule();
         thisSchedule.setRoomId(roomId);
         temp_data.setText(String.valueOf(thisSchedule.getTemp()));
-        humi_data.setText(String.valueOf(thisSchedule.getHumid()));
+        humid_data.setText(String.valueOf(thisSchedule.getHumid()));
         start_time.setText(thisSchedule.getStartTime());
         end_time.setText(thisSchedule.getEndTime());
         repeat_day_text.setText(Tranform.BinaryToDaily(thisSchedule.getRepeatDay()));
@@ -191,13 +191,8 @@ public class ScheduleSetActivity extends AppCompatActivity {
 
     private void addSchedule() {
         scheduleId = "Schedule" + database.child("schedules").push().getKey();
+        database.child("schedules").child(scheduleId).setValue(thisSchedule);
         thisSchedule.setScheduleId(scheduleId);
-        database.child("schedules").child(scheduleId).child("roomId").setValue(thisSchedule.getRoomId());
-        database.child("schedules").child(scheduleId).child("temp").setValue(thisSchedule.getTemp());
-        database.child("schedules").child(scheduleId).child("humid").setValue(thisSchedule.getHumid());
-        database.child("schedules").child(scheduleId).child("startTime").setValue(thisSchedule.getStartTime());
-        database.child("schedules").child(scheduleId).child("endTime").setValue(thisSchedule.getEndTime());
-        database.child("schedules").child(scheduleId).child("repeatDay").setValue(thisSchedule.getRepeatDay());
     }
 
     private void setTime(int flag) {
@@ -252,7 +247,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
             } else if (tempNum < 16) {
                 tempNum = 16;
             }
-            temp_data.setText("" + tempNum);
+            temp_data.setText(String.valueOf(tempNum));
             thisSchedule.setTemp(tempNum);
         } else {
             if (humidNum > 60) {
@@ -260,7 +255,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
             } else if (humidNum < 40) {
                 humidNum = 40;
             }
-            humi_data.setText("" + humidNum);
+            humid_data.setText(String.valueOf(humidNum));
             thisSchedule.setHumid(humidNum);
         }
     }

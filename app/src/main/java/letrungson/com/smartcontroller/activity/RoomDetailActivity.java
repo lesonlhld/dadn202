@@ -26,7 +26,6 @@ public class RoomDetailActivity extends Activity {
     TextView roomName, temperature, humidity, targetTemp;
     ConstraintLayout smart_schedule, device;
     ImageView smartScheduleImg, deviceImg, closeBtn;
-    //ImageButton closeBtn;
     private Room thisRoom;
 
     @Override
