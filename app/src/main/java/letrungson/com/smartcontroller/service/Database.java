@@ -13,6 +13,9 @@ import java.util.HashMap;
 
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.LogState;
+import letrungson.com.smartcontroller.model.Value;
+
+import static letrungson.com.smartcontroller.tools.Transform.convertToCurrentTimeZone;
 
 public class Database {
     private static final String TAG = "Database";
@@ -20,21 +23,22 @@ public class Database {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference sensors = database.getReference("sensors");
     private static final DatabaseReference logs = database.getReference("logs");
-    private static final DatabaseReference devices = database.getReference("devices");;
+    private static final DatabaseReference devices = database.getReference("devices");
+    ;
     private static final DatabaseReference rooms = database.getReference("rooms");
     private static final DatabaseReference schedules = database.getReference("schedules");
+    private static final DatabaseReference feeds = database.getReference("feeds");
 
-    public static void addSensorLog(Data o) {
+    public static void addSensorLog(Data data, Value value) {
         String id = "Sensor" + sensors.push().getKey();
         HashMap<String, String> hashMap = new HashMap();
-        hashMap.put("deviceId", o.getKey());
-        hashMap.put("last_value", o.getLast_value());
-        hashMap.put("updated_at", o.getUpdated_at().substring(0, o.getUpdated_at().length() - 4));
+        hashMap.put("deviceId", data.getKey());
+        hashMap.put("last_value", value.getData());
+        hashMap.put("updated_at", convertToCurrentTimeZone(data.getUpdated_at().substring(0, data.getUpdated_at().length() - 4)));
         sensors.child(id).setValue(hashMap);
     }
 
     public static void addLog(String deviceId, String newState, String userId) {
-        FirebaseUser user = mAuth.getCurrentUser();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String datetime = formatter.format(LocalDateTime.now());
         LogState log = new LogState(datetime, deviceId, newState, userId);
@@ -84,5 +88,4 @@ public class Database {
     public static void updateDevice(String deviceId, String currentState) {
         devices.child(deviceId).child("state").setValue(currentState);
     }
-
 }

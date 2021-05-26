@@ -20,8 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,8 +47,11 @@ import letrungson.com.smartcontroller.adapter.SpacingItemDecorator;
 import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
+import letrungson.com.smartcontroller.model.Value;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
+
+import static letrungson.com.smartcontroller.tools.Check.checkExistDeviceInDatabase;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -60,7 +61,6 @@ import letrungson.com.smartcontroller.service.MQTTService;
 public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener {
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     UsbSerialPort port;
     Button home, more;
@@ -70,34 +70,19 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
     Device cDevice;
-    private FirebaseAuth mAuth;
     private List<Room> listRoom;
     private List<Device> allDevices;
     private RecyclerView recyclerView;
     private Data dataMqtt;
+    private Value valueMqtt;
     private Thread readThread;
-
 
     //private UsbHidDevice device = null;
     private boolean mRunning;
 
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mAuth = FirebaseAuth.getInstance();
-        checkCurrentUser(mAuth);
 
         getAllRoom();
         setContentView(R.layout.homescreeen);
@@ -147,13 +132,13 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 device.setDeviceId(snapshot.getKey());
                 if (!device.getType().equals("Sensor")) {
                     if (device.getState().equals("1")) countDeviceOn++;
-                    allDevices.add(device);
                     if (countDeviceOn == 0) {
                         power_state.setText("Turn On");
                     } else if (countDeviceOn == 1) {
                         power_state.setText("Turn Off");
                     }
                 }
+                allDevices.add(device);
             }
 
             @Override
@@ -197,6 +182,13 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     } else if (countDeviceOn == 1) {
                         power_state.setText("Turn Off");
                     }
+                } else {
+                    for (Device device0 : allDevices) {
+                        if (device0.getDeviceId().equals(deviceID)) {
+                            allDevices.remove(device0);
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -218,23 +210,21 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     if (power_state.getText().equals("Turn On"))
                         newState = "1";
                     for (Device device : allDevices) {
-                        Database.updateDevice(device.getDeviceId(), newState);
-                        Database.addLog(device.getDeviceId(), newState);
-                        mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                        if (!device.getType().equals("Sensor")) {
+                            Database.updateDevice(device.getDeviceId(), newState);
+                            Database.addLog(device.getDeviceId(), newState);
+                            mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                        }
                     }
                 }
             }
         });
-//        temperature = findViewById(R.id.temperature);
-//        humidity = findViewById(R.id.humidity);
-
 
         receiveDataMQTT();
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
 
-        //sendDataMQTT("Off", "fan");
 /*
         if (availableDrivers.isEmpty()) {
             Log.d("UART", "UART is not available");
@@ -266,15 +256,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 
             }
         }*/
-    }
-
-
-    private void checkCurrentUser(FirebaseAuth mAuth) {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            startActivity(new Intent(this, AccountActivity.class));
-            finish();
-        }
     }
 
     @Override
@@ -366,10 +347,12 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1, topic.lastIndexOf('/'));
                     dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
                     }.getType());
-                    if (context.equals(dataMqtt.getKey())) {
-                        Log.d(topic, data_to_microbit);
-                        updateData(dataMqtt.getKey(), dataMqtt);
-                        Database.updateDevice(dataMqtt.getKey().replace('.', '-'), dataMqtt.getLast_value());
+                    if (checkExistDeviceInDatabase(allDevices, dataMqtt.getKey()) && context.equals(dataMqtt.getKey())) {
+                        Log.d("MQTT write to database", data_to_microbit);
+                        valueMqtt = new Gson().fromJson(dataMqtt.getLast_value(), new TypeToken<Value>() {
+                        }.getType());
+                        updateData(dataMqtt.getKey(), dataMqtt, valueMqtt);
+                        Database.updateDevice(dataMqtt.getKey(), valueMqtt.getData());
                         //port.write(data_to_microbit.getBytes(),1000);
                     }
                 }
@@ -382,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         });
     }
 
-    public void updateData(String id, Data dataMqtt) {
+    public void updateData(String id, Data dataMqtt, Value value) {
         Query device = database.getReference("devices").child(id);
         device.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -391,11 +374,11 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 cDevice = dataSnapshot.getValue(Device.class);
                 if (cDevice.getType() != null) {
                     if (cDevice.getType().equals("Sensor")) {
-                        Database.addSensorLog(dataMqtt);
-                        String value = dataMqtt.getLast_value();
+                        Database.addSensorLog(dataMqtt, value);
                         String roomId = cDevice.getRoomId();
-                        String temp = value.substring(0, value.lastIndexOf('-')).trim();
-                        String humid = value.substring(value.lastIndexOf('-') + 1).trim();
+                        String data = value.getData();
+                        String temp = data.substring(0, data.lastIndexOf('-')).trim();
+                        String humid = data.substring(data.lastIndexOf('-') + 1).trim();
                         Database.updateRoom(roomId, temp, humid);
                     } else {//Devices
                         //db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");

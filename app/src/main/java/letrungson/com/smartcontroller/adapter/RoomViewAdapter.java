@@ -132,6 +132,13 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                         holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFBE04"));
                         holder.isOn = true;
                     }
+                } else {
+                    for (Device device0 : listRoomDevice) {
+                        if (device0.getDeviceId().equals(deviceID)) {
+                            listRoomDevice.remove(device0);
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -155,9 +162,11 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                         newState = "1";
                     }
                     for (Device device : listRoomDevice) {
-                        Database.updateDevice(device.getDeviceId(), newState);
-                        Database.addLog(device.getDeviceId(), newState);
-                        mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                        if (!device.getType().equals("Sensor")) {
+                            Database.updateDevice(device.getDeviceId(), newState);
+                            Database.addLog(device.getDeviceId(), newState);
+                            mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                        }
                     }
                 }
             }

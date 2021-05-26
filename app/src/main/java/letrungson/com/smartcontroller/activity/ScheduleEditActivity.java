@@ -31,7 +31,7 @@ import java.util.Calendar;
 
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Schedule;
-import letrungson.com.smartcontroller.tools.Tranform;
+import letrungson.com.smartcontroller.tools.Transform;
 
 public class ScheduleEditActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -189,7 +189,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                                     A[Integer.valueOf(itemsSelected.get(i).toString())] = '1';
                                 }
                                 thisSchedule.setRepeatDay(String.valueOf(A));
-                                repeat_day_text.setText(Tranform.BinaryToDaily(String.valueOf(A)));
+                                repeat_day_text.setText(Transform.BinaryToDaily(String.valueOf(A)));
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -219,7 +219,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                     humid_data.setText(String.valueOf(thisSchedule.getHumid()));
                     start_time.setText(thisSchedule.getStartTime());
                     end_time.setText(thisSchedule.getEndTime());
-                    repeat_day_text.setText(Tranform.BinaryToDaily(thisSchedule.getRepeatDay()));
+                    repeat_day_text.setText(Transform.BinaryToDaily(thisSchedule.getRepeatDay()));
                 }
             }
         });

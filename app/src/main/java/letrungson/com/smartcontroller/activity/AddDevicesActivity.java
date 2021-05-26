@@ -105,10 +105,6 @@ public class AddDevicesActivity extends AppCompatActivity {
                     textDeviceId.setText("");
                     textDeviceName.setText("");
                     spinnerAddDevice.setAdapter(spinnerAddDeviceAdapter);
-                    String state;
-                    if (type.equals("Sensor")) state = "0-0";
-                    else state = "0";
-                    mqttService.sendDataMQTT(deviceId, state);
                     Toast.makeText(getApplicationContext(), "Device has been added to your room", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -184,7 +180,7 @@ public class AddDevicesActivity extends AppCompatActivity {
         if (inputDeviceId.isEmpty()) {
             textDeviceId.setError("Field can't be empty");
             return false;
-        } else if (!inputDeviceId.matches("[a-zA-Z0-9.]*")) {
+        } else if (!inputDeviceId.matches("[a-zA-Z0-9.-]*")) {
             textDeviceId.setError("Invalid format of ID");
             return false;
         } else if (isDeviceIdExist(inputDeviceId)) {

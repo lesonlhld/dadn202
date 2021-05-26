@@ -11,13 +11,13 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import org.eclipse.paho.client.mqttv3.MqttTopic;
 
 import java.nio.charset.Charset;
+
+import letrungson.com.smartcontroller.model.Value;
+import letrungson.com.smartcontroller.util.Constant;
 
 public class MQTTService {
     final String serverUri = "tcp://io.adafruit.com:1883";
@@ -109,19 +109,19 @@ public class MQTTService {
 
     public void sendDataMQTT(String deviceId, String data) {
         String topicOfDevice = topic + deviceId;
-
-        MqttMessage message = new MqttMessage(data.getBytes(Charset.forName("UTF-8")));
-        message.setQos(0);
-        message.setRetained(true);
-
         try {
+            Value value = Constant.getListFeeds().get(deviceId);
+            value.setData(data);
+
+            MqttMessage message = new MqttMessage(value.convertToJson().getBytes(Charset.forName("UTF-8")));
+            message.setQos(0);
+            message.setRetained(true);
             // publish message to broker
-            Log.i("mqtt", "Message " + deviceId + ": " + data + " published");
+            Log.i("mqtt", "Messagev \"" + deviceId + ": " + data + "\" published");
             mqttAndroidClient.publish(topicOfDevice, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }
 

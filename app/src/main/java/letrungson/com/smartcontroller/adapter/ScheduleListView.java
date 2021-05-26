@@ -13,7 +13,7 @@ import java.util.List;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.ScheduleEditActivity;
 import letrungson.com.smartcontroller.model.Schedule;
-import letrungson.com.smartcontroller.tools.Tranform;
+import letrungson.com.smartcontroller.tools.Transform;
 
 public class ScheduleListView extends BaseAdapter {
     Context context;
@@ -52,7 +52,7 @@ public class ScheduleListView extends BaseAdapter {
         TextView humid = view.findViewById(R.id.humid);
 
 
-        String repeatDay = Tranform.BinaryToDaily(schedules.get(position).getRepeatDay());
+        String repeatDay = Transform.BinaryToDaily(schedules.get(position).getRepeatDay());
         startDay.setText(repeatDay);
         startTime.setText(schedules.get(position).getStartTime());
         endTime.setText(schedules.get(position).getEndTime());

@@ -14,10 +14,6 @@ public class Schedule {
         this.humid = 60;
         this.startTime = "06:00";
         this.endTime = "07:00";
-//        this.repeatDay = new boolean[7];
-//        for(int i = 0; i < 7; i++) {
-//            this.repeatDay[i] = false;
-//        }
         this.repeatDay = "0000000";
         this.roomId = "";
     }
@@ -27,9 +23,6 @@ public class Schedule {
         this.humid = humid;
         this.startTime = startTime;
         this.endTime = endTime;
-//        this.repeatDay = new boolean[7];
-//        for(int i = 0; i < 7; i++) {
-//            this.repeatDay[i] = repeatDay[i];
         this.repeatDay = repeatDay;
     }
 
