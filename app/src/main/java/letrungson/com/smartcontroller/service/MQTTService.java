@@ -111,13 +111,16 @@ public class MQTTService {
         String topicOfDevice = topic + deviceId;
         try {
             Value value = Constant.getListFeeds().get(deviceId);
+            if (value == null){
+                value = new Value("","","","");
+            }
             value.setData(data);
 
             MqttMessage message = new MqttMessage(value.convertToJson().getBytes(Charset.forName("UTF-8")));
             message.setQos(0);
             message.setRetained(true);
             // publish message to broker
-            Log.i("mqtt", "Messagev \"" + deviceId + ": " + data + "\" published");
+            Log.i("mqtt", "Message \"" + deviceId + ": " + data + "\" published");
             mqttAndroidClient.publish(topicOfDevice, message);
         } catch (Exception e) {
             e.printStackTrace();
