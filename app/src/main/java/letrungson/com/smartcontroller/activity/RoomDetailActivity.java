@@ -89,9 +89,24 @@ public class RoomDetailActivity extends Activity {
                     thisRoom.setRoomId(roomId);
                     Log.d("roomName", thisRoom.getRoomName());
                     roomName.setText(thisRoom.getRoomName());
-                    temperature.setText(thisRoom.getRoomCurrentTemp());
-                    humidity.setText(thisRoom.getRoomCurrentHumidity());
-                    targetTemp.setText(thisRoom.getRoomTargetTemp());
+                    if(thisRoom.getRoomCurrentTemp() != null) {
+                        temperature.setText(thisRoom.getRoomCurrentTemp());
+                    }
+                    else{
+                        temperature.setText("Null");
+                    }
+                    if(thisRoom.getRoomCurrentHumidity() != null) {
+                        humidity.setText(thisRoom.getRoomCurrentHumidity());
+                    }
+                    else{
+                        humidity.setText("Null");
+                    }
+                    if(thisRoom.getRoomTargetTemp() != null) {
+                        targetTemp.setText(thisRoom.getRoomTargetTemp());
+                    }
+                    else{
+                        targetTemp.setText("Null");
+                    }
                 } else {
                     Log.d("room", "Database is empty now!");
                 }

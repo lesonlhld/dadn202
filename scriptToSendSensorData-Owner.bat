@@ -12,10 +12,10 @@ REM mosquitto_pub -h io.adafruit.com -p 1883 -u lesonlhld -P aio_WwjF84LarniCFSK
 echo "Automatically send data every 40 seconds ..."
 @echo off
 set /a temperature = (%RANDOM%*20/32768) + 15
-set /a humidity = (%RANDOM%*35/32768) + 65
+set /a humidity = (%RANDOM%*35/32768) + 35
 set randomData=%temperature%-%humidity%
 
 echo "{"id":"7","name":"TEMP-HUMID","data":"%randomData%","unit":"C-%%"}"
-mosquitto_pub -h io.adafruit.com -p 1883 -u leson0108 -P aio_rHhv85FXuO6uVO2wgnOrl0FWF7az -t leson0108/feeds/bk-iot-temp-humid -m "{""id"":""7"",""name"":""TEMP-HUMID"",""data"":""%randomData%"",""unit"":""C-%%""}"
+mosquitto_pub -h io.adafruit.com -p 1883 -u CSE_BBC -P aio_KXfp47zegx3CthMAEj6pB0ZeKoEm -t CSE_BBC/feeds/bk-iot-temp-humid -m "{""id"":""7"",""name"":""TEMP-HUMID"",""data"":""%randomData%"",""unit"":""C-%%""}"
 timeout 40
 GOTO :Loop

@@ -6,17 +6,19 @@ public class Device {
     private String roomId;
     private String type;
     private String state;
+    private String server;
 
     public Device() {
 
     }
 
-    public Device(String deviceId, String deviceName, String roomId, String type, String state) {
+    public Device(String deviceId, String deviceName, String roomId, String type, String state, String server) {
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.roomId = roomId;
         this.type = type;
         this.state = state;
+        this.server = server;
     }
 
     public Device(Device device) {
@@ -25,6 +27,7 @@ public class Device {
         this.roomId = device.getRoomId();
         this.type = device.getType();
         this.state = device.getState();
+        this.server = device.getServer();
     }
 
     public String getDeviceId() {
@@ -67,11 +70,20 @@ public class Device {
         this.state = state;
     }
 
+    public String getServer() {
+        return server;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
+    }
+
     public void assign(Device device) {
 //        this.deviceId = device.getDeviceId();
         this.deviceName = device.getDeviceName();
 //        this.roomId = device.getRoomId();
 //        this.type = device.getType();
         this.state = device.getState();
+//        this.server = device.getServer();
     }
 }

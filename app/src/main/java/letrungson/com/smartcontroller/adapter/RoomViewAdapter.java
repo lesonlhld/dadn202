@@ -165,7 +165,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                         if (!device.getType().equals("Sensor")) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
-                            mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                            mqttService.sendDataMQTT(device.getServer(), device.getDeviceId(), newState);
                         }
                     }
                 }

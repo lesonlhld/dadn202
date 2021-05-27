@@ -16,6 +16,6 @@ set /a humidity = (%RANDOM%*35/32768) + 35
 set randomData=%temperature%-%humidity%
 
 echo "{"id":"7","name":"TEMP-HUMID","data":"%randomData%","unit":"C-%%"}"
-mosquitto_pub -h io.adafruit.com -p 1883 -u lesonlhld -P aio_WwjF84LarniCFSKcbFyhnFEFnqlG -t leson0108/feeds/bk-iot-temp-humid -m "{""id"":""7"",""name"":""TEMP-HUMID"",""data"":""%randomData%"",""unit"":""C-%%""}"
+mosquitto_pub -h io.adafruit.com -p 1883 -u leson0108 -P aio_rHhv85FXuO6uVO2wgnOrl0FWF7az -t leson0108/feeds/bk-iot-temp-humid -m "{""id"":""7"",""name"":""TEMP-HUMID"",""data"":""%randomData%"",""unit"":""C-%%""}"
 timeout 40
 GOTO :Loop

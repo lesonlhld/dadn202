@@ -349,7 +349,7 @@ public class DevicesActivity extends AppCompatActivity {
                             }
                             Database.updateDevice(device.getDeviceId(), state);
                             Database.addLog(device.getDeviceId(), state);
-                            mqttService.sendDataMQTT(device.getDeviceId(), state);
+                            mqttService.sendDataMQTT(device.getServer(), device.getDeviceId(), state);
                         }
                     });
                 } else {

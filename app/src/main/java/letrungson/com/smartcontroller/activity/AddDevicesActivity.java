@@ -199,7 +199,7 @@ public class AddDevicesActivity extends AppCompatActivity {
 /*        } else if (!inputDeviceName.matches("[a-zA-Z0-9 -]*")) {
             textDeviceName.setError("Only contain letters, numbers and WS");
             return false;*/
-        } else if (inputDeviceName.length() > 20) {
+        } else if (inputDeviceName.length() > 50) {
             textDeviceName.setError("Device name too long");
             return false;
         } else if (isDeviceNameExist(inputDeviceName)) {

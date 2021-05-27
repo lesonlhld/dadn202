@@ -51,7 +51,7 @@ import letrungson.com.smartcontroller.model.Value;
 import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.service.MQTTService;
 
-import static letrungson.com.smartcontroller.tools.Check.checkExistDeviceInDatabase;
+import static letrungson.com.smartcontroller.tools.Check.checkExistDevice;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -69,12 +69,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     TextView power_state;
     MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
-    Device cDevice;
     private List<Room> listRoom;
-    private List<Device> allDevices;
+    public static List<Device> allDevices;
     private RecyclerView recyclerView;
-    private Data dataMqtt;
-    private Value valueMqtt;
     private Thread readThread;
 
     //private UsbHidDevice device = null;
@@ -86,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 
         getAllRoom();
         setContentView(R.layout.homescreeen);
+        mqttService = new MQTTService(this);
 
         home = findViewById(R.id.home);
         home.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                 finish();
             }
         });
+
+
 
         recyclerView = findViewById(R.id.gridView);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
@@ -213,14 +213,12 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                         if (!device.getType().equals("Sensor")) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
-                            mqttService.sendDataMQTT(device.getDeviceId(), newState);
+                            mqttService.sendDataMQTT(device.getServer(), device.getDeviceId(), newState);
                         }
                     }
                 }
             }
         });
-
-        receiveDataMQTT();
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
@@ -318,72 +316,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     listRoom.add(room);
                 }
                 roomViewAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void receiveDataMQTT() {
-        mqttService = new MQTTService(this);
-        mqttService.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
-
-            }
-
-            @Override
-            public void connectionLost(Throwable throwable) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                if (topic.indexOf("/json") != -1) {
-                    String data_to_microbit = message.toString();
-                    String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1, topic.lastIndexOf('/'));
-                    dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
-                    }.getType());
-                    if (checkExistDeviceInDatabase(allDevices, dataMqtt.getKey()) && context.equals(dataMqtt.getKey())) {
-                        Log.d("MQTT write to database", data_to_microbit);
-                        valueMqtt = new Gson().fromJson(dataMqtt.getLast_value(), new TypeToken<Value>() {
-                        }.getType());
-                        updateData(dataMqtt.getKey(), dataMqtt, valueMqtt);
-                        Database.updateDevice(dataMqtt.getKey(), valueMqtt.getData());
-                        //port.write(data_to_microbit.getBytes(),1000);
-                    }
-                }
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
-    }
-
-    public void updateData(String id, Data dataMqtt, Value value) {
-        Query device = database.getReference("devices").child(id);
-        device.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                cDevice = null;
-                cDevice = dataSnapshot.getValue(Device.class);
-                if (cDevice.getType() != null) {
-                    if (cDevice.getType().equals("Sensor")) {
-                        Database.addSensorLog(dataMqtt, value);
-                        String roomId = cDevice.getRoomId();
-                        String data = value.getData();
-                        String temp = data.substring(0, data.lastIndexOf('-')).trim();
-                        String humid = data.substring(data.lastIndexOf('-') + 1).trim();
-                        Database.updateRoom(roomId, temp, humid);
-                    } else {//Devices
-                        //db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
-                    }
-                }
             }
 
             @Override
