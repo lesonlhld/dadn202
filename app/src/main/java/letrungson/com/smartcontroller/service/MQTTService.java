@@ -2,6 +2,7 @@ package letrungson.com.smartcontroller.service;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -56,11 +57,11 @@ public class MQTTService {
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
                     if (topic.indexOf("/json") != -1) {
                         String data_to_microbit = message.toString();
-                        String context = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1, topic.lastIndexOf('/'));
+                        String feedName = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1, topic.lastIndexOf('/'));
                         Data dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
                         }.getType());
-                        if (checkExistDevice(MainActivity.allDevices, dataMqtt.getKey()) && context.equals(dataMqtt.getKey())) {
-                            Log.d("MQTT write to database", data_to_microbit);
+                        if (checkExistDevice(MainActivity.allDevices, dataMqtt.getKey()) && feedName.equals(dataMqtt.getKey())) {
+                            Log.d("MQTT write to database (" + context.getClass().getName() +")", data_to_microbit);
                             Value valueMqtt = new Gson().fromJson(dataMqtt.getLast_value(), new TypeToken<Value>() {
                             }.getType());
                             Database.updateData(dataMqtt.getKey(), dataMqtt, valueMqtt);
@@ -75,7 +76,7 @@ public class MQTTService {
 
                 }
             });
-            connectAndSubscribe(mqttAndroidClient, username, password);
+            connectAndSubscribe(context, mqttAndroidClient, username, password);
         }
     }
 
@@ -85,7 +86,7 @@ public class MQTTService {
         }
     }
 
-    private void connectAndSubscribe(MqttAndroidClient mqttAndroidClient, String username, String password) {
+    private void connectAndSubscribe(Context context, MqttAndroidClient mqttAndroidClient, String username, String password) {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
@@ -103,11 +104,12 @@ public class MQTTService {
                     disconnectedBufferOptions.setPersistBuffer(false);
                     disconnectedBufferOptions.setDeleteOldestMessages(false);
                     mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
-                    subscribeToTopic(mqttAndroidClient, username);
+                    subscribeToTopic(context, mqttAndroidClient, username);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Toast.makeText(context, "Failed to connect to server: " + username, Toast.LENGTH_SHORT).show();
                     Log.w("Mqtt", "Failed to connect to:" + serverUri + exception.toString());
                 }
             });
@@ -116,40 +118,71 @@ public class MQTTService {
         }
     }
 
-    private void subscribeToTopic(MqttAndroidClient mqttAndroidClient, String server) {
+    private void subscribeToTopic(Context context, MqttAndroidClient mqttAndroidClient, String server) {
         String subscriptionTopic = server + "/feeds/" + "#";
         try {
             mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("Mqtt", "Subscribed!");
+                    Log.w("Mqtt", "Subscribed: " + subscriptionTopic);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("Mqtt", "Subscribedfail!");
+                    Toast.makeText(context, "Failed to subscribe: " + subscriptionTopic, Toast.LENGTH_SHORT).show();
+                    Log.w("Mqtt", "Failed to subscribe: " + subscriptionTopic);
                 }
             });
             listMqttAndroidClient.put(server, mqttAndroidClient);
         } catch (MqttException ex) {
+            Toast.makeText(context, "Failed to subscribe: " + subscriptionTopic, Toast.LENGTH_SHORT).show();
             System.err.println("Exceptionstsubscribing");
             ex.printStackTrace();
         }
     }
 
-    public void sendDataMQTT(String server, String deviceId, String data) {
+    public void unSubscribe(Context context) {
+        for (String name: listMqttAndroidClient.keySet()) {
+            unSubscribeToTopic(context, listMqttAndroidClient.get(name), name);
+        }
+    }
+
+    private void unSubscribeToTopic(Context context, MqttAndroidClient mqttAndroidClient, String server) {
+        String subscriptionTopic = server + "/feeds/" + "#";
+        try {
+            mqttAndroidClient.unsubscribe(subscriptionTopic, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Log.w("Mqtt", "Unsubscribed: " + subscriptionTopic);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Toast.makeText(context, "Failed to unsubscribed: " + subscriptionTopic, Toast.LENGTH_SHORT).show();
+                    Log.w("Mqtt", "Failed to unsubscribed: " + subscriptionTopic);
+                }
+            });
+            listMqttAndroidClient.put(server, mqttAndroidClient);
+        } catch (MqttException ex) {
+            Toast.makeText(context, "Failed to unsubscribed: " + subscriptionTopic, Toast.LENGTH_SHORT).show();
+            ex.printStackTrace();
+        }
+    }
+
+    public void sendDataMQTT(Context context, String server, String deviceId, String data) {
         String topicOfDevice = server + "/feeds/" + deviceId;
         try {
             Value value = Check.checkAndGetValueOfDevice(deviceId);
             value.setData(data);
 
             MqttMessage message = new MqttMessage(value.convertToJson().getBytes(Charset.forName("UTF-8")));
-            message.setQos(0);
+            message.setQos(2);
             message.setRetained(true);
             // publish message to broker
             Log.i("mqtt", "Message \"" + deviceId + ": " + data + "\" published");
             listMqttAndroidClient.get(server).publish(topicOfDevice, message);
         } catch (Exception e) {
+            Toast.makeText(context, "Failed to publish message to server: " + server, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }

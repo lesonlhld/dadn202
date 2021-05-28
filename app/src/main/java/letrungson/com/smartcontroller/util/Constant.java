@@ -30,11 +30,12 @@ public class Constant {
         server_CSE_BBC1.put("bk-iot-light", new Value("13", "LIGHT", ""));
         server_CSE_BBC1.put("bk-iot-infrared", new Value("16", "INFRARED", ""));
         server_CSE_BBC1.put("bk-iot-servo", new Value("17", "SERVO", ""));
+        server_CSE_BBC1.put("bk-iot-accelerometer", new Value("19", "ACCELEROMETER", ""));
         server_CSE_BBC1.put("bk-iot-time", new Value("22", "TIME", ""));
         server_CSE_BBC1.put("bk-iot-gas", new Value("23", "GAS", ""));
 
-        severInfo.put("CSE_BBC","aio_KXfp47zegx3CthMAEj6pB0ZeKoEm");
-        severInfo.put("CSE_BBC1","aio_yqUQ00Ryi2liePf8ElzL3yq3dNij");
+        severInfo.put("CSE_BBC","aio_xKeh22LeySD0LkDHUda3dVPPgL5P");
+        severInfo.put("CSE_BBC1","aio_Mekn95KY3lIblLX5blg8B8Ei6Qcf");
         //severInfo.put("lesonlhld","aio_WwjF84LarniCFSKcbFyhnFEFnqlG");
         severInfo.put(MY_SERVER_NAME,MY_SERVER_KEY);
     }

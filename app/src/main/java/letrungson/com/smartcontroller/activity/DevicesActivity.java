@@ -57,7 +57,7 @@ public class DevicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devices);
-        mqttService = new MQTTService(this);
+        mqttService = MainActivity.mqttService;
 
         //Setup database
         dbRefDevices = FirebaseDatabase.getInstance().getReference("devices");
@@ -349,7 +349,7 @@ public class DevicesActivity extends AppCompatActivity {
                             }
                             Database.updateDevice(device.getDeviceId(), state);
                             Database.addLog(device.getDeviceId(), state);
-                            mqttService.sendDataMQTT(device.getServer(), device.getDeviceId(), state);
+                            mqttService.sendDataMQTT(getApplicationContext(), device.getServer(), device.getDeviceId(), state);
                         }
                     });
                 } else {

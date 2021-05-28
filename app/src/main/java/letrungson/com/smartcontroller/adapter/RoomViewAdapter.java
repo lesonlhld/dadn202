@@ -35,11 +35,16 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
     private Context context;
     private MQTTService mqttService;
 
-    public RoomViewAdapter(Context context, List<Room> roomList) {
+    public RoomViewAdapter(MQTTService mqttService, Context context, List<Room> roomList) {
         this.roomList = roomList;
         this.context = context;
-        this.mqttService = new MQTTService(this.context);
+        this.mqttService = mqttService;
     }
+
+    public Context getContext() {
+        return context;
+    }
+
 
     @NonNull
     @Override
@@ -165,7 +170,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                         if (!device.getType().equals("Sensor")) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
-                            mqttService.sendDataMQTT(device.getServer(), device.getDeviceId(), newState);
+                            mqttService.sendDataMQTT(getContext(), device.getServer(), device.getDeviceId(), newState);
                         }
                     }
                 }

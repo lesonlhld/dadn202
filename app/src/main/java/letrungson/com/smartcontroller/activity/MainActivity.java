@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     ImageButton room_btn;
     RelativeLayout powerAllRooms;
     TextView power_state;
-    MQTTService mqttService;
+    public static MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
     private List<Room> listRoom;
     public static List<Device> allDevices;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
         recyclerView.addItemDecoration(itemDecorator);
-        roomViewAdapter = new RoomViewAdapter(MainActivity.this, listRoom);
+        roomViewAdapter = new RoomViewAdapter(mqttService, MainActivity.this, listRoom);
         recyclerView.setAdapter(roomViewAdapter);
 
         room_btn = findViewById(R.id.room_manage_btn);
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                         if (!device.getType().equals("Sensor")) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
-                            mqttService.sendDataMQTT(device.getServer(), device.getDeviceId(), newState);
+                            mqttService.sendDataMQTT(getApplicationContext(), device.getServer(), device.getDeviceId(), newState);
                         }
                     }
                 }

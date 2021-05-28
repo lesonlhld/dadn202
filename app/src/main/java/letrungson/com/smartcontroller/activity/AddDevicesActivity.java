@@ -51,7 +51,7 @@ public class AddDevicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_devices);
-        mqttService = new MQTTService(this);
+        mqttService = MainActivity.mqttService;
 
         db = FirebaseDatabase.getInstance();
         dbRefDevices = db.getReference("devices");
