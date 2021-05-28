@@ -64,8 +64,7 @@ public class MQTTService {
                             Log.d("MQTT write to database (" + context.getClass().getName() +")", data_to_microbit);
                             Value valueMqtt = new Gson().fromJson(dataMqtt.getLast_value(), new TypeToken<Value>() {
                             }.getType());
-                            Database.updateData(dataMqtt.getKey(), dataMqtt, valueMqtt);
-                            Database.updateDevice(dataMqtt.getKey(), valueMqtt.getData());
+                            Database.processDataMQTT(dataMqtt.getKey(), dataMqtt, valueMqtt);
                             //port.write(data_to_microbit.getBytes(),1000);
                         }
                     }

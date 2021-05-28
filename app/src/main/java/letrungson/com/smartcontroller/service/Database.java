@@ -99,12 +99,11 @@ public class Database {
         devices.child(deviceId).child("state").setValue(currentState);
     }
 
-    public static void updateData(String id, Data dataMqtt, Value value) {
-        Query device = database.getReference("devices").child(id);
+    public static void processDataMQTT(String deviceId, Data dataMqtt, Value value) {
+        Query device = database.getReference("devices").child(deviceId);
         device.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 Device cDevice = dataSnapshot.getValue(Device.class);
                 if (cDevice.getType() != null) {
                     if (cDevice.getType().equals("Sensor")) {
@@ -114,9 +113,11 @@ public class Database {
                         String temp = data.substring(0, data.lastIndexOf('-')).trim();
                         String humid = data.substring(data.lastIndexOf('-') + 1).trim();
                         Database.updateRoom(roomId, temp, humid);
-                    } else {//Devices
+                    } else {//Others devices
                         //db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
                     }
+                    //Update all device
+                    Database.updateDevice(deviceId, value.getData());
                 }
             }
 
@@ -126,31 +127,4 @@ public class Database {
             }
         });
     }
-
-/*    public static void insertServer() {
-        HashMap<String, Value> server_CSE_BBC = new HashMap<String, Value>();
-        HashMap<String, Value> server_CSE_BBC1 = new HashMap<String, Value>();
-        server_CSE_BBC.put("bk-iot-led", new Value("1", "LED", ""));
-        server_CSE_BBC.put("bk-iot-speaker", new Value("2", "SPEAKER", ""));
-        server_CSE_BBC.put("bk-iot-lcd", new Value("3", "LCD", ""));
-        server_CSE_BBC.put("bk-iot-button", new Value("4", "BUTTON", ""));
-        server_CSE_BBC.put("bk-iot-touch", new Value("5", "TOUCH", ""));
-        server_CSE_BBC.put("bk-iot-traffic", new Value("6", "TRAFFIC", ""));
-        server_CSE_BBC.put("bk-iot-temp-humid", new Value("7", "TEMP-HUMID", "C-%"));
-        server_CSE_BBC.put("bk-iot-magnetic", new Value("8", "MAGNETIC", ""));
-        server_CSE_BBC.put("bk-iot-soil", new Value("9", "SOIL", ""));
-        server_CSE_BBC.put("bk-iot-drv", new Value("10", "DRV_PWM", ""));
-
-        server_CSE_BBC1.put("bk-iot-relay", new Value("11", "RELAY", ""));
-        server_CSE_BBC1.put("bk-iot-sound", new Value("12", "SOUND", ""));
-        server_CSE_BBC1.put("bk-iot-light", new Value("13", "LIGHT", ""));
-        server_CSE_BBC1.put("bk-iot-infrared", new Value("16", "INFRARED", ""));
-        server_CSE_BBC1.put("bk-iot-servo", new Value("17", "SERVO", ""));
-        server_CSE_BBC1.put("bk-iot-time", new Value("22", "TIME", ""));
-        server_CSE_BBC1.put("bk-iot-gas", new Value("23", "GAS", ""));
-        servers.child("CSE_BBC").child("password").setValue("");
-        servers.child("CSE_BBC1").child("password").setValue("");
-        servers.child("CSE_BBC").child("device").setValue(server_CSE_BBC);
-        servers.child("CSE_BBC1").child("device").setValue(server_CSE_BBC1);
-    }*/
 }
