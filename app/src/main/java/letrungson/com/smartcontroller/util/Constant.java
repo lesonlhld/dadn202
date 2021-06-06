@@ -1,17 +1,15 @@
 package letrungson.com.smartcontroller.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import letrungson.com.smartcontroller.model.Value;
 
 public class Constant {
+    public static final String MY_SERVER_NAME = "leson0108";
+    public static final String MY_SERVER_KEY = "aio_rHhv85FXuO6uVO2wgnOrl0FWF7az";
     public static HashMap<String, Value> server_CSE_BBC = new HashMap<String, Value>();
     public static HashMap<String, Value> server_CSE_BBC1 = new HashMap<String, Value>();
     public static HashMap<String, String> severInfo = new HashMap<String, String>();
-    public static final String MY_SERVER_NAME = "leson0108";
-    public static final String MY_SERVER_KEY = "aio_rHhv85FXuO6uVO2wgnOrl0FWF7az";
 
     public static void initServer() {
         server_CSE_BBC.put("bk-iot-led", new Value("1", "LED", ""));
@@ -34,18 +32,20 @@ public class Constant {
         server_CSE_BBC1.put("bk-iot-time", new Value("22", "TIME", ""));
         server_CSE_BBC1.put("bk-iot-gas", new Value("23", "GAS", ""));
 
-        severInfo.put("CSE_BBC","aio_JhXp12SU0EiaO69mGp4LW64gFp0s");
-        severInfo.put("CSE_BBC1","aio_Mekn95KY3lIblLX5blg8B8Ei6Qcf");
-        //severInfo.put("lesonlhld","aio_WwjF84LarniCFSKcbFyhnFEFnqlG");
-        severInfo.put(MY_SERVER_NAME,MY_SERVER_KEY);
+        severInfo.put("CSE_BBC", "aio_qyBr29pmfJC09tUFB5n9Ap9AtIwD");
+        severInfo.put("CSE_BBC1", "aio_VhCE38mvogdpc353vHMQl684Emfs");
+//        severInfo.put("lesonlhld","aio_WwjF84LarniCFSKcbFyhnFEFnqlG");
+        severInfo.put(MY_SERVER_NAME, MY_SERVER_KEY);
     }
 
     public static HashMap<String, Value> getServer_CSE_BBC() {
         return server_CSE_BBC;
     }
+
     public static HashMap<String, Value> getServer_CSE_BBC1() {
         return server_CSE_BBC1;
     }
+
     public static HashMap<String, String> getServerInfo() {
         return severInfo;
     }

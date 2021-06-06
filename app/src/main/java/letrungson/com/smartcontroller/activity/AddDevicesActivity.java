@@ -34,10 +34,8 @@ import java.util.List;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.service.Database;
-import letrungson.com.smartcontroller.service.MQTTService;
 
 public class AddDevicesActivity extends AppCompatActivity {
-    MQTTService mqttService;
     private ArrayList<Device> arrayListDevice;
     private EditText textDeviceName;
     private EditText textDeviceId;
@@ -51,7 +49,6 @@ public class AddDevicesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_devices);
-        mqttService = MainActivity.mqttService;
 
         db = FirebaseDatabase.getInstance();
         dbRefDevices = db.getReference("devices");

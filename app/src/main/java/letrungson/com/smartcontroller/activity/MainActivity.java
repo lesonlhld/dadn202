@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,16 +25,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
-
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +37,9 @@ import letrungson.com.smartcontroller.BuildConfig;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.adapter.RoomViewAdapter;
 import letrungson.com.smartcontroller.adapter.SpacingItemDecorator;
-import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
-import letrungson.com.smartcontroller.model.Value;
 import letrungson.com.smartcontroller.service.Database;
-import letrungson.com.smartcontroller.service.MQTTService;
-
-import static letrungson.com.smartcontroller.tools.Check.checkExistDevice;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -61,16 +49,15 @@ import static letrungson.com.smartcontroller.tools.Check.checkExistDevice;
 public class MainActivity extends AppCompatActivity implements SerialInputOutputManager.Listener {
     private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
+    public static List<Device> allDevices;
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     UsbSerialPort port;
     Button home, more;
     ImageButton room_btn;
     RelativeLayout powerAllRooms;
     TextView power_state;
-    public static MQTTService mqttService;
     RoomViewAdapter roomViewAdapter;
     private List<Room> listRoom;
-    public static List<Device> allDevices;
     private RecyclerView recyclerView;
     private Thread readThread;
 
@@ -83,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 
         getAllRoom();
         setContentView(R.layout.homescreeen);
-        mqttService = new MQTTService(this);
 
         home = findViewById(R.id.home);
         home.setOnClickListener(new View.OnClickListener() {
@@ -102,12 +88,11 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         });
 
 
-
         recyclerView = findViewById(R.id.gridView);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         SpacingItemDecorator itemDecorator = new SpacingItemDecorator(20);
         recyclerView.addItemDecoration(itemDecorator);
-        roomViewAdapter = new RoomViewAdapter(mqttService, MainActivity.this, listRoom);
+        roomViewAdapter = new RoomViewAdapter(MainActivity.this, listRoom);
         recyclerView.setAdapter(roomViewAdapter);
 
         room_btn = findViewById(R.id.room_manage_btn);
@@ -213,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                         if (!device.getType().equals("Sensor")) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
-                            mqttService.sendDataMQTT(getApplicationContext(), device.getServer(), device.getDeviceId(), newState);
                         }
                     }
                 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Value;
-import letrungson.com.smartcontroller.service.MQTTService;
 import letrungson.com.smartcontroller.util.Constant;
 
 
@@ -18,24 +17,22 @@ public class Check {
         return false;
     }
 
-    public static String checkAndGetServerNameOfDevice(String deviceId){
-        if(Constant.getServer_CSE_BBC().containsKey(deviceId)){
+    public static String checkAndGetServerNameOfDevice(String deviceId) {
+        if (Constant.getServer_CSE_BBC().containsKey(deviceId)) {
             return "CSE_BBC";
-        }
-        else if(Constant.getServer_CSE_BBC1().containsKey(deviceId)){
+        } else if (Constant.getServer_CSE_BBC1().containsKey(deviceId)) {
             return "CSE_BBC1";
-        }
-        else{
+        } else {
             return Constant.MY_SERVER_NAME;
         }
     }
 
-    public static Value checkAndGetValueOfDevice(String deviceId){
+    public static Value checkAndGetValueOfDevice(String deviceId) {
         Value value = Constant.getServer_CSE_BBC().get(deviceId);
-        if (value == null){
+        if (value == null) {
             value = Constant.getServer_CSE_BBC1().get(deviceId);
-            if (value == null){
-                value = new Value("","","","");
+            if (value == null) {
+                value = new Value("", "", "", "");
             }
         }
         return value;

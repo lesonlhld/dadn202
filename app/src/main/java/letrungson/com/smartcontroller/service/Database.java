@@ -2,27 +2,19 @@ package letrungson.com.smartcontroller.service;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import letrungson.com.smartcontroller.model.Data;
-import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.LogState;
 import letrungson.com.smartcontroller.model.Value;
 import letrungson.com.smartcontroller.tools.Check;
-import letrungson.com.smartcontroller.util.Constant;
 
 import static letrungson.com.smartcontroller.tools.Transform.convertToCurrentTimeZone;
 
@@ -97,34 +89,5 @@ public class Database {
 
     public static void updateDevice(String deviceId, String currentState) {
         devices.child(deviceId).child("state").setValue(currentState);
-    }
-
-    public static void processDataMQTT(String deviceId, Data dataMqtt, Value value) {
-        Query device = database.getReference("devices").child(deviceId);
-        device.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Device cDevice = dataSnapshot.getValue(Device.class);
-                if (cDevice.getType() != null) {
-                    if (cDevice.getType().equals("Sensor")) {
-                        Database.addSensorLog(dataMqtt, value);
-                        String roomId = cDevice.getRoomId();
-                        String data = value.getData();
-                        String temp = data.substring(0, data.lastIndexOf('-')).trim();
-                        String humid = data.substring(data.lastIndexOf('-') + 1).trim();
-                        Database.updateRoom(roomId, temp, humid);
-                    } else {//Others devices
-                        //db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
-                    }
-                    //Update all device
-                    Database.updateDevice(deviceId, value.getData());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 }

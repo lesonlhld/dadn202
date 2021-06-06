@@ -28,17 +28,14 @@ import letrungson.com.smartcontroller.activity.RoomDetailActivity;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
-import letrungson.com.smartcontroller.service.MQTTService;
 
 public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyViewHolder> {
     private List<Room> roomList;
     private Context context;
-    private MQTTService mqttService;
 
-    public RoomViewAdapter(MQTTService mqttService, Context context, List<Room> roomList) {
+    public RoomViewAdapter(Context context, List<Room> roomList) {
         this.roomList = roomList;
         this.context = context;
-        this.mqttService = mqttService;
     }
 
     public Context getContext() {
@@ -170,7 +167,6 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                         if (!device.getType().equals("Sensor")) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
-                            mqttService.sendDataMQTT(getContext(), device.getServer(), device.getDeviceId(), newState);
                         }
                     }
                 }
