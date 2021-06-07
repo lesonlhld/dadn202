@@ -59,20 +59,23 @@ public class MQTTService {
 	private void subscribeToTopic(IMqttClient publisher, final String server) {
 		String subscriptionTopic = server + "/feeds/" + "#";
 		try {
-			publisher.subscribe(subscriptionTopic, new IMqttMessageListener () {
+			publisher.subscribe(subscriptionTopic, new IMqttMessageListener() {
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
 					// TODO Auto-generated method stub
 					if (topic.indexOf("/json") != -1) {
 						// byte[] payload = message.getPayload();
 						String data_to_microbit = message.toString();
-						String feedName = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1, topic.lastIndexOf('/'));
+						String feedName = topic.substring(topic.lastIndexOf('/', topic.lastIndexOf('/') - 1) + 1,
+								topic.lastIndexOf('/'));
 						String serverName = topic.substring(0, topic.indexOf('/'));
 						Data dataMqtt = new Gson().fromJson(data_to_microbit, new TypeToken<Data>() {
 						}.getType());
-						if (Check.checkExistDevice(Main.allDevices, dataMqtt.getKey()) && feedName.equals(dataMqtt.getKey()) && server.equals(serverName)) {
-							System.out.println("Write MQTT data to database: topic: " + topic + ", data: " + data_to_microbit);
+						if (Check.checkExistDevice(Main.allDevices, dataMqtt.getKey())
+								&& feedName.equals(dataMqtt.getKey()) && server.equals(serverName)) {
+							System.out.println(
+									"Write MQTT data to database: topic: " + topic + ", data: " + data_to_microbit);
 							Value valueMqtt = new Gson().fromJson(dataMqtt.getLast_value(), new TypeToken<Value>() {
-	
+
 							}.getType());
 							Database.processDataMQTT(dataMqtt.getKey(), dataMqtt, valueMqtt);
 						}

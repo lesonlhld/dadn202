@@ -18,6 +18,7 @@ import letrungson.com.smartcontroller.model.Data;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.LogState;
 import letrungson.com.smartcontroller.model.Value;
+import letrungson.com.smartcontroller.tools.AutoSchedule;
 import letrungson.com.smartcontroller.tools.Check;
 
 public class Database {
@@ -96,17 +97,18 @@ public class Database {
 						String humid = data.substring(data.lastIndexOf('-') + 1).trim();
 						Database.updateRoom(roomId, temp, humid);
 						Database.updateDevice(deviceId, value.getData());
+						AutoSchedule.autoTurnOnOffDevicebySchedule();
 					} else {// Others devices
-						// db.addLog(dataMqtt.getId(), dataMqtt.getLast_value(), "Auto");
-                        if (!cDevice.getState().equals(value.getData())) {
-                            for (Device device0 : Main.allDevices) {
-                                if (device0.getDeviceId().equals(deviceId) && cDevice.getState().equals(device0.getState())) {
-                                    device0.setState(value.getData());
-                                    break;
-                                }
-                            }
-                        	Database.updateDevice(deviceId, value.getData());
-                        }
+						if (!cDevice.getState().equals(value.getData())) {
+							for (Device device0 : Main.allDevices) {
+								if (device0.getDeviceId().equals(deviceId)
+										&& cDevice.getState().equals(device0.getState())) {
+									device0.setState(value.getData());
+									break;
+								}
+							}
+							Database.updateDevice(deviceId, value.getData());
+						}
 					}
 				}
 			}

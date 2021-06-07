@@ -56,7 +56,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
 
         ArrayList<Device> listRoomDevice = new ArrayList<Device>();
         holder.roomName.setText(this.roomList.get(position).getRoomName());
-        if (this.roomList.get(position).getRoomTargetTemp() != null) {
+        if (this.roomList.get(position).getRoomTargetTemp() != null && this.roomList.get(position).getRoomTargetTemp().length() > 0) {
             holder.roomTargetTemp.setText("Heat to " + this.roomList.get(position).getRoomTargetTemp());
         } else {
             holder.roomTargetTemp.setText("No schedule");
@@ -164,7 +164,7 @@ public class RoomViewAdapter extends RecyclerView.Adapter<RoomViewAdapter.MyView
                         newState = "1";
                     }
                     for (Device device : listRoomDevice) {
-                        if (!device.getType().equals("Sensor")) {
+                        if (!device.getType().equals("Sensor") && !device.getState().equals(newState)) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
                         }

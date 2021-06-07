@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
                     if (power_state.getText().equals("Turn On"))
                         newState = "1";
                     for (Device device : allDevices) {
-                        if (!device.getType().equals("Sensor")) {
+                        if (!device.getType().equals("Sensor") && !device.getState().equals(newState)) {
                             Database.updateDevice(device.getDeviceId(), newState);
                             Database.addLog(device.getDeviceId(), newState);
                         }
