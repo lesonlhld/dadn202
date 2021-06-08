@@ -1,17 +1,15 @@
 package letrungson.com.smartcontroller.service;
 
-import static letrungson.com.smartcontroller.tools.Transform.convertToCurrentTimeZone;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 import letrungson.com.smartcontroller.Main;
 import letrungson.com.smartcontroller.model.Data;
@@ -21,6 +19,8 @@ import letrungson.com.smartcontroller.model.Value;
 import letrungson.com.smartcontroller.tools.AutoSchedule;
 import letrungson.com.smartcontroller.tools.Check;
 
+import static letrungson.com.smartcontroller.tools.Transform.convertToCurrentTimeZone;
+
 public class Database {
 	private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
 	private static final DatabaseReference sensors = database.getReference("sensors");
@@ -28,9 +28,10 @@ public class Database {
 	private static final DatabaseReference devices = database.getReference("devices");;
 	private static final DatabaseReference rooms = database.getReference("rooms");
 
-	public static void addSensorLog(Data data, Value value) {
+	public static void addSensorLog(String roomId, Data data, Value value) {
 		String id = "Sensor" + sensors.push().getKey();
 		HashMap<String, String> hashMap = new HashMap<String, String>();
+		hashMap.put("roomId", roomId);
 		hashMap.put("deviceId", data.getKey());
 		hashMap.put("last_value", value.getData());
 		hashMap.put("updated_at",
@@ -90,11 +91,11 @@ public class Database {
 				Device cDevice = dataSnapshot.getValue(Device.class);
 				if (cDevice.getType() != null) {
 					if (cDevice.getType().equals("Sensor")) {
-						Database.addSensorLog(dataMqtt, value);
 						String roomId = cDevice.getRoomId();
 						String data = value.getData();
 						String temp = data.substring(0, data.lastIndexOf('-')).trim();
 						String humid = data.substring(data.lastIndexOf('-') + 1).trim();
+						Database.addSensorLog(roomId, dataMqtt, value);
 						Database.updateRoom(roomId, temp, humid);
 						Database.updateDevice(deviceId, value.getData());
 						AutoSchedule.autoTurnOnOffDevicebySchedule();

@@ -54,6 +54,8 @@ dependencies {
 
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    implementation 'com.github.psinetron:slycalendarview:0.0.9'
 }

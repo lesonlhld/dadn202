@@ -25,7 +25,7 @@ public class RoomDetailActivity extends Activity {
     private final DatabaseReference rooms = FirebaseDatabase.getInstance().getReference();
     TextView roomName, temperature, humidity, targetTemp;
     ConstraintLayout smart_schedule, device;
-    ImageView smartScheduleImg, deviceImg, closeBtn;
+    ImageView smartScheduleImg, deviceImg, closeBtn, chartBtn;
     private Room thisRoom;
 
     @Override
@@ -74,6 +74,17 @@ public class RoomDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        chartBtn = findViewById(R.id.chartBtn);
+        chartBtn.setImageResource(R.drawable.ic_baseline_bar_chart_24);
+        chartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RoomDetailActivity.this, ViewChartActivity.class);
+                intent.putExtra("roomId", thisRoom.getRoomId());
+                startActivity(intent);
             }
         });
     }
