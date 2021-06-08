@@ -108,8 +108,8 @@ public class AutoSchedule {
 											database.getReference().child("rooms").child(room.getRoomId())
 													.child("roomTargetTemp")
 													.setValueAsync(String.valueOf(sche.getTemp()));
-											setTargetTemp = true;
 										}
+										setTargetTemp = true;
 										if (Integer.parseInt(room.getRoomTargetTemp()) < Integer
 												.parseInt(room.getRoomCurrentTemp())) {
 											isTurnDeviceOn = "1";
@@ -120,11 +120,11 @@ public class AutoSchedule {
 									}
 									// không break, duyệt tiếp những schedule còn lại
 								}
-								if (setTargetTemp == false) {
-									room.setRoomTargetTemp("");
-									database.getReference().child("rooms").child(room.getRoomId())
-											.child("roomTargetTemp").setValueAsync("");
-								}
+							}
+							if (setTargetTemp == false) {
+								room.setRoomTargetTemp("");
+								database.getReference().child("rooms").child(room.getRoomId())
+										.child("roomTargetTemp").setValueAsync("");
 							}
 							// tạo list device trong phòng đó
 							listDevice = new ArrayList<Device>();
