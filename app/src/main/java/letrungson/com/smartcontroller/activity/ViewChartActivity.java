@@ -40,15 +40,15 @@ public class ViewChartActivity extends AppCompatActivity implements SlyCalendarD
         setContentView(R.layout.activity_view_chart);
 
         tempChart = (LineChart) findViewById(R.id.tempChart);
+        tempChart.setNoDataText("No temperature to display");
         mTempChart = new ChartHelper(tempChart);
         tempChart.getDescription().setText("Temperature");
-        tempChart.setNoDataText("No temperature to display");
         tempChart.setDrawBorders(true);
 
         humidChart = (LineChart) findViewById(R.id.humidChart);
+        humidChart.setNoDataText("No humidity to display");
         mHumidChart = new ChartHelper(humidChart);
         humidChart.getDescription().setText("Humidity");
-        humidChart.setNoDataText("No humidity to display");
         humidChart.setDrawBorders(true);
 
         //Setup Toolbar
@@ -89,10 +89,8 @@ public class ViewChartActivity extends AppCompatActivity implements SlyCalendarD
     }
 
     private void getAllRecord(String roomId) {
-        if(humidChart.getData() != null)
-            humidChart.getData().clearValues();
-        if(tempChart.getData() != null)
-            tempChart.getData().clearValues();
+        resetChart(tempChart);
+        resetChart(humidChart);
 
         Query allRecord = firebaseDatabase.getReference("sensors").orderByChild("roomId").equalTo(roomId);
         allRecord.addChildEventListener(new ChildEventListener() {
@@ -127,34 +125,34 @@ public class ViewChartActivity extends AppCompatActivity implements SlyCalendarD
         });
     }
 
-    private void getRecord(String roomId, Calendar firstDate, Calendar secondDate) {
-        if(humidChart.getData() != null)
-            humidChart.getData().clearValues();
-        if(tempChart.getData() != null)
-            tempChart.getData().clearValues();
+    private void resetChart(LineChart chart) {
+        if(chart.getData() != null){
+            chart.fitScreen();
+            chart.getData().clearValues();
+            chart.notifyDataSetChanged();
+            chart.clear();
+            chart.invalidate();
+        }
+    }
 
-        DateFormat currentTFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private void getRecord(String roomId, Calendar firstDate, Calendar secondDate) {
+        resetChart(tempChart);
+        resetChart(humidChart);
+
+        DateFormat currentFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Query record = firebaseDatabase.getReference("sensors").orderByChild("roomId").equalTo(roomId);
         record.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 try {
-                    java.util.Date date = currentTFormat.parse(snapshot.child("updated_at").getValue(String.class));
+                    java.util.Date date = currentFormat.parse(snapshot.child("updated_at").getValue(String.class));
                     if (date.after(firstDate.getTime())) {
-                        if (secondDate == null) {
+                        if (secondDate == null || date.before(secondDate.getTime())) {
                             String data = snapshot.child("last_value").getValue(String.class);
                             String temp = data.substring(0, data.lastIndexOf('-')).trim();
                             String humid = data.substring(data.lastIndexOf('-') + 1).trim();
                             mTempChart.addEntry(Float.valueOf(temp));
                             mHumidChart.addEntry(Float.valueOf(humid));
-                        } else {
-                            if (date.before(secondDate.getTime())) {
-                                String data = snapshot.child("last_value").getValue(String.class);
-                                String temp = data.substring(0, data.lastIndexOf('-')).trim();
-                                String humid = data.substring(data.lastIndexOf('-') + 1).trim();
-                                mTempChart.addEntry(Float.valueOf(temp));
-                                mHumidChart.addEntry(Float.valueOf(humid));
-                            }
                         }
                     }
                 } catch (ParseException e) {

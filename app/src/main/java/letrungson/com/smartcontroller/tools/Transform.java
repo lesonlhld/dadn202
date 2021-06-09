@@ -71,10 +71,10 @@ public class Transform {
 
             java.util.Date date = utcFormat.parse(Date);
 
-            DateFormat currentTFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            currentTFormat.setTimeZone(TimeZone.getTimeZone(getCurrentTimeZone()));
+            DateFormat currentFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            currentFormat.setTimeZone(TimeZone.getTimeZone(getCurrentTimeZone()));
 
-            converted_date = currentTFormat.format(date);
+            converted_date = currentFormat.format(date);
         } catch (Exception e) {
             e.printStackTrace();
         }

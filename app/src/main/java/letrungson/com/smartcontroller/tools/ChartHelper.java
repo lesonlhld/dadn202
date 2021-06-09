@@ -5,15 +5,21 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class ChartHelper implements OnChartValueSelectedListener {
 
@@ -22,9 +28,6 @@ public class ChartHelper implements OnChartValueSelectedListener {
     public ChartHelper(LineChart chart) {
         mChart = chart;
         mChart.setOnChartValueSelectedListener(this);
-
-        // no description text
-        mChart.setNoDataText("You need to provide data for the chart.");
 
         // enable touch gestures
         mChart.setTouchEnabled(true);
@@ -60,19 +63,29 @@ public class ChartHelper implements OnChartValueSelectedListener {
         XAxis xl = mChart.getXAxis();
         xl.setTypeface(Typeface.MONOSPACE);
         xl.setTextColor(Color.rgb(67, 164, 34));
-        xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
         xl.setEnabled(true);
+        xl.setPosition(XAxis.XAxisPosition.BOTTOM);//Set the position of the x-axis
+        xl.setDrawGridLines(false);//Set the grid line to draw
+        xl.setLabelRotationAngle(20f);//Set the angle between the text and the x-axis
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setTypeface(Typeface.MONOSPACE);
         leftAxis.setTextColor(Color.rgb(67, 164, 34));
-
+        leftAxis.setSpaceTop(10);//Set the left Y-axis maximum top spacing
+        leftAxis.setSpaceBottom(10);//Set the left Y-axis minimum bottom spacing
         leftAxis.setDrawGridLines(true);
 
         YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setEnabled(false);
+        rightAxis.setEnabled(false);//Set the right Y axis is not visible
 
+        /*mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
+            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return mFormat.format(new Date(TimeUnit.HOURS.toMillis((long) value)));
+            }
+        });*/
     }
 
     public void setChart(LineChart chart) {
@@ -83,8 +96,12 @@ public class ChartHelper implements OnChartValueSelectedListener {
 
         LineData data = mChart.getData();
 
-        if (data != null) {
+        if(data == null){
+            data = new LineData();
+            mChart.setData(data);
+        }
 
+        if (data != null) {
             ILineDataSet set = data.getDataSetByIndex(0);
             // set.addEntry(...); // can be called as well
 
