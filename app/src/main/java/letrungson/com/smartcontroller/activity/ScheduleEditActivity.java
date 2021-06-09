@@ -122,7 +122,6 @@ public class ScheduleEditActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                finish();
                                 deleteSchedule();
                                 finish();
                             }
@@ -255,6 +254,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
         database.child("schedules").child(thisSchedule.getScheduleId()).child("startTime").setValue(thisSchedule.getStartTime());
         database.child("schedules").child(thisSchedule.getScheduleId()).child("endTime").setValue(thisSchedule.getEndTime());
         database.child("schedules").child(thisSchedule.getScheduleId()).child("repeatDay").setValue(thisSchedule.getRepeatDay());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("state").setValue("0");
     }
 
     private void deleteSchedule() {

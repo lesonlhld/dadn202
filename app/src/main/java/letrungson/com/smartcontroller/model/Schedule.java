@@ -8,14 +8,16 @@ public class Schedule {
     private String endTime;
     private String scheduleId;
     private String roomId;
+    private String state;
 
     public Schedule() {
         this.temp = 25;
         this.humid = 60;
-        this.startTime = "06:00";
-        this.endTime = "07:00";
+        this.startTime = "00:00";
+        this.endTime = "00:00";
         this.repeatDay = "0000000";
         this.roomId = "";
+        this.state = "0";
     }
 
     public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay) {
@@ -81,4 +83,8 @@ public class Schedule {
     public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
+
+    public String getState() { return state; }
+
+    public void setState(String state) { this.state = state; }
 }
