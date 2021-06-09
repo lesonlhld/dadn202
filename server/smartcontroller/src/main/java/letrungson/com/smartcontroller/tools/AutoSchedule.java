@@ -49,7 +49,7 @@ public class AutoSchedule {
 							listSchedule.clear();
 							for (DataSnapshot scheduleData : schedulesSnapshot.getChildren()) {
 								Schedule schedule = scheduleData.getValue(Schedule.class);
-								if (1 == 1) {// sau này sửa thành schedule.getState = 1
+								if (schedule.getState().equals("1")) {// sau này sửa thành schedule.getState = 1
 									String scheduleId = scheduleData.getKey();
 									schedule.setScheduleId(scheduleId);
 									listSchedule.add(schedule);

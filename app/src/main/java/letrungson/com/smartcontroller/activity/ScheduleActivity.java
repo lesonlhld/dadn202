@@ -49,7 +49,8 @@ public class ScheduleActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getAllSchedule(roomId);
-        scheduleListView = new ScheduleListView(getApplicationContext(), lstSchedule);
+        //scheduleListView = new ScheduleListView(getApplicationContext(), lstSchedule);
+        scheduleListView = new ScheduleListView(ScheduleActivity.this, lstSchedule);
         listView.setAdapter(scheduleListView);
 
         floating_action_btn.setOnClickListener(new View.OnClickListener() {
