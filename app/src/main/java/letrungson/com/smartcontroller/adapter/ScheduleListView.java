@@ -12,7 +12,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -21,7 +20,6 @@ import java.util.List;
 import letrungson.com.smartcontroller.R;
 import letrungson.com.smartcontroller.activity.ScheduleEditActivity;
 import letrungson.com.smartcontroller.model.Schedule;
-import letrungson.com.smartcontroller.service.Database;
 import letrungson.com.smartcontroller.tools.Transform;
 import letrungson.com.smartcontroller.tools.TurnOnOffSchedule;
 
@@ -75,9 +73,9 @@ public class ScheduleListView extends BaseAdapter {
         onOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked == true){
+                if (isChecked == true) {
                     List<Schedule> listSimilarSchedule = TurnOnOffSchedule.turnOffSimilarSchedule(schedules, position);
-                    if (listSimilarSchedule.size() > 0){
+                    if (listSimilarSchedule.size() > 0) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(context);
                         alert.setTitle("Warning");
                         alert.setMessage("If you turn on this schedule, similar schedules will be turn off!");
@@ -85,7 +83,7 @@ public class ScheduleListView extends BaseAdapter {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseDatabase.getInstance().getReference().child("schedules").child(schedules.get(position).getScheduleId()).child("state").setValue("1");
-                                for (Schedule sche : listSimilarSchedule){
+                                for (Schedule sche : listSimilarSchedule) {
                                     FirebaseDatabase.getInstance().getReference().child("schedules").child(sche.getScheduleId()).child("state").setValue("0");
                                 }
                             }
@@ -97,12 +95,10 @@ public class ScheduleListView extends BaseAdapter {
                             }
                         });
                         alert.show();
-                    }
-                    else{
+                    } else {
                         FirebaseDatabase.getInstance().getReference().child("schedules").child(schedules.get(position).getScheduleId()).child("state").setValue("1");
                     }
-                }
-                else if (isChecked == false){
+                } else if (isChecked == false) {
                     FirebaseDatabase.getInstance().getReference().child("schedules").child(schedules.get(position).getScheduleId()).child("state").setValue("0");
                 }
             }
@@ -114,6 +110,7 @@ public class ScheduleListView extends BaseAdapter {
                 //Toast.makeText(context, "Clicked" + schedules.get(position).getScheduleId(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, ScheduleEditActivity.class);
                 intent.putExtra("scheduleId", schedules.get(position).getScheduleId());
+                intent.putExtra("roomId", schedules.get(position).getRoomId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
                 notifyDataSetChanged();

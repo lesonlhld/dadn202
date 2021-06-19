@@ -8,8 +8,9 @@
     <RelativeLayout
         android:id="@+id/bar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:background="#2898D7"
+        android:paddingBottom="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -67,8 +68,9 @@
     <RelativeLayout
         android:id="@+id/temp_area"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/schedule_items_bg"
+        android:paddingBottom="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bar">
 
@@ -116,7 +118,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:text="25"
-            android:textColor="#717274"
+            android:textColor="@color/black"
             android:textSize="50sp" />
 
     </RelativeLayout>
@@ -124,24 +126,25 @@
     <RelativeLayout
         android:id="@+id/humid_area"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/schedule_items_bg"
+        android:paddingBottom="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/temp_area">
 
         <TextView
-            android:id="@+id/humi_data_view"
+            android:id="@+id/humid_data_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:text="60"
-            android:textColor="#717274"
+            android:textColor="@color/black"
             android:textSize="50sp" />
 
         <ImageButton
-            android:id="@+id/up_humi_btn"
+            android:id="@+id/up_humid_btn"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentTop="true"
@@ -154,7 +157,7 @@
             app:srcCompat="@drawable/ic_up_arrow" />
 
         <ImageButton
-            android:id="@+id/down_humi_btn"
+            android:id="@+id/down_humid_btn"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentStart="true"
@@ -180,8 +183,9 @@
     <RelativeLayout
         android:id="@+id/time_area"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/schedule_items_bg"
+        android:paddingBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/humid_area">
 
@@ -195,7 +199,7 @@
             android:layout_marginTop="55dp"
             android:layout_marginEnd="30dp"
             android:text="HH:mm"
-            android:textColor="#717274"
+            android:textColor="@color/black"
             android:textSize="20dp" />
 
         <TextView
@@ -242,7 +246,7 @@
             android:layout_marginTop="95dp"
             android:layout_marginEnd="30dp"
             android:text="HH:mm"
-            android:textColor="#717274"
+            android:textColor="@color/black"
             android:textSize="20dp" />
 
 
@@ -251,8 +255,9 @@
     <RelativeLayout
         android:id="@+id/repeat_time_area"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/schedule_items_bg"
+        android:paddingBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/time_area">
 
@@ -266,25 +271,49 @@
             android:textColor="#717274"
             android:textSize="20dp" />
 
-        <Button
-            android:id="@+id/set_repeat_day_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="30dp"
-            android:text="choose day" />
-
         <TextView
             android:id="@+id/repeat_day_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="false"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="30dp"
-            android:text="TextView"
+            android:text="No day"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/device_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/schedule_items_bg"
+        android:paddingBottom="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/repeat_time_area">
+
+        <TextView
+            android:id="@+id/text7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:text="Device"
             android:textColor="#717274"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/device_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="30dp"
+            android:text="No device"
+            android:textColor="@color/black"
             android:textSize="20sp" />
 
     </RelativeLayout>

@@ -1,5 +1,7 @@
 package letrungson.com.smartcontroller.model;
 
+import java.util.List;
+
 public class Schedule {
     private String repeatDay;
     private int temp;
@@ -9,6 +11,7 @@ public class Schedule {
     private String scheduleId;
     private String roomId;
     private String state;
+    private List<String> listDevice;
 
     public Schedule() {
         this.temp = 25;
@@ -18,14 +21,16 @@ public class Schedule {
         this.repeatDay = "0000000";
         this.roomId = "";
         this.state = "0";
+        this.listDevice = null;
     }
 
-    public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay) {
+    public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay, List<String> listDevice) {
         this.temp = temp;
         this.humid = humid;
         this.startTime = startTime;
         this.endTime = endTime;
         this.repeatDay = repeatDay;
+        this.listDevice = listDevice;
     }
 
     public String getScheduleId() {
@@ -84,7 +89,19 @@ public class Schedule {
         this.roomId = roomId;
     }
 
-    public String getState() { return state; }
+    public String getState() {
+        return state;
+    }
 
-    public void setState(String state) { this.state = state; }
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public List<String> getListDevice() {
+        return listDevice;
+    }
+
+    public void setListDevice(List<String> listDevice) {
+        this.listDevice = listDevice;
+    }
 }

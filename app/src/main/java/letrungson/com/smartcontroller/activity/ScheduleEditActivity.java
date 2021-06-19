@@ -28,24 +28,31 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Schedule;
+import letrungson.com.smartcontroller.tools.Check;
 import letrungson.com.smartcontroller.tools.Transform;
 
 public class ScheduleEditActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    Schedule thisSchedule;
-    String scheduleId;
-    TextView start_time, end_time, temp_data, humid_data, repeat_day_text;
+    String scheduleId, roomId;
+    TextView start_time, end_time, temp_data, humid_data, repeat_day_text, device_text;
     ImageButton up_temp_btn, down_temp_btn, up_humid_btn, down_humid_btn, close_btn, tick_btn;
-    Button set_repeat_day_btn, delete_btn;
+    Button delete_btn;
+    List<Device> listDevice;
+    private Schedule thisSchedule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         scheduleId = intent.getStringExtra("scheduleId");
+        roomId = intent.getStringExtra("roomId");
+        getAllDevicesInRoom(roomId);
         getSchedule(scheduleId);
 
         setContentView(R.layout.activity_editschedule);
@@ -54,15 +61,15 @@ public class ScheduleEditActivity extends AppCompatActivity {
         end_time = (TextView) findViewById(R.id.end_time_text);
         up_temp_btn = (ImageButton) findViewById(R.id.up_temp_btn);
         down_temp_btn = (ImageButton) findViewById(R.id.down_temp_btn);
-        up_humid_btn = (ImageButton) findViewById(R.id.up_humi_btn);
-        down_humid_btn = (ImageButton) findViewById(R.id.down_humi_btn);
+        up_humid_btn = (ImageButton) findViewById(R.id.up_humid_btn);
+        down_humid_btn = (ImageButton) findViewById(R.id.down_humid_btn);
         temp_data = (TextView) findViewById(R.id.temp_data_view);
-        humid_data = (TextView) findViewById(R.id.humi_data_view);
+        humid_data = (TextView) findViewById(R.id.humid_data_view);
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
-        set_repeat_day_btn = (Button) findViewById(R.id.set_repeat_day_btn);
         delete_btn = (Button) findViewById(R.id.delete_btn);
         repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
+        device_text = (TextView) findViewById(R.id.device_text);
 
         start_time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,9 +154,9 @@ public class ScheduleEditActivity extends AppCompatActivity {
         });
 
         // lines below is prepare to set repeat day
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder repeatBuilder = new AlertDialog.Builder(this);
 
-        set_repeat_day_btn.setOnClickListener(new View.OnClickListener() {
+        repeat_day_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String[] items = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -163,8 +170,8 @@ public class ScheduleEditActivity extends AppCompatActivity {
                         yetChecked[i] = false;
                     }
                 }
-                builder.setTitle("Choose day:");
-                builder.setMultiChoiceItems(items, yetChecked,
+                repeatBuilder.setTitle("Choose day:");
+                repeatBuilder.setMultiChoiceItems(items, yetChecked,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int selectedItemId,
@@ -185,7 +192,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
                                     A[i] = '0';
                                 }
                                 for (int i = 0; i < itemsSelected.size(); i++) {
-                                    A[Integer.valueOf(itemsSelected.get(i).toString())] = '1';
+                                    A[Integer.parseInt(itemsSelected.get(i).toString())] = '1';
                                 }
                                 thisSchedule.setRepeatDay(String.valueOf(A));
                                 repeat_day_text.setText(Transform.BinaryToDaily(String.valueOf(A)));
@@ -198,7 +205,64 @@ public class ScheduleEditActivity extends AppCompatActivity {
                         });
 
                 Dialog dialog;
-                dialog = builder.create();
+                dialog = repeatBuilder.create();
+                //((AlertDialog)).getListView().setItemChecked(1, true);
+                dialog.show();
+            }
+        });
+
+        // lines below is prepare to set repeat day
+        AlertDialog.Builder deviceBuilder = new AlertDialog.Builder(this);
+
+        device_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ArrayList itemsSelected = new ArrayList();
+                boolean yetChecked[] = new boolean[listDevice.size()];
+                for (int i = 0; i < listDevice.size(); i++) {
+                    if (Check.checkExistDeviceId(thisSchedule.getListDevice(), listDevice.get(i).getDeviceId())) {
+                        yetChecked[i] = true;
+                        itemsSelected.add(i);
+                    } else {
+                        yetChecked[i] = false;
+                    }
+                }
+                deviceBuilder.setTitle("Choose device:");
+                List<String> listDeviceName = listDevice.stream()
+                        .map(Device::getDeviceName)
+                        .collect(Collectors.toList());
+                deviceBuilder.setMultiChoiceItems(listDeviceName.toArray(new String[listDevice.size()]), yetChecked,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int selectedItemId,
+                                                boolean isSelected) {
+                                if (isSelected) {
+                                    itemsSelected.add(selectedItemId);
+                                } else if (itemsSelected.contains(selectedItemId)) {
+                                    itemsSelected.remove(Integer.valueOf(selectedItemId));
+                                }
+                            }
+                        })
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                //Your logic when OK button is clicked
+                                List<String> listId = new ArrayList<String>();
+                                for (int i = 0; i < itemsSelected.size(); i++) {
+                                    listId.add(listDevice.get((Integer) itemsSelected.get(i)).getDeviceId());
+                                }
+                                thisSchedule.setListDevice(listId);
+                                device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+
+                Dialog dialog;
+                dialog = deviceBuilder.create();
                 //((AlertDialog)).getListView().setItemChecked(1, true);
                 dialog.show();
             }
@@ -206,6 +270,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
     }
 
     private void getSchedule(String scheduleId) {
+        //thisSchedule = new Schedule();
         database.child("schedules").child(scheduleId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -219,30 +284,31 @@ public class ScheduleEditActivity extends AppCompatActivity {
                     start_time.setText(thisSchedule.getStartTime());
                     end_time.setText(thisSchedule.getEndTime());
                     repeat_day_text.setText(Transform.BinaryToDaily(thisSchedule.getRepeatDay()));
+                    device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
                 }
             }
         });
     }
 
-    private void getAndListenSchedule(String scheduleId) {
-        Query scheduleDb = database.child("schedules").child(scheduleId);
-        scheduleDb.keepSynced(true);
-        scheduleDb.addValueEventListener(new ValueEventListener() {
+    public void getAllDevicesInRoom(String roomId) {
+        listDevice = new ArrayList<Device>();
+        Query allDevice = database.child("devices").orderByChild("roomId").equalTo(roomId);
+        allDevice.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    thisSchedule = dataSnapshot.getValue(Schedule.class);
-                    temp_data.setText(String.valueOf(thisSchedule.getTemp()));
-                    humid_data.setText(String.valueOf(thisSchedule.getHumid()));
-                    start_time.setText(thisSchedule.getStartTime());
-                    end_time.setText(thisSchedule.getEndTime());
-                } else {
-                    Log.d("schedule", "Database is empty now!");
+                listDevice.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Device device = data.getValue(Device.class);
+                    if (!device.getType().equals("Sensor")) {
+                        String deviceId = data.getKey();
+                        device.setDeviceId(deviceId);
+                        listDevice.add(device);
+                    }
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -254,6 +320,7 @@ public class ScheduleEditActivity extends AppCompatActivity {
         database.child("schedules").child(thisSchedule.getScheduleId()).child("startTime").setValue(thisSchedule.getStartTime());
         database.child("schedules").child(thisSchedule.getScheduleId()).child("endTime").setValue(thisSchedule.getEndTime());
         database.child("schedules").child(thisSchedule.getScheduleId()).child("repeatDay").setValue(thisSchedule.getRepeatDay());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("listDevice").setValue(thisSchedule.getListDevice());
         database.child("schedules").child(thisSchedule.getScheduleId()).child("state").setValue("0");
     }
 

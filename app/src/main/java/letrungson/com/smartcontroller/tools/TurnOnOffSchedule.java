@@ -1,25 +1,18 @@
 package letrungson.com.smartcontroller.tools;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
-
-import androidx.appcompat.app.AlertDialog;
-
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import letrungson.com.smartcontroller.activity.ScheduleEditActivity;
 import letrungson.com.smartcontroller.model.Schedule;
 
 public class TurnOnOffSchedule {
 
-    static public int isLater(int hour1, int minute1, int hour2, int minute2){
+    static public int isLater(int hour1, int minute1, int hour2, int minute2) {
         if (hour1 > hour2) return 1;
         else if (hour1 < hour2) return -1;
-        else{
+        else {
             if (minute1 > minute2) return 1;
             else if (minute1 < minute2) return -1;
             else return 0;
@@ -59,13 +52,13 @@ public class TurnOnOffSchedule {
                 if (isTimeSimilar) {
                     // đã trùng giờ, check xem có trùng ngày không
                     boolean isDaySimilar = false;
-                    for (int i = 0; i < 7; i++){
-                        if (thisSchedule.getRepeatDay().charAt(i) == '1' && sche.getRepeatDay().charAt(i) == '1'){
+                    for (int i = 0; i < 7; i++) {
+                        if (thisSchedule.getRepeatDay().charAt(i) == '1' && sche.getRepeatDay().charAt(i) == '1') {
                             isDaySimilar = true;
                             break;
                         }
                     }
-                    if (isDaySimilar){
+                    if (isDaySimilar) {
                         listSimilarSchedule.add(sche);
                     }
                 }

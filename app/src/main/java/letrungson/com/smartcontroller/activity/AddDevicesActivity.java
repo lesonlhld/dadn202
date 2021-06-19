@@ -28,7 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
@@ -64,7 +63,8 @@ public class AddDevicesActivity extends AppCompatActivity {
 
         //Setup DeviceType Spinner
         spinnerAddDevice = findViewById(R.id.spinner_add_devices);
-        List<String> type = Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
+
+        List<String> type = SplashActivity.typeDevices;
         type.set(0, "Select a device type");
         SpinnerAddDeviceAdapter spinnerAddDeviceAdapter = new SpinnerAddDeviceAdapter(this, R.layout.spinner_add_device_item, type);
         spinnerAddDeviceAdapter.setDropDownViewResource(R.layout.spinner_add_device_item);

@@ -9,8 +9,19 @@ import letrungson.com.smartcontroller.util.Constant;
 
 public class Check {
     public static boolean checkExistDevice(List<Device> c, String id) {
+        if (c == null || c.size() == 0) return false;
         for (Device o : c) {
             if (o != null && o.getDeviceId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkExistDeviceId(List<String> c, String id) {
+        if (c == null || c.size() == 0) return false;
+        for (String o : c) {
+            if (o != null && o.equals(id)) {
                 return true;
             }
         }

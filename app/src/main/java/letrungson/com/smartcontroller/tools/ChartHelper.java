@@ -5,21 +5,15 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class ChartHelper implements OnChartValueSelectedListener {
 
@@ -96,7 +90,7 @@ public class ChartHelper implements OnChartValueSelectedListener {
 
         LineData data = mChart.getData();
 
-        if(data == null){
+        if (data == null) {
             data = new LineData();
             mChart.setData(data);
         }

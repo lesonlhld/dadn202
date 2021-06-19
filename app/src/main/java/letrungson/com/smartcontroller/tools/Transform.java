@@ -3,21 +3,17 @@ package letrungson.com.smartcontroller.tools;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
+
+import letrungson.com.smartcontroller.model.Device;
 
 public class Transform {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     static public String BinaryToDaily(String input) {
         char[] A = input.toCharArray();
-        boolean daily = true;
-        for (int i = 0; i < 7; i++) {
-            if (A[i] == '0') {
-                daily = false;
-                break;
-            }
-        }
-        if (daily) {
+        if (input.equals("1111111")) {
             return "Daily";
         }
 
@@ -47,9 +43,24 @@ public class Transform {
         if (result.length() == 0) {
             return "No day";
         } else {
-            result.deleteCharAt(result.length() - 2);
-            return result.toString();
+            return result.substring(0, result.length() - 2);
         }
+    }
+
+    static public String toListNameFromDeviceId(List<Device> listDevice, List<String> listId) {
+        if (listId == null || listId.size() == 0) {
+            return "No device";
+        }
+        String listName = "";
+        for (Device device : listDevice) {
+            for (String id : listId) {
+                if (device.getDeviceId().equals(id)) {
+                    listName += device.getDeviceName() + ", ";
+                    break;
+                }
+            }
+        }
+        return listName.substring(0, listName.length() - 2);
     }
 
     public static String bytesToHex(byte[] bytes) {

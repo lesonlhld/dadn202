@@ -126,7 +126,7 @@ public class ViewChartActivity extends AppCompatActivity implements SlyCalendarD
     }
 
     private void resetChart(LineChart chart) {
-        if(chart.getData() != null){
+        if (chart.getData() != null) {
             chart.fitScreen();
             chart.getData().clearValues();
             chart.notifyDataSetChanged();

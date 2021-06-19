@@ -34,7 +34,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
@@ -83,12 +82,14 @@ public class DevicesActivity extends AppCompatActivity {
         });
 
         //Setup List View
-        type = Arrays.asList(getResources().getStringArray(R.array.default_devices_type));
+        type = SplashActivity.typeDevices;
         deviceAdapterArrayList = new ArrayList<DeviceAdapter>();
         for (String ty : type) {
             deviceAdapterArrayList.add(new DeviceAdapter(DevicesActivity.this, R.layout.list_devices_item, new ArrayList<Device>()));
+            if (ty.equals("Sensor")) {
+                deviceAdapterArrayList.get(deviceAdapterArrayList.size() - 1).setSensor(true);
+            }
         }
-        deviceAdapterArrayList.get(deviceAdapterArrayList.size() - 1).setSensor(true);
         listViewDevices = findViewById(R.id.list_devices);
 
         //Setup spinner
