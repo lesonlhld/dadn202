@@ -39,7 +39,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
     Schedule thisSchedule;
     String scheduleId;
     String roomId;
-    TextView start_time, end_time, temp_data, humid_data, repeat_day_text, device_text;
+    TextView start_time, end_time, temp_data, humid_data, repeat_day_text, device_text, title;
     ImageButton up_temp_btn, down_temp_btn, up_humid_btn, down_humid_btn, close_btn, tick_btn;
     Button delete_btn;
     List<Device> listDevice;
@@ -52,7 +52,8 @@ public class ScheduleSetActivity extends AppCompatActivity {
         getAllDevicesInRoom(roomId);
 
         setContentView(R.layout.activity_editschedule);
-
+        title = (TextView) findViewById(R.id.title);
+        title.setText("Add Schedule");
         start_time = (TextView) findViewById(R.id.start_time_text);
         end_time = (TextView) findViewById(R.id.end_time_text);
         up_temp_btn = (ImageButton) findViewById(R.id.up_temp_btn);
@@ -66,6 +67,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
         delete_btn = (Button) findViewById(R.id.delete_btn);
         delete_btn.setVisibility(View.GONE);
         repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
+        device_text = (TextView) findViewById(R.id.device_text);
 
         setSchedule();
 
@@ -194,54 +196,66 @@ public class ScheduleSetActivity extends AppCompatActivity {
         device_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ArrayList itemsSelected = new ArrayList();
-                boolean yetChecked[] = new boolean[listDevice.size()];
-                for (int i = 0; i < listDevice.size(); i++) {
-                    if (Check.checkExistDeviceId(thisSchedule.getListDevice(), listDevice.get(i).getDeviceId())) {
-                        yetChecked[i] = true;
-                        itemsSelected.add(i);
-                    } else {
-                        yetChecked[i] = false;
-                    }
-                }
-                deviceBuilder.setTitle("Choose device:");
                 List<String> listDeviceName = listDevice.stream()
                         .map(Device::getDeviceName)
                         .collect(Collectors.toList());
-                deviceBuilder.setMultiChoiceItems(listDeviceName.toArray(new String[listDevice.size()]), yetChecked,
-                        new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int selectedItemId,
-                                                boolean isSelected) {
-                                if (isSelected) {
-                                    itemsSelected.add(selectedItemId);
-                                } else if (itemsSelected.contains(selectedItemId)) {
-                                    itemsSelected.remove(Integer.valueOf(selectedItemId));
+                if (listDeviceName.size() == 0) {
+                    deviceBuilder.setTitle("Choose device:");
+                    deviceBuilder.setMessage("No device in this room!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    thisSchedule.setListDevice(null);
                                 }
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                //Your logic when OK button is clicked
-                                List<String> listId = new ArrayList<String>();
-                                for (int i = 0; i < itemsSelected.size(); i++) {
-                                    listId.add(listDevice.get((Integer) itemsSelected.get(i)).getDeviceId());
-                                }
-                                thisSchedule.setListDevice(listId);
-                                device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                            }
-                        });
+                            });
 
+                } else {
+                    final ArrayList itemsSelected = new ArrayList();
+                    boolean yetChecked[] = new boolean[listDevice.size()];
+                    for (int i = 0; i < listDevice.size(); i++) {
+                        if (Check.checkExistDeviceId(thisSchedule.getListDevice(), listDevice.get(i).getDeviceId())) {
+                            yetChecked[i] = true;
+                            itemsSelected.add(i);
+                        } else {
+                            yetChecked[i] = false;
+                        }
+                    }
+                    deviceBuilder.setTitle("Choose device:");
+                    deviceBuilder.setMultiChoiceItems(listDeviceName.toArray(new String[listDevice.size()]), yetChecked,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int selectedItemId,
+                                                    boolean isSelected) {
+                                    if (isSelected) {
+                                        itemsSelected.add(selectedItemId);
+                                    } else if (itemsSelected.contains(selectedItemId)) {
+                                        itemsSelected.remove(Integer.valueOf(selectedItemId));
+                                    }
+                                }
+                            })
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //Your logic when OK button is clicked
+                                    List<String> listId = new ArrayList<String>();
+                                    for (int i = 0; i < itemsSelected.size(); i++) {
+                                        listId.add(listDevice.get((Integer) itemsSelected.get(i)).getDeviceId());
+                                    }
+                                    thisSchedule.setListDevice(listId);
+                                    device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                }
                 Dialog dialog;
                 dialog = deviceBuilder.create();
                 //((AlertDialog)).getListView().setItemChecked(1, true);
                 dialog.show();
+
             }
         });
     }

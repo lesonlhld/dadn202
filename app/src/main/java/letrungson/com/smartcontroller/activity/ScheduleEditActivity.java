@@ -217,54 +217,66 @@ public class ScheduleEditActivity extends AppCompatActivity {
         device_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ArrayList itemsSelected = new ArrayList();
-                boolean yetChecked[] = new boolean[listDevice.size()];
-                for (int i = 0; i < listDevice.size(); i++) {
-                    if (Check.checkExistDeviceId(thisSchedule.getListDevice(), listDevice.get(i).getDeviceId())) {
-                        yetChecked[i] = true;
-                        itemsSelected.add(i);
-                    } else {
-                        yetChecked[i] = false;
-                    }
-                }
-                deviceBuilder.setTitle("Choose device:");
                 List<String> listDeviceName = listDevice.stream()
                         .map(Device::getDeviceName)
                         .collect(Collectors.toList());
-                deviceBuilder.setMultiChoiceItems(listDeviceName.toArray(new String[listDevice.size()]), yetChecked,
-                        new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int selectedItemId,
-                                                boolean isSelected) {
-                                if (isSelected) {
-                                    itemsSelected.add(selectedItemId);
-                                } else if (itemsSelected.contains(selectedItemId)) {
-                                    itemsSelected.remove(Integer.valueOf(selectedItemId));
+                if (listDeviceName.size() == 0) {
+                    deviceBuilder.setTitle("Choose device:");
+                    deviceBuilder.setMessage("No device in this room!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    thisSchedule.setListDevice(null);
                                 }
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                //Your logic when OK button is clicked
-                                List<String> listId = new ArrayList<String>();
-                                for (int i = 0; i < itemsSelected.size(); i++) {
-                                    listId.add(listDevice.get((Integer) itemsSelected.get(i)).getDeviceId());
-                                }
-                                thisSchedule.setListDevice(listId);
-                                device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                            }
-                        });
+                            });
 
+                } else {
+                    final ArrayList itemsSelected = new ArrayList();
+                    boolean yetChecked[] = new boolean[listDevice.size()];
+                    for (int i = 0; i < listDevice.size(); i++) {
+                        if (Check.checkExistDeviceId(thisSchedule.getListDevice(), listDevice.get(i).getDeviceId())) {
+                            yetChecked[i] = true;
+                            itemsSelected.add(i);
+                        } else {
+                            yetChecked[i] = false;
+                        }
+                    }
+                    deviceBuilder.setTitle("Choose device:");
+                    deviceBuilder.setMultiChoiceItems(listDeviceName.toArray(new String[listDevice.size()]), yetChecked,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int selectedItemId,
+                                                    boolean isSelected) {
+                                    if (isSelected) {
+                                        itemsSelected.add(selectedItemId);
+                                    } else if (itemsSelected.contains(selectedItemId)) {
+                                        itemsSelected.remove(Integer.valueOf(selectedItemId));
+                                    }
+                                }
+                            })
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //Your logic when OK button is clicked
+                                    List<String> listId = new ArrayList<String>();
+                                    for (int i = 0; i < itemsSelected.size(); i++) {
+                                        listId.add(listDevice.get((Integer) itemsSelected.get(i)).getDeviceId());
+                                    }
+                                    thisSchedule.setListDevice(listId);
+                                    device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                }
                 Dialog dialog;
                 dialog = deviceBuilder.create();
                 //((AlertDialog)).getListView().setItemChecked(1, true);
                 dialog.show();
+
             }
         });
     }
