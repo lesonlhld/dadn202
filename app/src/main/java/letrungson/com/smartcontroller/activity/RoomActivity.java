@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 
@@ -115,10 +116,17 @@ public class RoomActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String name = roomName.getText().toString();
+                final String name = roomName.getText().toString().trim();
                 if (name.isEmpty()) {
                     Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_required), Toast.LENGTH_LONG).show();
-                } else {
+                }
+                else if (isDeviceIdExist(name)){
+                    Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_existed), Toast.LENGTH_LONG).show();
+                }
+                else if (name.length() > 50){
+                    Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_too_long), Toast.LENGTH_LONG).show();
+                }
+                else {
                     Database.addRoom(name);
                     startActivity(new Intent(RoomActivity.this, RoomActivity.class));
                     finish();
@@ -134,6 +142,14 @@ public class RoomActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private boolean isDeviceIdExist(String input) {
+        for (Room room : listRoom) {
+            if (room.getRoomName().toLowerCase().equals(input.toLowerCase()))
+                return true;
+        }
+        return false;
     }
 
     public void getAllRoom() {

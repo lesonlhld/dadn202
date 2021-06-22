@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import letrungson.com.smartcontroller.R;
+import letrungson.com.smartcontroller.service.Database;
 
 public class AccountActivity extends Activity {
     private static final String TAG = "EmailPassword";
@@ -221,37 +222,36 @@ public class AccountActivity extends Activity {
                     Toast.makeText(AccountActivity.this, getResources().getString(R.string.minimum_password), Toast.LENGTH_LONG).show();
                 } else if (!newPassword.equals(passwordConfirm)) {
                     Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_match_password), Toast.LENGTH_LONG).show();
+                } else {
+                    AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), oldPassword);
+                    currentUser.reauthenticate(credential)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        currentUser.updatePassword(newPassword)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Log.d(TAG, "User password updated.");
+                                                            Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_successfully), Toast.LENGTH_LONG).show();
+                                                            startActivity(new Intent(AccountActivity.this, MoreActivity.class));
+                                                            finish();
+                                                        } else {
+                                                            Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_failed), Toast.LENGTH_LONG).show();
+                                                            Log.d(TAG, "Error password not updated ");
+                                                        }
+                                                    }
+                                                });
+                                        Log.d(TAG, "User re-authenticated.");
+                                    } else {
+                                        Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_incorrect_old_password), Toast.LENGTH_LONG).show();
+                                        Log.d(TAG, "User re-authenticated failed.");
+                                    }
+                                }
+                            });
                 }
-
-                AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), oldPassword);
-                currentUser.reauthenticate(credential)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "User re-authenticated.");
-                                } else {
-                                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.error_incorrect_password), Toast.LENGTH_LONG).show();
-                                    Log.d(TAG, "User re-authenticated failed.");
-                                }
-                            }
-                        });
-
-                currentUser.updatePassword(newPassword)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "User password updated.");
-                                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_successfully), Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(AccountActivity.this, MoreActivity.class));
-                                    finish();
-                                } else {
-                                    Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_failed), Toast.LENGTH_LONG).show();
-                                    Log.d(TAG, "Error password not updated ");
-                                }
-                            }
-                        });
             }
         });
 

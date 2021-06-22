@@ -7,10 +7,13 @@
     <string name="error_exist_email">This email address is already in use by another account</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_old_password">This old password is incorrect</string>
     <string name="error_match_password">This confirmation password do not match</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_email_required">This email is required</string>
     <string name="error_room_name_required">This room name is required</string>
+    <string name="error_room_name_existed">This room name is existed</string>
+    <string name="error_room_name_too_long">"This room name too long"</string>
     <string name="error_password_required">This password is required</string>
     <string name="error_old_password_required">This old password is required</string>
     <string name="error_new_password_required">This new password is required</string>
