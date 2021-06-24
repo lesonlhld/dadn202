@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +41,7 @@ import letrungson.com.smartcontroller.adapter.SpacingItemDecorator;
 import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
+import letrungson.com.smartcontroller.tools.Check;
 
 //import es.rcti.printerplus.printcom.models.PrintTool;
 //import es.rcti.printerplus.printcom.models.StructReport;
@@ -67,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!Check.checkConnection(this)) {
+            Toast.makeText(this, "No internet!!!!", Toast.LENGTH_LONG).show();
+        }
 
         getAllRoom();
         setContentView(R.layout.homescreeen);

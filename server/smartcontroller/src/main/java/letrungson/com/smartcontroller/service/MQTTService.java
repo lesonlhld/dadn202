@@ -52,6 +52,7 @@ public class MQTTService {
             publisher.connect(mqttConnectOptions);
             subscribeToTopic(publisher, username);
         } catch (MqttException ex) {
+            System.out.println("Failed to connect: " + username);
             ex.printStackTrace();
         }
     }

@@ -99,7 +99,7 @@ public class Database {
                         Database.addSensorLog(roomId, dataMqtt, value);
                         Database.updateRoom(roomId, temp, humid);
                         Database.updateDevice(deviceId, value.getData());
-                        AutoSchedule.autoTurnOnOffDevicebySchedule();
+                        AutoSchedule.autoTurnOnOffDevicebySchedule(roomId);
                     } else {// Others devices
                         if (!cDevice.getState().equals(value.getData())) {
                             for (Device device0 : Main.allDevices) {
