@@ -28,7 +28,9 @@ public class ChartHelper implements OnChartValueSelectedListener {
 
         // enable scaling and dragging
         mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
+//        mChart.setScaleEnabled(true);
+        mChart.setScaleYEnabled(false);
+        mChart.setScaleXEnabled(true);
         mChart.setDrawGridBackground(false);
 
         // if disabled, scaling can be done on x- and y-axis separately
@@ -113,7 +115,7 @@ public class ChartHelper implements OnChartValueSelectedListener {
             mChart.notifyDataSetChanged();
 
             // limit the number of visible entries
-            mChart.setVisibleXRangeMaximum(10);
+            // mChart.setVisibleXRangeMaximum(10);
             // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
             // move to the latest entry
@@ -138,6 +140,7 @@ public class ChartHelper implements OnChartValueSelectedListener {
         set.setValueTextColor(Color.rgb(67, 164, 34));
         set.setValueTextSize(9f);
         set.setDrawValues(false);
+        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         return set;
     }
 
