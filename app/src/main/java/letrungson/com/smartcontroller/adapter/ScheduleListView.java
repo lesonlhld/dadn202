@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.activity.ScheduleEditActivity;
+import letrungson.com.smartcontroller.activity.ScheduleDetailActivity;
 import letrungson.com.smartcontroller.model.Schedule;
 import letrungson.com.smartcontroller.tools.Transform;
 import letrungson.com.smartcontroller.tools.TurnOnOffSchedule;
@@ -66,8 +66,17 @@ public class ScheduleListView extends BaseAdapter {
         startTime.setText(schedules.get(position).getStartTime());
         endTime.setText(schedules.get(position).getEndTime());
 
-        temp.setText(String.valueOf(schedules.get(position).getTemp()) + "C");
-        humid.setText(String.valueOf(schedules.get(position).getHumid()) + "%");
+        if (schedules.get(position).getTemp().equals("")) {
+            temp.setText("--C");
+        } else {
+            temp.setText(schedules.get(position).getTemp() + "C");
+        }
+
+        if (schedules.get(position).getHumid().equals("")) {
+            humid.setText("--%");
+        } else {
+            humid.setText(schedules.get(position).getHumid() + "%");
+        }
         onOff.setChecked(schedules.get(position).getState().equals("1"));
 
         onOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -108,9 +117,10 @@ public class ScheduleListView extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(context, "Clicked" + schedules.get(position).getScheduleId(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context, ScheduleEditActivity.class);
+                Intent intent = new Intent(context, ScheduleDetailActivity.class);
                 intent.putExtra("scheduleId", schedules.get(position).getScheduleId());
                 intent.putExtra("roomId", schedules.get(position).getRoomId());
+                intent.putExtra("action", "edit");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
                 notifyDataSetChanged();

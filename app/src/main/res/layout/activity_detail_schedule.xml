@@ -74,6 +74,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bar">
 
+
         <ImageButton
             android:id="@+id/up_temp_btn"
             android:layout_width="30dp"
@@ -96,6 +97,16 @@
             android:text="Temperature"
             android:textColor="#717274"
             android:textSize="20dp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/text1"
+            android:checked="true"
+            android:onClick="onCheckboxClicked"
+            app:layout_constraintStart_toStartOf="@+id/text1" />
 
         <ImageButton
             android:id="@+id/down_temp_btn"
@@ -142,6 +153,15 @@
             android:text="60"
             android:textColor="@color/black"
             android:textSize="50sp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_humid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/text21"
+            android:checked="true"
+            android:onClick="onCheckboxClicked" />
 
         <ImageButton
             android:id="@+id/up_humid_btn"

@@ -6,8 +6,10 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -15,6 +17,8 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,26 +38,21 @@ import letrungson.com.smartcontroller.model.Schedule;
 import letrungson.com.smartcontroller.tools.Check;
 import letrungson.com.smartcontroller.tools.Transform;
 
-public class ScheduleSetActivity extends AppCompatActivity {
+public class ScheduleDetailActivity extends AppCompatActivity {
     private final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    Schedule thisSchedule;
-    String scheduleId;
-    String roomId;
+    String scheduleId, roomId, action;
     TextView start_time, end_time, temp_data, humid_data, repeat_day_text, device_text, title;
     ImageButton up_temp_btn, down_temp_btn, up_humid_btn, down_humid_btn, close_btn, tick_btn;
     Button delete_btn;
+    CheckBox temp_check, humid_check;
     List<Device> listDevice;
+    private Schedule thisSchedule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        roomId = intent.getStringExtra("roomId");
-        getAllDevicesInRoom(roomId);
-
-        setContentView(R.layout.activity_editschedule);
+        setContentView(R.layout.activity_detail_schedule);
         title = (TextView) findViewById(R.id.title);
-        title.setText("Add Schedule");
         start_time = (TextView) findViewById(R.id.start_time_text);
         end_time = (TextView) findViewById(R.id.end_time_text);
         up_temp_btn = (ImageButton) findViewById(R.id.up_temp_btn);
@@ -65,11 +64,24 @@ public class ScheduleSetActivity extends AppCompatActivity {
         close_btn = (ImageButton) findViewById(R.id.close_btn);
         tick_btn = (ImageButton) findViewById(R.id.tick_btn);
         delete_btn = (Button) findViewById(R.id.delete_btn);
-        delete_btn.setVisibility(View.GONE);
         repeat_day_text = (TextView) findViewById(R.id.repeat_day_text);
         device_text = (TextView) findViewById(R.id.device_text);
+        temp_check = (CheckBox) findViewById(R.id.checkbox_temp);
+        humid_check = (CheckBox) findViewById(R.id.checkbox_humid);
 
-        setSchedule();
+        Intent intent = getIntent();
+        roomId = intent.getStringExtra("roomId");
+        getAllDevicesInRoom(roomId);
+        action = intent.getStringExtra("action");
+        if (action.equals("add")) {
+            title.setText("Add Schedule");
+            delete_btn.setVisibility(View.GONE);
+            setSchedule();
+        } else {
+            scheduleId = intent.getStringExtra("scheduleId");
+            getSchedule(scheduleId);
+        }
+
 
         start_time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +131,25 @@ public class ScheduleSetActivity extends AppCompatActivity {
             }
         });
 
+
+        delete_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new androidx.appcompat.app.AlertDialog.Builder(ScheduleDetailActivity.this)
+                        .setTitle("Delete")
+                        .setMessage("Do you want to delete this schedule?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteSchedule();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
+
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,12 +160,23 @@ public class ScheduleSetActivity extends AppCompatActivity {
         tick_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addSchedule();
+                if (!temp_check.isChecked()) {
+                    thisSchedule.setTemp("");
+                }
+                if (!humid_check.isChecked()) {
+                    thisSchedule.setHumid("");
+                }
+                if (action.equals("add")) {
+                    addSchedule();
+                } else {
+                    updateSchedule();
+                }
                 finish();
             }
         });
+
         // lines below is prepare to set repeat day
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder repeatBuilder = new AlertDialog.Builder(this);
 
         repeat_day_text.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,8 +192,8 @@ public class ScheduleSetActivity extends AppCompatActivity {
                         yetChecked[i] = false;
                     }
                 }
-                builder.setTitle("Choose day:");
-                builder.setMultiChoiceItems(items, yetChecked,
+                repeatBuilder.setTitle("Choose day:");
+                repeatBuilder.setMultiChoiceItems(items, yetChecked,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int selectedItemId,
@@ -172,7 +214,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
                                     A[i] = '0';
                                 }
                                 for (int i = 0; i < itemsSelected.size(); i++) {
-                                    A[Integer.valueOf(itemsSelected.get(i).toString())] = '1';
+                                    A[Integer.parseInt(itemsSelected.get(i).toString())] = '1';
                                 }
                                 thisSchedule.setRepeatDay(String.valueOf(A));
                                 repeat_day_text.setText(Transform.BinaryToDaily(String.valueOf(A)));
@@ -185,7 +227,8 @@ public class ScheduleSetActivity extends AppCompatActivity {
                         });
 
                 Dialog dialog;
-                dialog = builder.create();
+                dialog = repeatBuilder.create();
+                //((AlertDialog)).getListView().setItemChecked(1, true);
                 dialog.show();
             }
         });
@@ -260,6 +303,80 @@ public class ScheduleSetActivity extends AppCompatActivity {
         });
     }
 
+    public void onCheckboxClicked(View view) {
+        boolean checked = ((CheckBox) view).isChecked();
+
+        switch (view.getId()) {
+            case R.id.checkbox_temp:
+                if (checked) {
+                    setVisibilityTemp(View.VISIBLE);
+                } else {
+                    setVisibilityTemp(View.GONE);
+                }
+                break;
+            case R.id.checkbox_humid:
+                if (checked) {
+                    setVisibilityHumid(View.VISIBLE);
+                } else {
+                    setVisibilityHumid(View.GONE);
+                }
+                break;
+        }
+    }
+
+    public void setVisibilityTemp(int state) {
+        View temp_down = findViewById(R.id.down_temp_btn);
+        View temp_data = findViewById(R.id.temp_data_view);
+        View temp_up = findViewById(R.id.up_temp_btn);
+        temp_down.setVisibility(state);
+        temp_data.setVisibility(state);
+        temp_up.setVisibility(state);
+    }
+
+    public void setVisibilityHumid(int state) {
+        View humid_down = findViewById(R.id.down_humid_btn);
+        View humid_data = findViewById(R.id.humid_data_view);
+        View humid_up = findViewById(R.id.up_humid_btn);
+        humid_down.setVisibility(state);
+        humid_data.setVisibility(state);
+        humid_up.setVisibility(state);
+    }
+
+    private void getSchedule(String scheduleId) {
+        //thisSchedule = new Schedule();
+        database.child("schedules").child(scheduleId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                } else {
+                    thisSchedule = task.getResult().getValue(Schedule.class);
+                    thisSchedule.setScheduleId(scheduleId);
+                    if (thisSchedule.getTemp().equals("")) {
+                        temp_check.setChecked(false);
+                        setVisibilityTemp(View.GONE);
+                        thisSchedule.setTemp("25");
+                    } else {
+                        temp_check.setChecked(true);
+                        temp_data.setText(thisSchedule.getTemp());
+                    }
+                    if (thisSchedule.getHumid().equals("")) {
+                        humid_check.setChecked(false);
+                        setVisibilityHumid(View.GONE);
+                        thisSchedule.setHumid("60");
+                    } else {
+                        humid_check.setChecked(true);
+                        humid_data.setText(thisSchedule.getHumid());
+                    }
+                    start_time.setText(thisSchedule.getStartTime());
+                    end_time.setText(thisSchedule.getEndTime());
+                    repeat_day_text.setText(Transform.BinaryToDaily(thisSchedule.getRepeatDay()));
+                    device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
+                }
+            }
+        });
+    }
+
     public void getAllDevicesInRoom(String roomId) {
         listDevice = new ArrayList<Device>();
         Query allDevice = database.child("devices").orderByChild("roomId").equalTo(roomId);
@@ -291,8 +408,18 @@ public class ScheduleSetActivity extends AppCompatActivity {
         humid_data.setText(String.valueOf(thisSchedule.getHumid()));
         start_time.setText(thisSchedule.getStartTime());
         end_time.setText(thisSchedule.getEndTime());
-        repeat_day_text.setText(Transform.BinaryToDaily(thisSchedule.getRepeatDay()));
-        device_text.setText(Transform.toListNameFromDeviceId(listDevice, thisSchedule.getListDevice()));
+        repeat_day_text.setText("Choose day");
+        device_text.setText("Choose device");
+    }
+
+    private void updateSchedule() {
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("temp").setValue(thisSchedule.getTemp());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("humid").setValue(thisSchedule.getHumid());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("startTime").setValue(thisSchedule.getStartTime());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("endTime").setValue(thisSchedule.getEndTime());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("repeatDay").setValue(thisSchedule.getRepeatDay());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("listDevice").setValue(thisSchedule.getListDevice());
+        database.child("schedules").child(thisSchedule.getScheduleId()).child("state").setValue("0");
     }
 
     private void addSchedule() {
@@ -301,15 +428,29 @@ public class ScheduleSetActivity extends AppCompatActivity {
         thisSchedule.setScheduleId(scheduleId);
     }
 
+    private void deleteSchedule() {
+        database.child("schedules").child(thisSchedule.getScheduleId()).removeValue();
+    }
+
     private void setTime(int flag) {
         Calendar calendar = Calendar.getInstance();
         int previous_hour, previous_minute;
-        if (flag == 0) {
-            previous_hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        if (action.equals("add")) {
+            if (flag == 0) {
+                previous_hour = calendar.get(Calendar.HOUR_OF_DAY);
+            } else {
+                previous_hour = calendar.get(Calendar.HOUR_OF_DAY) + 1;
+            }
             previous_minute = calendar.get(Calendar.MINUTE);
         } else {
-            previous_hour = calendar.get(Calendar.HOUR_OF_DAY) + 1;
-            previous_minute = calendar.get(Calendar.MINUTE);
+            if (flag == 0) {
+                previous_hour = Integer.parseInt(thisSchedule.getStartTime().substring(0, 2));
+                previous_minute = Integer.parseInt(thisSchedule.getStartTime().substring(3, 5));
+            } else {
+                previous_hour = Integer.parseInt(thisSchedule.getEndTime().substring(0, 2));
+                previous_minute = Integer.parseInt(thisSchedule.getEndTime().substring(3, 5));
+            }
         }
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
@@ -331,8 +472,8 @@ public class ScheduleSetActivity extends AppCompatActivity {
     }
 
     public void changeNum(View view, int flag) {
-        int tempNum = thisSchedule.getTemp();
-        int humidNum = thisSchedule.getHumid();
+        int tempNum = Integer.parseInt(thisSchedule.getTemp());
+        int humidNum = Integer.parseInt(thisSchedule.getHumid());
         switch (flag) {
             case 1:
                 tempNum += 1;
@@ -354,7 +495,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
                 tempNum = 16;
             }
             temp_data.setText(String.valueOf(tempNum));
-            thisSchedule.setTemp(tempNum);
+            thisSchedule.setTemp(String.valueOf(tempNum));
         } else {
             if (humidNum > 60) {
                 humidNum = 60;
@@ -362,7 +503,7 @@ public class ScheduleSetActivity extends AppCompatActivity {
                 humidNum = 40;
             }
             humid_data.setText(String.valueOf(humidNum));
-            thisSchedule.setHumid(humidNum);
+            thisSchedule.setHumid(String.valueOf(humidNum));
         }
     }
 }

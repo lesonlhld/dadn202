@@ -59,7 +59,7 @@ public class Database {
         rooms.child(roomId).child("roomCurrentHumidity").setValueAsync(humid);
     }
 
-    public static void removLog() {
+    public static void removeLog() {
         logs.removeValueAsync();
         System.out.println("removed successfully");
     }

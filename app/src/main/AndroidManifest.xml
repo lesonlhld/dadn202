@@ -35,13 +35,11 @@
                 android:resource="@xml/device_filter" />
         </activity>
         <activity android:name=".activity.AccountActivity" />
-        <activity android:name=".activity.MoreActivity" />
         <activity android:name=".activity.RoomActivity" />
         <activity android:name=".activity.RoomDetailActivity" />
         <activity android:name=".activity.ScheduleActivity" />
         <activity android:name=".activity.DevicesActivity" />
-        <activity android:name=".activity.ScheduleEditActivity" />
-        <activity android:name=".activity.ScheduleSetActivity" />
+        <activity android:name=".activity.ScheduleDetailActivity" />
         <activity android:name=".activity.AddDevicesActivity" />
         <activity android:name=".activity.ViewChartActivity" />
 

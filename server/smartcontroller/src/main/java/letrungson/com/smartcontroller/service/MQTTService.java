@@ -12,6 +12,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 import letrungson.com.smartcontroller.Main;
@@ -52,7 +53,7 @@ public class MQTTService {
             publisher.connect(mqttConnectOptions);
             subscribeToTopic(publisher, username);
         } catch (MqttException ex) {
-            System.out.println("Failed to connect: " + username);
+        	System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": Failed to connect: " + username);
             ex.printStackTrace();
         }
     }
@@ -73,8 +74,7 @@ public class MQTTService {
                         }.getType());
                         if (Check.checkExistDevice(Main.allDevices, dataMqtt.getKey())
                                 && feedName.equals(dataMqtt.getKey()) && server.equals(serverName)) {
-                            System.out.println(
-                                    "Write MQTT data to database: topic: " + topic + ", data: " + data_to_microbit);
+                        	System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": Write MQTT data to database: topic: " + topic + ", data: " + data_to_microbit);
                             Value valueMqtt = new Gson().fromJson(dataMqtt.getLast_value(), new TypeToken<Value>() {
 
                             }.getType());
@@ -85,9 +85,9 @@ public class MQTTService {
             });
 
             listMqttClient.put(server, publisher);
-            System.out.println("Subscribed: " + subscriptionTopic);
+            System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": Subscribed: " + subscriptionTopic);
         } catch (MqttException ex) {
-            System.out.println("Failed to subscribe: " + subscriptionTopic);
+        	System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": Failed to subscribe: " + subscriptionTopic);
             ex.printStackTrace();
         }
     }
@@ -102,10 +102,10 @@ public class MQTTService {
             message.setQos(0);
             message.setRetained(true);
             // publish message to broker
-            System.out.println("Message \"" + deviceId + ": " + data + "\" published to server: " + server);
+            System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": Message \"" + deviceId + ": " + data + "\" published to server: " + server);
             listMqttClient.get(server).publish(topicOfDevice, message);
         } catch (Exception e) {
-            System.out.println("Failed to publish message to server: " + server);
+        	System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": Failed to publish message to server: " + server);
             e.printStackTrace();
         }
     }

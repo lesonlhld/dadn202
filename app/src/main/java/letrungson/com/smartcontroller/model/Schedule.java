@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Schedule {
     private String repeatDay;
-    private int temp;
-    private int humid;
+    private String temp;
+    private String humid;
     private String startTime;
     private String endTime;
     private String scheduleId;
@@ -14,8 +14,8 @@ public class Schedule {
     private List<String> listDevice;
 
     public Schedule() {
-        this.temp = 25;
-        this.humid = 60;
+        this.temp = "25";
+        this.humid = "60";
         this.startTime = "00:00";
         this.endTime = "00:00";
         this.repeatDay = "0000000";
@@ -24,7 +24,7 @@ public class Schedule {
         this.listDevice = null;
     }
 
-    public Schedule(int temp, int humid, String startTime, String endTime, String repeatDay, List<String> listDevice) {
+    public Schedule(String temp, String humid, String startTime, String endTime, String repeatDay, List<String> listDevice) {
         this.temp = temp;
         this.humid = humid;
         this.startTime = startTime;
@@ -41,19 +41,19 @@ public class Schedule {
         this.scheduleId = scheduleId;
     }
 
-    public int getTemp() {
+    public String getTemp() {
         return temp;
     }
 
-    public void setTemp(int temp) {
+    public void setTemp(String temp) {
         this.temp = temp;
     }
 
-    public int getHumid() {
+    public String getHumid() {
         return humid;
     }
 
-    public void setHumid(int humid) {
+    public void setHumid(String humid) {
         this.humid = humid;
     }
 

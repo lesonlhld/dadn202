@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,17 +56,14 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
     public static List<Device> allDevices;
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     UsbSerialPort port;
-    Button home, more;
+    Button home, more, logout, changePassword;
     ImageButton room_btn;
     RelativeLayout powerAllRooms;
-    TextView power_state;
+    TextView power_state, welcome;
     RoomViewAdapter roomViewAdapter;
+    private FirebaseAuth mAuth;
     private List<Room> listRoom;
     private RecyclerView recyclerView;
-    private Thread readThread;
-
-    //private UsbHidDevice device = null;
-    private boolean mRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         }
 
         getAllRoom();
+        homePage();
+    }
+
+    public void homePage() {
         setContentView(R.layout.homescreeen);
 
         home = findViewById(R.id.home);
@@ -87,11 +90,9 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MoreActivity.class));
-                finish();
+                morePage();
             }
         });
-
 
         recyclerView = findViewById(R.id.gridView);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
@@ -211,38 +212,49 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
 
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
+    }
 
-/*
-        if (availableDrivers.isEmpty()) {
-            Log.d("UART", "UART is not available");
-            txtOut.setText("UART is not available");
-        }else {
-            Log.d("UART", "UART is available");
-            txtOut.setText("UART is available");
+    public void morePage() {
+        setContentView(R.layout.activity_more);
+        welcome = findViewById(R.id.welcome);
 
-            UsbSerialDriver driver = availableDrivers.get(0);
-            UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
-            if (connection == null) {
-                PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(INTENT_ACTION_GRANT_USB), 0);
-                manager.requestPermission(driver.getDevice(), usbPermissionIntent);
-                manager.requestPermission(driver.getDevice(), PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0));
-            } else {
-                // Most devices have just one port (port 0)
-                port = driver.getPorts().get(0);
-                try {
-                    port.open(connection);
-                    port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-                    port.write("hello abc#".getBytes(), 1000);
-                    txtOut.setText("A sample string is sent");
 
-                    SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, this);
-                    Executors.newSingleThreadExecutor().submit(usbIoManager);
-                } catch (Exception e) {
-                    txtOut.setText("Sending a message is fail");
-                }
-
+        home = findViewById(R.id.home);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homePage();
             }
-        }*/
+        });
+
+        more = findViewById(R.id.more);
+        more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        welcome.setText("Welcome " + user.getEmail());
+
+        logout = findViewById(R.id.btn_logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                finish();
+            }
+        });
+
+        changePassword = findViewById(R.id.btn_changePassword);
+        changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AccountActivity.class));
+            }
+        });
     }
 
     @Override

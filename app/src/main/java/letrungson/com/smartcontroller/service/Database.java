@@ -67,7 +67,7 @@ public class Database {
         rooms.child(roomId).child("roomCurrentHumidity").setValue(humid);
     }
 
-    public static void removLog() {
+    public static void removeLog() {
         logs.removeValue();
         Log.d("db", "removed successfully");
     }

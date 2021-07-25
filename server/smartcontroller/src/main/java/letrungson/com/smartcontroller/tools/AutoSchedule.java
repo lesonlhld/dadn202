@@ -93,19 +93,23 @@ public class AutoSchedule {
                                 }
                                 if (isRightTime) {
                                     finalSchedule = sche;
-                                    // set target temp của phòng theo schedule
-                                    if (!room.getRoomTargetTemp().equals(String.valueOf(sche.getTemp()))) {
-                                        room.setRoomTargetTemp(String.valueOf(sche.getTemp()));
-                                        database.getReference().child("rooms").child(room.getRoomId())
-                                                .child("roomTargetTemp")
-                                                .setValueAsync(String.valueOf(sche.getTemp()));
+                                    if(!sche.getTemp().equals("")) {
+                                        // set target temp của phòng theo schedule
+                                        if (!room.getRoomTargetTemp().equals(sche.getTemp())) {
+                                            room.setRoomTargetTemp(sche.getTemp());
+                                            database.getReference().child("rooms").child(room.getRoomId())
+                                                    .child("roomTargetTemp")
+                                                    .setValueAsync(sche.getTemp());
+                                        }
+                                        setTargetTemp = true;
+                                        if (Integer.parseInt(room.getRoomTargetTemp()) < Integer
+                                                .parseInt(room.getRoomCurrentTemp())) {
+                                            isTurnDeviceOn = "1";
+                                        }
+                                    } else {
+                                    	isTurnDeviceOn = "1";
                                     }
-                                    setTargetTemp = true;
-                                    if (Integer.parseInt(room.getRoomTargetTemp()) < Integer
-                                            .parseInt(room.getRoomCurrentTemp())) {
-                                        isTurnDeviceOn = "1";
-                                    }
-                                    System.out.println("Schedule: " + sche.getScheduleId());
+                                    System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": Active Schedule: " + sche.getScheduleId());
                                     // vì đã đúng schedule nên sau khi lưu biến isTurnDeviceOn, break khỏi vòng lặp
                                     // schedule
                                     break;
@@ -117,7 +121,9 @@ public class AutoSchedule {
                             room.setRoomTargetTemp("");
                             database.getReference().child("rooms").child(room.getRoomId())
                                     .child("roomTargetTemp").setValueAsync("");
-                            System.out.println("No Schedule");
+                        }
+                        if (setTargetTemp == false && isTurnDeviceOn == "0") {
+                            System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date()) + ": No Schedule");                        	
                         }
                         // tạo list device trong phòng đó
                         listDevice = new ArrayList<Device>();

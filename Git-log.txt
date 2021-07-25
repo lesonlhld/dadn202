@@ -1,3 +1,21 @@
+commit 046af1fae2adc7a91f566db8b1195e943c4bc7d9
+Author: lesonlhld <lesonlhld@gmail.com>
+Date:   Sat Jun 26 01:17:04 2021 +0700
+
+    update chart
+
+commit 81c661654378efe48034140790db9bbdd591894f
+Author: lesonlhld <lesonlhld@gmail.com>
+Date:   Thu Jun 24 23:46:56 2021 +0700
+
+    Fix server
+
+commit a328e085a7d815b0634b529535b77e5b88480b0e
+Author: lesonlhld <lesonlhld@gmail.com>
+Date:   Tue Jun 22 22:45:12 2021 +0700
+
+    Fixed bugs
+
 commit 3cadd84469a35dcfba89ce69e6ee6fa855caa61b
 Author: lesonlhld <lesonlhld@gmail.com>
 Date:   Sun Jun 20 00:00:36 2021 +0700

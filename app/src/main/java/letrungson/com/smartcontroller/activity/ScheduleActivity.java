@@ -35,14 +35,14 @@ public class ScheduleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_schedule);
-        floating_action_btn = findViewById(R.id.floatingActionButton);
-        ListView listView = findViewById(R.id.smart_schedule_listview);
+        setContentView(R.layout.list_item);
+        floating_action_btn = findViewById(R.id.list_add_btn);
+        ListView listView = findViewById(R.id.listView);
         Intent intent = getIntent();
         roomId = intent.getStringExtra("roomId");
 
         //Setup Toolbar
-        Toolbar toolbar = findViewById(R.id.schedule_toolbar);
+        Toolbar toolbar = findViewById(R.id.list_toolbar);
         toolbar.setTitle("Smart Schedule");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -56,8 +56,9 @@ public class ScheduleActivity extends AppCompatActivity {
         floating_action_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ScheduleActivity.this, ScheduleSetActivity.class);
+                Intent intent = new Intent(ScheduleActivity.this, ScheduleDetailActivity.class);
                 intent.putExtra("roomId", roomId);
+                intent.putExtra("action", "add");
                 startActivity(intent);
                 scheduleListView.notifyDataSetChanged();
             }

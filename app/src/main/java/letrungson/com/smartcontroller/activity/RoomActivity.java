@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.model.Device;
 import letrungson.com.smartcontroller.model.Room;
 import letrungson.com.smartcontroller.service.Database;
 
@@ -47,14 +46,14 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_room);
+        setContentView(R.layout.list_item);
 
         devices = database.getReference("devices");
         rooms = database.getReference("rooms");
         schedules = database.getReference("schedules");
 
         //Setup Toolbar
-        Toolbar toolbar = findViewById(R.id.room_manage_toolbar);
+        Toolbar toolbar = findViewById(R.id.list_toolbar);
         toolbar.setTitle("Manage Room");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -87,7 +86,7 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
 
-        addRoom = findViewById(R.id.add_room_tbn);
+        addRoom = findViewById(R.id.list_add_btn);
         addRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,14 +118,11 @@ public class RoomActivity extends AppCompatActivity {
                 final String name = roomName.getText().toString().trim();
                 if (name.isEmpty()) {
                     Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_required), Toast.LENGTH_LONG).show();
-                }
-                else if (isDeviceIdExist(name)){
+                } else if (isDeviceIdExist(name)) {
                     Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_existed), Toast.LENGTH_LONG).show();
-                }
-                else if (name.length() > 50){
+                } else if (name.length() > 50) {
                     Toast.makeText(RoomActivity.this, getResources().getString(R.string.error_room_name_too_long), Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     Database.addRoom(name);
                     startActivity(new Intent(RoomActivity.this, RoomActivity.class));
                     finish();

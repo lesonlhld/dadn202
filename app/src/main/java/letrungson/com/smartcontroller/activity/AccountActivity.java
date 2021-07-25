@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import letrungson.com.smartcontroller.R;
-import letrungson.com.smartcontroller.service.Database;
 
 public class AccountActivity extends Activity {
     private static final String TAG = "EmailPassword";
@@ -44,9 +43,6 @@ public class AccountActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-        if (currentUser != null) {
-            reload();
-        }
     }
 
     private void createAccount() {
@@ -95,13 +91,11 @@ public class AccountActivity extends Activity {
                                         } else {
                                             Toast.makeText(AccountActivity.this, getResources().getString(R.string.register_failed), Toast.LENGTH_LONG).show();
                                         }
-                                        updateUI(null);
                                         Log.w(TAG, "signUpWithEmail:failure", task.getException());
                                     } else {
                                         startActivity(new Intent(AccountActivity.this, MainActivity.class));
                                         Log.d(TAG, "signUpWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        updateUI(user);
                                         finish();
                                     }
                                 }
@@ -154,13 +148,11 @@ public class AccountActivity extends Activity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (!task.isSuccessful()) {
                                         Toast.makeText(AccountActivity.this, getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
-                                        updateUI(null);
                                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     } else {
                                         startActivity(new Intent(AccountActivity.this, MainActivity.class));
                                         Log.d(TAG, "signInWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        updateUI(user);
                                         finish();
                                     }
                                 }
@@ -201,7 +193,6 @@ public class AccountActivity extends Activity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AccountActivity.this, MoreActivity.class));
                 finish();
             }
         });
@@ -236,7 +227,6 @@ public class AccountActivity extends Activity {
                                                         if (task.isSuccessful()) {
                                                             Log.d(TAG, "User password updated.");
                                                             Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_successfully), Toast.LENGTH_LONG).show();
-                                                            startActivity(new Intent(AccountActivity.this, MoreActivity.class));
                                                             finish();
                                                         } else {
                                                             Toast.makeText(AccountActivity.this, getResources().getString(R.string.change_password_failed), Toast.LENGTH_LONG).show();
@@ -299,13 +289,5 @@ public class AccountActivity extends Activity {
                 // [END sign_in_with_email]
             }
         });
-    }
-
-
-    private void reload() {
-    }
-
-    private void updateUI(FirebaseUser user) {
-
     }
 }
