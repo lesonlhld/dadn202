@@ -33,6 +33,10 @@
 			font-size: 30px;
 		}
 
+		#TEMP-HUMID, #BUTTON {
+			background-color: #ffcccc;
+		}
+
 		a:link {
 			color: black;
 			background-color: transparent;
