@@ -32,10 +32,9 @@ public class Constant {
         server_CSE_BBC1.put("bk-iot-time", new Value("22", "TIME", ""));
         server_CSE_BBC1.put("bk-iot-gas", new Value("23", "GAS", ""));
 
-        severInfo.put("CSE_BBC", "aio_qyBr29pmfJC09tUFB5n9Ap9AtIwD");
-        severInfo.put("CSE_BBC1", "aio_ieyO306EGPxQmn7S23iE7p3jIG8O");
-//		severInfo.put("lesonlhld", "aio_WwjF84LarniCFSKcbFyhnFEFnqlG");
-        severInfo.put("batiencd09", "aio_FoNr10xlM3dXIs1Mze3etFYtgiaO");
+        severInfo.put("CSE_BBC", "");
+        severInfo.put("CSE_BBC1", "");
+        severInfo.put("batiencd09", "");
         severInfo.put(MY_SERVER_NAME, MY_SERVER_KEY);
     }
 
