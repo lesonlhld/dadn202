@@ -34,6 +34,7 @@ public class Constant {
 
         severInfo.put("CSE_BBC", "");
         severInfo.put("CSE_BBC1", "");
+//		severInfo.put("lesonlhld", "");
         severInfo.put("batiencd09", "");
         severInfo.put(MY_SERVER_NAME, MY_SERVER_KEY);
     }
