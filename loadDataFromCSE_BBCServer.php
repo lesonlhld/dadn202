@@ -33,8 +33,8 @@
 			font-size: 30px;
 		}
 
-		#TEMP-HUMID, #BUTTON {
-			background-color: #ffcccc;
+		.new {
+			background-color: #ffcccc !important;
 		}
 
 		a:link {
@@ -68,12 +68,15 @@ define('TIMEZONE', 'Asia/Ho_Chi_Minh');
 date_default_timezone_set(TIMEZONE);
 // echo "Time loaded: " . (new \DateTime())->format('Y-m-d H:i:s') . "<br/>";
 
+if (!isset($_SESSION)) {
+	session_start();
+}
+
 error_reporting(0);
 ini_set('display_errors', 0);
 
 function multi_thread_curl($urlArray, $optionArray, $nThreads)
 {
-
 	//Group your urls into groups/threads.
 	$curlArray = array_chunk($urlArray, $nThreads, $preserve_keys = true);
 
@@ -140,11 +143,9 @@ function get_value()
 	//Add whatever options here. The CURLOPT_URL is left out intentionally.
 	//It will be added in later from the url array.
 	$optionArray = array(
-
 		CURLOPT_USERAGENT        => 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0', //Pick your user agent.
 		CURLOPT_RETURNTRANSFER   => TRUE,
 		CURLOPT_TIMEOUT          => 10
-
 	);
 
 	//Create an array of your urls.
@@ -199,6 +200,13 @@ if (!isset($_GET["pause"]) || $_GET["pause"] == "false") {
 	<?php
 	$value = get_value();
 
+	if (sizeof($_SESSION) == 0) {
+		$_SESSION = $value;
+	}
+	// echo "<pre>", json_encode($_SESSION), "</pre>";
+	// session_unset();
+	// session_destroy();
+
 	$urlArray = array(
 		'LED' => 'https://io.adafruit.com/CSE_BBC/feeds/bk-iot-led/',
 		'SPEAKER' => 'https://io.adafruit.com/CSE_BBC/feeds/bk-iot-speaker/',
@@ -220,6 +228,8 @@ if (!isset($_GET["pause"]) || $_GET["pause"] == "false") {
 		'TIME' => 'https://io.adafruit.com/CSE_BBC1/feeds/bk-iot-time/',
 		'GAS' => 'https://io.adafruit.com/CSE_BBC1/feeds/bk-iot-gas/'
 	);
+
+	$feeds = array_keys($urlArray);
 	?>
 	<div class="container">
 		<div style="padding-left: 1%;">
@@ -238,63 +248,29 @@ if (!isset($_GET["pause"]) || $_GET["pause"] == "false") {
 				<?php }
 				?>
 			</h3>
-
 		</div>
 		<div class="grid-container">
-			<div id="LED">
-				<h4><a href='<?= $urlArray["LED"] ?>' target="_blank">LED</a></h4><?= !isset($value["LED"]) ? "Error" : $value["LED"] ?>
-			</div>
-			<div id="SPEAKER">
-				<h4><a href='<?= $urlArray["SPEAKER"] ?>' target="_blank">SPEAKER</a></h4><?= !isset($value["SPEAKER"]) ? "Error" : $value["SPEAKER"] ?>
-			</div>
-			<div id="LCD">
-				<h4><a href='<?= $urlArray["LCD"] ?>' target="_blank">LCD</a></h4><?= !isset($value["LCD"]) ? "Error" : $value["LCD"] ?>
-			</div>
-			<div id="BUTTON">
-				<h4><a href='<?= $urlArray["BUTTON"] ?>' target="_blank">BUTTON</a></h4><?= !isset($value["BUTTON"]) ? "Error" : $value["BUTTON"] ?>
-			</div>
-			<div id="TOUCH">
-				<h4><a href='<?= $urlArray["TOUCH"] ?>' target="_blank">TOUCH</a></h4><?= !isset($value["TOUCH"]) ? "Error" : $value["TOUCH"] ?>
-			</div>
-			<div id="TRAFFIC">
-				<h4><a href='<?= $urlArray["TRAFFIC"] ?>' target="_blank">TRAFFIC</a></h4><?= !isset($value["TRAFFIC"]) ? "Error" : $value["TRAFFIC"] ?>
-			</div>
-			<div id="TEMP-HUMID">
-				<h4><a href='<?= $urlArray["TEMP-HUMID"] ?>' target="_blank">TEMP-HUMID</a></h4><?= !isset($value["TEMP-HUMID"]) ? "Error" : $value["TEMP-HUMID"] ?>
-			</div>
-			<div id="MAGNETIC">
-				<h4><a href='<?= $urlArray["MAGNETIC"] ?>' target="_blank">MAGNETIC</a></h4><?= !isset($value["MAGNETIC"]) ? "Error" : $value["MAGNETIC"] ?>
-			</div>
-			<div id="SOIL">
-				<h4><a href='<?= $urlArray["SOIL"] ?>' target="_blank">SOIL</a></h4><?= !isset($value["SOIL"]) ? "Error" : $value["SOIL"] ?>
-			</div>
-			<div id="DRV_PWM">
-				<h4><a href='<?= $urlArray["DRV_PWM"] ?>' target="_blank">DRV_PWM</a></h4><?= !isset($value["DRV_PWM"]) ? "Error" : $value["DRV_PWM"] ?>
-			</div>
-			<div id="RELAY">
-				<h4><a href='<?= $urlArray["RELAY"] ?>' target="_blank">RELAY</a></h4><?= !isset($value["RELAY"]) ? "Error" : $value["RELAY"] ?>
-			</div>
-			<div id="SOUND">
-				<h4><a href='<?= $urlArray["SOUND"] ?>' target="_blank">SOUND</a></h4><?= !isset($value["SOUND"]) ? "Error" : $value["SOUND"] ?>
-			</div>
-			<div id="LIGHT">
-				<h4><a href='<?= $urlArray["LIGHT"] ?>' target="_blank">LIGHT</a></h4><?= !isset($value["LIGHT"]) ? "Error" : $value["LIGHT"] ?>
-			</div>
-			<div id="INFRARED">
-				<h4><a href='<?= $urlArray["INFRARED"] ?>' target="_blank">INFRARED</a></h4><?= !isset($value["INFRARED"]) ? "Error" : $value["INFRARED"] ?>
-			</div>
-			<div id="SERVO">
-				<h4><a href='<?= $urlArray["SERVO"] ?>' target="_blank">SERVO</a></h4><?= !isset($value["SERVO"]) ? "Error" : $value["SERVO"] ?>
-			</div>
-			<div id="ACCELEROMETER">
-				<h4><a href='<?= $urlArray["ACCELEROMETER"] ?>' target="_blank">ACCELEROMETER</a></h4><?= !isset($value["ACCELEROMETER"]) ? "Error" : $value["ACCELEROMETER"] ?>
-			</div>
-			<div id="TIME">
-				<h4><a href='<?= $urlArray["TIME"] ?>' target="_blank">TIME</a></h4><?= !isset($value["TIME"]) ? "Error" : $value["TIME"] ?>
-			</div>
-			<div id="GAS">
-				<h4><a href='<?= $urlArray["GAS"] ?>' target="_blank">GAS</a></h4><?= !isset($value["GAS"]) ? "Error" : $value["GAS"] ?>
-			</div>
+			<?php
+			foreach ($feeds as $feed) {
+				$class = "";
+				$val = "Error";
+				if (isset($value[$feed])) {
+					$val = $value[$feed];
+				}
+				if (isset($_SESSION[$feed]) && $_SESSION[$feed] != $value[$feed]) {
+					$class = "new";
+				}
+				$_SESSION[$feed] = $value[$feed];
+			?>
+				<div id="<?= $feed ?>" class="<?= $class ?>">
+					<h4><a href='<?= $urlArray[$feed] ?>' target="_blank"><?= $feed ?></a></h4><?= $val ?>
+				</div>
+			<?php
+			}
+			?>
+		</div>
+		<div style="padding-left: 1%;">
+			<i>Background color is changed when feed data changes</i>
 		</div>
 	</div>
 </body>
